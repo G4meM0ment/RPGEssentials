@@ -1,25 +1,29 @@
 package me.G4meM0ment.ReNature.Handler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.ReNature.ReNature;
 import me.G4meM0ment.ReNature.CustomTypes.NBlock;
 
 public class ReplaceHandler {
 	
-	private RPGEssentials rpge;
+	private RPGEssentials plugin;
+	private ReNature reNature;
 	
 	private static List<NBlock> blocks = new ArrayList<NBlock>();
-	private int millis = 60000;
+	private int millis = 10000; //60000 normal
+	private int recoverMillis = 25000; //250000 normal
 	
-	public ReplaceHandler(RPGEssentials rpge) {
-		this.rpge = rpge;
+	public ReplaceHandler(RPGEssentials plugin) {
+		this.plugin = plugin;
+		reNature = new ReNature();
 		//TODO get millis from config
 	}
 	public ReplaceHandler() {
@@ -40,8 +44,10 @@ public class ReplaceHandler {
 		new Thread() {
 			@Override
 			public void run() {
-				while(Bukkit.getPluginManager().isPluginEnabled(rpge)) {
-					check(0);
+				while(true) {
+					if(blocks.size() > 0)
+						check(0);
+					plugin.getLogger().info("checked!");
 					try{
 						Thread.sleep(millis);
 					}catch(InterruptedException e) {
@@ -49,36 +55,46 @@ public class ReplaceHandler {
 					}
 				}
 			}
-		};
+		}.start();
 	}
 	
 	private void check(int pos) {
 		NBlock block = blocks.get(pos);
-		if((block.getMillis() - System.currentTimeMillis()) > 50000) {
+		if((System.currentTimeMillis() - block.getMillis()) > recoverMillis) {
 			renew(block);
-			check(pos+1);
+			if(blocks.size()-1 >= pos+1)
+				check(pos+1);
 		}
 	}
 	
 	private void renew(NBlock b) {
+		if(b == null) return;
 		if(!checkPlayers(b.getBlock().getWorld().getPlayers(), b.getBlock())) {
-			Block block = b.getBlock();
-			Block griefed = block.getLocation().getBlock();
-			griefed.setType(b.getMaterial());
-			removeBlock(b);	
+
+			Block block = b.getBlock();			
+			Block griefed = block.getLocation().getBlock();			
+			
+			if(b.getMaterial() == Material.AIR)
+				griefed.breakNaturally();
+			else
+				griefed.setType(b.getMaterial());
+			removeBlock(b);
+			plugin.getLogger().info("Nature is recovering!");
 		} else {
-			rpge.getLogger().info("Won't spawn while you're watching!");
+			plugin.getLogger().info("Won't spawn while you're watching!");
 			return;
 		}
 	}
 	
 	public void workList() {
-		for(int i = 0; i < blocks.size()+1; i++) {
+		for(int i = 0; i < blocks.size(); i++) {
 			renew(blocks.get(i));
 		}
 	}
 	
 	private boolean checkPlayers(List<Player> players, Block b) {
+		if(reNature.isDisabling())
+			return false;
 		//TODO check if online players listed...
 		int dist = 50;
 		for(Player p : players) {

@@ -8,29 +8,34 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 
 public class BListener implements Listener{
 	
-	private RPGEssentials rpge;
+	private RPGEssentials plugin;
 	private ReplaceHandler rh;
 	
-	public BListener(RPGEssentials rpge) {
+	public BListener(RPGEssentials plugin) {
+		this.plugin = plugin;
 		rh = new ReplaceHandler();
 	}
-	
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		Block b = event.getBlock();
 		NBlock nb = new NBlock(b);
 		rh.addBlock(nb);
+		
+		plugin.getLogger().info("Registered block event!");
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onBlockDestroy(BlockPlaceEvent event) {
+	public void onBlockDestroy(BlockBreakEvent event) {
 		Block b = event.getBlock();
 		NBlock nb = new NBlock(b);
 		rh.addBlock(nb);
+		
+		plugin.getLogger().info("Registered block event!");
 	}
 }

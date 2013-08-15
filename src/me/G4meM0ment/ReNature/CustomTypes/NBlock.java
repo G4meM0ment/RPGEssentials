@@ -1,16 +1,7 @@
 package me.G4meM0ment.ReNature.CustomTypes;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.*;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.block.Block;
 
 public class NBlock{
 
@@ -18,9 +9,10 @@ public class NBlock{
 	private Block block;
 	private Material material;
 	
-	public NBlock(Block b) {
+	public NBlock(Block block) {
 		this.block = block;
 		millis = System.currentTimeMillis();
+		material = block.getType();
 	}
 	
 	public long getMillis() {
