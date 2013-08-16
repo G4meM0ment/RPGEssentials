@@ -1,6 +1,7 @@
 name: RPGEssentials
 main: me.G4meM0ment.RPGEssentials.RPGEssentials.RPGEssentials
 version: 0.00.001
+Author: G4mem0ment, Eatingyou
 depend: [Vault]
 softdepend: [Spout, Jail]
 commands:

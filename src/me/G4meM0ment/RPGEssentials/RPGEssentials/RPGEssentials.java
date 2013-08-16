@@ -1,5 +1,6 @@
 package me.G4meM0ment.RPGEssentials.RPGEssentials;
 
+import me.G4meM0ment.Junkie.Junkie;
 import me.G4meM0ment.ReNature.ReNature;
 
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -8,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class RPGEssentials extends JavaPlugin{
 
 	private ReNature reNature;
+	private Junkie junkie;
 	
 	private String dir				=	"plugins/RPGEssentials";
 	
@@ -32,9 +34,18 @@ public class RPGEssentials extends JavaPlugin{
 		if(reNature.onEnable() && getConfig().getBoolean("ReNatureEnabled"))
 			getLogger().info("ReNature enabled!");
 		else if (reNature.onEnable())
-			getLogger().info("ReNature found, but disabled!");
+			getLogger().info("ReNature found, but disabled in config!");
 		else
 			getLogger().info("ReNature couldn't be enabled!");
+		
+		//Initializing Junkie and debugging
+		junkie = new Junkie(this);
+		if(junkie.onEnable() && getConfig().getBoolean("JunkieEnabled"))
+			getLogger().info("Junkie enabled!");
+		else if (junkie.onEnable())
+			getLogger().info("Junkie found, but disabled in config!");
+		else
+			getLogger().info("Junkie couldn't be enabled!");
 		
 		//Finished initializing plugin enabled
 		getLogger().info("Initialization done!");
@@ -53,9 +64,11 @@ public class RPGEssentials extends JavaPlugin{
 		//Disable sub-plugins
 		getLogger().info("Disabling sub-plugins:");
 		
-		if(reNature.onDisable()) {
+		if(reNature.onDisable())
 			getLogger().info("ReNature disabled!");
-		}
+			
+		if(junkie.onDisable())
+			getLogger().info("Junkie disabled!");
 	}
 	
 	public String getDir() {

@@ -1,4 +1,4 @@
-package me.G4meM0ment.ReNature;
+package me.G4meM0ment.Junkie;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,54 +10,46 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.G4meM0ment.Junkie.Listener.PListener;
 import me.G4meM0ment.RPGEssentials.RPGEssentials.RPGEssentials;
-import me.G4meM0ment.ReNature.Handler.ReplaceHandler;
-import me.G4meM0ment.ReNature.Listener.BListener;
 
-public class ReNature {
+public class Junkie {
 
-	private ReplaceHandler rh;
 	private RPGEssentials plugin;
-	private BListener blistener;
+	private PListener plistener;
 	
 	private File configFile;
 	private FileConfiguration config = null;
 	
-	private String logTit = "ReNature: ";
+	private String logTit = "Junkie: ";
 	private String dir;
-	private boolean isDisabling = false;
-	
-	public ReNature(RPGEssentials plugin) {
+
+	public Junkie(RPGEssentials plugin) {
 		this.plugin = plugin;
-		rh = new ReplaceHandler(plugin);
-		blistener = new BListener(plugin);
-		plugin.getServer().getPluginManager().registerEvents(blistener, plugin);
+		plistener = new PListener(plugin);
 		
-		dir = plugin.getDir()+"/ReNature";
+		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
+		
+		dir = plugin.getDir()+"/Junkie";
 		
 		configFile = new File(dir+"/config.yml");
 	}
-	public ReNature() {
-		rh = new ReplaceHandler();
+	public Junkie() {
+
 	}
-	
+
 	public boolean onEnable() {
 		//creating config or loading
 		reloadConfig();
 		saveConfig();
 		
-		//starting the recreating process
-		rh.start();
 		return true;
 	}
-	
+
 	public boolean onDisable() {
-		isDisabling = true;
+		//saving config
 		saveConfig();
-		
-		rh.workList();
-		plugin.getLogger().info("Nature recovered completely");
-		isDisabling = false;
+		plugin.getLogger().info(logTit+"Config saved");
 		return true;
 	}
 	
@@ -94,8 +86,5 @@ public class ReNature {
 	    }
 	}
 	
-	public boolean isDisabling() {
-		return isDisabling;
-	}
-	
+
 }
