@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.ReNature.ReNature;
@@ -47,7 +46,6 @@ public class ReplaceHandler {
 				while(true) {
 					if(blocks.size() > 0)
 						check(0);
-					plugin.getLogger().info("checked!");
 					try{
 						Thread.sleep(millis);
 					}catch(InterruptedException e) {

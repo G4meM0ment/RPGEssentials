@@ -43,9 +43,8 @@ public class PListener implements Listener {
 			else
 				p.sendMessage("Oger stinkt nach Drogen... du jetzt auch!");
 			
-			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 1));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 1));
 		}
-
 	}
 
 

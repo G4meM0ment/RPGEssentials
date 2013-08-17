@@ -26,16 +26,12 @@ public class BListener implements Listener{
 		Block b = event.getBlock();
 		NBlock nb = new NBlock(b);
 		rh.addBlock(nb);
-		
-		plugin.getLogger().info("Registered block event!");
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onBlockDestroy(BlockBreakEvent event) {
+	public void onBlockBreak(BlockBreakEvent event) {
 		Block b = event.getBlock();
 		NBlock nb = new NBlock(b);
 		rh.addBlock(nb);
-		
-		plugin.getLogger().info("Registered block event!");
 	}
 }

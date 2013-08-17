@@ -6,8 +6,8 @@
 
 
 Version: 0.00.001
-    + ReNatur
-    + Junkie
+    + ReNatur sub-plugin
+    + Junkie sub-plugin
     * various alpha bugs 
-    ! ReNatur contains bugs
-    !Junkie not ready yet
+    ! ReNatur contains major bugs
+    ! Junkie isn't ready to be used
