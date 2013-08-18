@@ -10,7 +10,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.G4meM0ment.RPGEssentials.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.ReNature.Handler.ReplaceHandler;
 import me.G4meM0ment.ReNature.Listener.BListener;
 
@@ -20,12 +20,12 @@ public class ReNature {
 	private RPGEssentials plugin;
 	private BListener blistener;
 	
-	private File configFile;
-	private FileConfiguration config = null;
+	private static File configFile;
+	private static FileConfiguration config = null;
 	
-	private String logTit = "ReNature: ";
-	private String dir;
-	private boolean isDisabling = false;
+	private static String logTit = "ReNature: ";
+	private static String dir;
+	private static boolean isDisabling;
 	
 	public ReNature(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -34,7 +34,6 @@ public class ReNature {
 		plugin.getServer().getPluginManager().registerEvents(blistener, plugin);
 		
 		dir = plugin.getDir()+"/ReNature";
-		
 		configFile = new File(dir+"/config.yml");
 	}
 	public ReNature() {
@@ -42,6 +41,11 @@ public class ReNature {
 	}
 	
 	public boolean onEnable() {
+		if(!plugin.getConfig().getBoolean("ReNatureEnabled"))
+			return true;
+		
+		isDisabling = false;
+		
 		//creating config or loading
 		reloadConfig();
 		saveConfig();
@@ -56,25 +60,24 @@ public class ReNature {
 		saveConfig();
 		
 		rh.workList();
-		plugin.getLogger().info("Nature recovered completely");
-		isDisabling = false;
 		return true;
 	}
 	
 	public void reloadConfig() {
 	    if (configFile == null) {
-	    	configFile = new File(plugin.getDataFolder(), dir+"/config.yml");
-			plugin.getLogger().info(logTit+"Created Config.");
+	    	configFile = new File(plugin.getDataFolder(),dir+"config.yml");
+			plugin.getLogger().info(logTit+"Created config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
-	    InputStream defConfigStream = plugin.getResource("defRNConf");
-	    if (defConfigStream != null) {
+	    InputStream defConfigStream = plugin.getResource("defRNConf.yml");
+	    if(defConfigStream != null) {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
+	        config.options().copyDefaults(true);
 	    }
-		plugin.getLogger().info(logTit+"Config Loaded.");
+		plugin.getLogger().info(logTit+"Config loaded.");
 	}
 	public FileConfiguration getConfig() {
 	    if (config == null) {
@@ -98,4 +101,7 @@ public class ReNature {
 		return isDisabling;
 	}
 	
+	public String getLogTit() {
+		return logTit;
+	}
 }

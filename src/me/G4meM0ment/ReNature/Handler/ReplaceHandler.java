@@ -3,11 +3,10 @@ package me.G4meM0ment.ReNature.Handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import me.G4meM0ment.RPGEssentials.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.ReNature.ReNature;
 import me.G4meM0ment.ReNature.CustomTypes.NBlock;
 
@@ -17,13 +16,12 @@ public class ReplaceHandler {
 	private ReNature reNature;
 	
 	private static List<NBlock> blocks = new ArrayList<NBlock>();
-	private int millis = 10000; //60000 normal
-	private int recoverMillis = 25000; //250000 normal
+	private int millis = 50000;
+	private int recoverMillis = 250000;
 	
 	public ReplaceHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 		reNature = new ReNature();
-		//TODO get millis from config
 	}
 	public ReplaceHandler() {
 		
@@ -38,8 +36,14 @@ public class ReplaceHandler {
 	public void removeAll() {
 		blocks.removeAll(blocks);
 	}
+	public List<NBlock> getBlockList() {
+		return blocks;
+	}
 	
 	public void start() {
+		recoverMillis = reNature.getConfig().getInt("recoverTime");
+		millis = (recoverMillis*20)/100;
+		
 		new Thread() {
 			@Override
 			public void run() {
@@ -70,33 +74,47 @@ public class ReplaceHandler {
 		if(!checkPlayers(b.getBlock().getWorld().getPlayers(), b.getBlock())) {
 
 			Block block = b.getBlock();			
-			Block griefed = block.getLocation().getBlock();			
+			Block griefed = block.getLocation().getBlock();	
 			
-			if(b.getMaterial() == Material.AIR)
-				griefed.breakNaturally();
-			else
-				griefed.setType(b.getMaterial());
+			griefed.setTypeId(b.getMaterial());
+			griefed.setData(b.getData(), false);
+			
+			if(griefed.getTypeId() != b.getMaterial() ||griefed.getData() != b.getData())
+				addBlock(b);
 			removeBlock(b);
-			plugin.getLogger().info("Nature is recovering!");
 		} else {
-			plugin.getLogger().info("Won't spawn while you're watching!");
 			return;
 		}
 	}
 	
-	public void workList() {
-		for(int i = 0; i < blocks.size(); i++) {
-			renew(blocks.get(i));
+	private void forceRenew(NBlock b) {
+		if(b == null) return;
+		
+		Block block = b.getBlock();			
+		Block griefed = block.getLocation().getBlock();	
+			
+		griefed.setTypeId(b.getMaterial());
+		griefed.setData(b.getData(), false);
+			
+		removeBlock(b);
+		if(griefed.getTypeId() != b.getMaterial() || griefed.getData() != b.getData()) {
+			addBlock(b);
 		}
+	}
+	
+	public void workList() {
+		for(NBlock b : new ArrayList<NBlock>(getBlockList())) {
+			forceRenew(b);
+		}
+		plugin.getLogger().info(reNature.getLogTit()+"Nature recovered completely");
 	}
 	
 	private boolean checkPlayers(List<Player> players, Block b) {
 		if(reNature.isDisabling())
 			return false;
 		//TODO check if online players listed...
-		int dist = 50;
+		int dist = reNature.getConfig().getInt("playerRespawnDistance");
 		for(Player p : players) {
-			//TODO read disgtance from config
 			if(p.getLocation().distance(b.getLocation()) > dist) {
 				continue;
 			}

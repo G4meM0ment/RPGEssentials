@@ -1,17 +1,21 @@
-package me.G4meM0ment.RPGEssentials.RPGEssentials;
+package me.G4meM0ment.RPGEssentials;
 
 import me.G4meM0ment.Junkie.Junkie;
 import me.G4meM0ment.ReNature.ReNature;
 
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class RPGEssentials extends JavaPlugin{
 
 	private ReNature reNature;
 	private Junkie junkie;
+	private WorldGuardPlugin wg;
 	
-	private String dir				=	"plugins/RPGEssentials";
+	private String dir = "plugins/RPGEssentials";
 	
 	@Override
 	public void onEnable() {
@@ -31,18 +35,21 @@ public class RPGEssentials extends JavaPlugin{
 		
 		//Initializing ReNature and debugging
 		reNature = new ReNature(this);
-		if(reNature.onEnable() && getConfig().getBoolean("ReNatureEnabled"))
+		boolean reNatureEnabled = reNature.onEnable();
+
+		if(reNatureEnabled && getConfig().getBoolean("ReNatureEnabled"))
 			getLogger().info("ReNature enabled!");
-		else if (reNature.onEnable())
+		else if (reNatureEnabled)
 			getLogger().info("ReNature found, but disabled in config!");
 		else
 			getLogger().info("ReNature couldn't be enabled!");
 		
 		//Initializing Junkie and debugging
 		junkie = new Junkie(this);
-		if(junkie.onEnable() && getConfig().getBoolean("JunkieEnabled"))
+		boolean junkieEnabled = junkie.onEnable();
+		if(junkieEnabled && getConfig().getBoolean("JunkieEnabled"))
 			getLogger().info("Junkie enabled!");
-		else if (junkie.onEnable())
+		else if (junkieEnabled)
 			getLogger().info("Junkie found, but disabled in config!");
 		else
 			getLogger().info("Junkie couldn't be enabled!");
@@ -74,4 +81,18 @@ public class RPGEssentials extends JavaPlugin{
 	public String getDir() {
 		return dir;
 	}
-}
+	
+	private WorldGuardPlugin initWorldGuard() {
+	    Plugin wg = getServer().getPluginManager().getPlugin("WorldGuard");
+	 
+	    // WorldGuard may not be loaded
+	    if (wg == null || !(wg instanceof WorldGuardPlugin)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+	 
+	    return (WorldGuardPlugin) wg;
+	}
+	public WorldGuardPlugin getWorldGuard() {
+		return wg;
+	}
+ }

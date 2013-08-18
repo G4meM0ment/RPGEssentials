@@ -7,7 +7,14 @@
 
 Version: 0.00.001
     + ReNatur sub-plugin
+    	+ RN config
+    		+ list for denied blocks
+    		+ list for denied relatives
+    		+ list for relatives to track
+        * recovering whole nature on disable
     + Junkie sub-plugin
-    * various alpha bugs 
-    ! ReNatur contains major bugs
+    * various alpha bugs
+    * config won't disable sub-plugins
+    ! ReNatur isn't able to get back some block types such as doors, paintings etc.
     ! Junkie isn't ready to be used
+    

@@ -11,18 +11,18 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.G4meM0ment.Junkie.Listener.PListener;
-import me.G4meM0ment.RPGEssentials.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 public class Junkie {
 
 	private RPGEssentials plugin;
 	private PListener plistener;
 	
-	private File configFile;
-	private FileConfiguration config = null;
+	private static File configFile;
+	private static FileConfiguration config = null;
 	
-	private String logTit = "Junkie: ";
-	private String dir;
+	private static String logTit = "Junkie: ";
+	private static String dir;
 
 	public Junkie(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -39,6 +39,9 @@ public class Junkie {
 	}
 
 	public boolean onEnable() {
+		if(!plugin.getConfig().getBoolean("JunkieEnabled"))
+			return true;
+		
 		//creating config or loading
 		reloadConfig();
 		saveConfig();
@@ -55,16 +58,17 @@ public class Junkie {
 	
 	public void reloadConfig() {
 	    if (configFile == null) {
-	    	configFile = new File(plugin.getDataFolder(), dir+"/config.yml");
+	    	configFile = new File(plugin.getDataFolder()+dir, "/config.yml");
 			plugin.getLogger().info(logTit+"Created Config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
-	    InputStream defConfigStream = plugin.getResource("defRNConf");
+	    InputStream defConfigStream = plugin.getResource("defJunkConf.yml");
 	    if (defConfigStream != null) {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
+	        config.options().copyDefaults(true);
 	    }
 		plugin.getLogger().info(logTit+"Config Loaded.");
 	}

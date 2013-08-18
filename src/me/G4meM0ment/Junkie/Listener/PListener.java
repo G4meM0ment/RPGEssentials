@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.G4meM0ment.Junkie.Junkie;
-import me.G4meM0ment.RPGEssentials.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
