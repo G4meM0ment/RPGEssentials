@@ -46,6 +46,4 @@ public class PListener implements Listener {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 600, 1));
 		}
 	}
-
-
 }

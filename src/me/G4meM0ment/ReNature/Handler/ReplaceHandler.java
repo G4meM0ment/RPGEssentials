@@ -3,6 +3,7 @@ package me.G4meM0ment.ReNature.Handler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -24,7 +25,6 @@ public class ReplaceHandler {
 		reNature = new ReNature();
 	}
 	public ReplaceHandler() {
-		
 	}
 	
 	public void addBlock(NBlock b) {
@@ -73,8 +73,15 @@ public class ReplaceHandler {
 		if(b == null) return;
 		if(!checkPlayers(b.getBlock().getWorld().getPlayers(), b.getBlock())) {
 
-			Block block = b.getBlock();			
-			Block griefed = block.getLocation().getBlock();	
+			Block block = b.getBlock();
+			Block griefed;
+			try {
+			griefed = block.getLocation().getBlock();
+			} catch(IllegalStateException e) {
+				e.printStackTrace();
+				griefed = block;
+				
+			}
 			
 			griefed.setTypeId(b.getMaterial());
 			griefed.setData(b.getData(), false);
@@ -124,5 +131,12 @@ public class ReplaceHandler {
 		return false;
 	}
 	
-
+	public boolean contains(Location l) {
+		List<NBlock> blocks = getBlockList();
+		for(NBlock b : blocks) {
+			if(b.getBlock().getLocation() == l)
+				return true;
+		}
+		return false;
+	}
 }

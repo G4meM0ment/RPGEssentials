@@ -11,6 +11,9 @@ Version: 0.00.001
     		+ list for denied blocks
     		+ list for denied relatives
     		+ list for relatives to track
+    	+ dependencies
+    		+ Towny support
+    		+ Factions support
         * recovering whole nature on disable
     + Junkie sub-plugin
     * various alpha bugs

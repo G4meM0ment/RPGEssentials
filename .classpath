@@ -5,5 +5,8 @@
 	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/craftbukkit-1.6.2-R0.2-20130814.074349-13.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/worldguard-5.8.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/Heroes.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/Factions.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/mcore.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/Towny.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

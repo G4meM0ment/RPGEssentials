@@ -1,25 +1,39 @@
 package me.G4meM0ment.RPGEssentials;
 
 import me.G4meM0ment.Junkie.Junkie;
+import me.G4meM0ment.Orbia.Orbia;
 import me.G4meM0ment.ReNature.ReNature;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.massivecraft.factions.Factions;
+import com.massivecraft.mcore.MCore;
+import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class RPGEssentials extends JavaPlugin{
 
 	private ReNature reNature;
 	private Junkie junkie;
+	private Orbia orbia;
+	private CommandHandler ch;
+	
 	private WorldGuardPlugin wg;
+	private MCore mcore;
+	private Factions factions;
+	private Towny towny;
 	
 	private String dir = "plugins/RPGEssentials";
 	
 	@Override
 	public void onEnable() {
 		PluginDescriptionFile pdf = getDescription();
+		ch = new CommandHandler(this);
 		
 		//Enabling config
 		try {
@@ -33,7 +47,7 @@ public class RPGEssentials extends JavaPlugin{
 		//Initialize messages
 		getLogger().info("Initializing sub-plugins:");
 		
-		//Initializing ReNature and debugging
+//################ Initializing ReNature and debugging ################
 		reNature = new ReNature(this);
 		boolean reNatureEnabled = reNature.onEnable();
 
@@ -44,7 +58,7 @@ public class RPGEssentials extends JavaPlugin{
 		else
 			getLogger().info("ReNature couldn't be enabled!");
 		
-		//Initializing Junkie and debugging
+//################ Initializing Junkie and debugging ################
 		junkie = new Junkie(this);
 		boolean junkieEnabled = junkie.onEnable();
 		if(junkieEnabled && getConfig().getBoolean("JunkieEnabled"))
@@ -54,11 +68,27 @@ public class RPGEssentials extends JavaPlugin{
 		else
 			getLogger().info("Junkie couldn't be enabled!");
 		
+//################ Initializing Orbia and debugging ################
+		orbia = new Orbia(this);
+		boolean orbiaEnabled = orbia.onEnable();
+		if(orbiaEnabled && getConfig().getBoolean("OrbiaEnabled"))
+			getLogger().info("Orbia enabled!");
+		else if (orbiaEnabled)
+			getLogger().info("Orbia found, but disabled in config!");
+		else
+			getLogger().info("Orbia couldn't be enabled!");
+				
 		//Finished initializing plugin enabled
 		getLogger().info("Initialization done!");
-		
+			
 		//Plguin enabled
 		getLogger().info("Enabled version "+pdf.getVersion());
+		
+//################ Init APIs ###################
+		wg = initWorldGuard();
+		mcore = initMCore();
+		factions = initFactions();
+		towny = initTowny();
 	}
 	
 	@Override
@@ -76,6 +106,9 @@ public class RPGEssentials extends JavaPlugin{
 			
 		if(junkie.onDisable())
 			getLogger().info("Junkie disabled!");
+		
+		if(orbia.onDisable())
+			getLogger().info("Orbia disabled!");
 	}
 	
 	public String getDir() {
@@ -83,16 +116,69 @@ public class RPGEssentials extends JavaPlugin{
 	}
 	
 	private WorldGuardPlugin initWorldGuard() {
-	    Plugin wg = getServer().getPluginManager().getPlugin("WorldGuard");
+	    Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
 	 
 	    // WorldGuard may not be loaded
-	    if (wg == null || !(wg instanceof WorldGuardPlugin)) {
+	    if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
 	        return null; // Maybe you want throw an exception instead
 	    }
-	 
-	    return (WorldGuardPlugin) wg;
+		getLogger().info("WorldGuard found enabled features");
+	    return (WorldGuardPlugin) plugin;
 	}
 	public WorldGuardPlugin getWorldGuard() {
 		return wg;
+	}
+	
+	private MCore initMCore() {
+	    Plugin plugin = getServer().getPluginManager().getPlugin("mcore");
+	 
+	    if (plugin == null || !(plugin instanceof MCore)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+		getLogger().info("MCore found enabled features");
+	    return (MCore) plugin;
+	}
+	public MCore getMCore() {
+		return mcore;
+	}
+	
+	private Factions initFactions() {
+	    Plugin plugin = getServer().getPluginManager().getPlugin("Factions");
+	 
+	    if (plugin == null || !(plugin instanceof Factions)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+		getLogger().info("Factions found enabled features");
+	    return (Factions) plugin;
+	}
+	public Factions getFactions() {
+		return factions;
+	}
+	
+	private Towny initTowny() {
+	    Plugin plugin = getServer().getPluginManager().getPlugin("Towny");
+	 
+	    if (plugin == null || !(plugin instanceof Towny)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+		getLogger().info("Towny found enabled features");
+	    return (Towny) plugin;
+	}
+	public Towny getTowny() {
+		return towny;
+	}
+	
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if(ch.onCommand(sender, command, label, args))
+			return true;
+		else
+			return false;
+	}
+	
+	public void reloadRPGEssentials() {
+		reloadConfig();
+		reNature.reloadConfig();
+		junkie.reloadConfig();
+		orbia.reloadConfig();
 	}
  }

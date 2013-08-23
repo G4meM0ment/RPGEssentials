@@ -6,6 +6,7 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.ReNature.ReNature;
 import me.G4meM0ment.ReNature.CustomTypes.NBlock;
 import me.G4meM0ment.ReNature.Handler.ReplaceHandler;
+import me.G4meM0ment.ReNature.OtherPlugins.ReFaction;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -20,16 +21,24 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 
+import com.massivecraft.factions.Factions;
+import com.massivecraft.factions.entity.BoardColls;
+import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.mcore.MCore;
+import com.massivecraft.mcore.ps.PS;
+
 public class BListener implements Listener{
 	
 	private RPGEssentials plugin;
 	private ReplaceHandler rh;
 	private ReNature reNature;
+	private ReFaction reFaction;
 	
 	public BListener(RPGEssentials plugin) {
 		this.plugin = plugin;
 		rh = new ReplaceHandler();
 		reNature = new ReNature();
+		reFaction = new ReFaction(plugin);
 	}
 	
 	//TODO ##### CLEANUP CODE ####### SPLIT UP LISTENERS
@@ -38,7 +47,10 @@ public class BListener implements Listener{
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
-		if(contains(event.getBlock().getLocation())) return;
+		if(reFaction.isFaction(event.getBlock().getLocation()))
+			return;
+		
+		if(rh.contains(event.getBlock().getLocation())) return;
 		
 		final BlockState bs = event.getBlockReplacedState();
 		rh.addBlock(new NBlock(event.getBlock(), bs.getTypeId(), bs.getBlock().getData()));
@@ -48,7 +60,9 @@ public class BListener implements Listener{
 	public void onBlockBreak(BlockBreakEvent event) {
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
-		
+		if(reFaction.isFaction(event.getBlock().getLocation()))
+			return;
+
 		final Block b = event.getBlock();
 		
 		if(reNature.getConfig().getIntegerList("deniedIDs").contains(b.getTypeId()))
@@ -60,7 +74,7 @@ public class BListener implements Listener{
 			return;
 		}
 		
-		if(contains(event.getBlock().getLocation())) return;
+		if(rh.contains(event.getBlock().getLocation())) return;
 		rh.addBlock(nb);
 		
 		//TODO read percent from config
@@ -74,6 +88,9 @@ public class BListener implements Listener{
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onBlockSpread(BlockSpreadEvent event) {
+		if(reFaction.isFaction(event.getBlock().getLocation()))
+			return;
+		
 		int i = 106;
 		if(event.getBlock().getTypeId() != i)
 			return;
@@ -91,13 +108,15 @@ public class BListener implements Listener{
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onPaintingBreak(HangingBreakEvent event) {
+		if(reFaction.isFaction(event.getEntity().getLocation()))
+			return;
+		
 		if(reNature.getConfig().getIntegerList("deniedIDs").contains(event.getEntity().getType().getTypeId()))
 			event.setCancelled(true);
 	}
-
+	
 	private boolean checkRelatives(NBlock nb) {
 		if(nb == null) return true;
-		
 		
 		Location loc = nb.getBlock().getLocation();
 		Block r = new Location(loc.getWorld(), loc.getX()+1, loc.getY(), loc.getZ()).getBlock();
@@ -147,14 +166,5 @@ public class BListener implements Listener{
 			rh.addBlock(new NBlock(a, a.getTypeId(), a.getData()));
 		}
 		return true;
-	}
-	
-	private boolean contains(Location l) {
-		List<NBlock> blocks = rh.getBlockList();
-		for(NBlock b : blocks) {
-			if(b.getBlock().getLocation() == l)
-				return true;
-		}
-		return false;
 	}
 }
