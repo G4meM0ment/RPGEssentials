@@ -16,6 +16,12 @@ Version: 0.00.001
     		+ Factions support
         * recovering whole nature on disable
     + Junkie sub-plugin
+    + Orbia specific sub-plugin
+    	+ faction support (not needed anymore)
+    + GSkills
+    	+ SkillEmpower
+    	+ SkillFear
+    	+ SkillGroundpound
     * various alpha bugs
     * config won't disable sub-plugins
     ! ReNatur isn't able to get back some block types such as doors, paintings etc.
