@@ -5,3 +5,11 @@ Author: [G4meM0ment, Eatingyou]
 depend: [Vault]
 softdepend: [Spout, Jail, WorldGuard, Factions, MCore]
 commands:
+    ge:
+        aliases: [ge]
+        description: command
+        usage: /<command> [reload]
+    rpgitem:
+        aliases: [rpgitem]
+        description: items
+        usage: /<command> [give] [item]

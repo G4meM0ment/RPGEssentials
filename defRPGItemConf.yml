@@ -1,0 +1,3 @@
+ItemTooltipGeneralInfoFormat: '%hand        %type'
+ItemTooltipDamageFormat: 'Damage: %dmgValue'
+ItemTooltipPriceFormat: 'Price: %priceValue Aurei'

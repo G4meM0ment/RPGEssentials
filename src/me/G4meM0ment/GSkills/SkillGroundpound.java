@@ -51,7 +51,6 @@ public class SkillGroundpound extends ActiveSkill {
         return node;
     }
     
-    @SuppressWarnings("deprecation")
 	@Override
     public SkillResult use(Hero hero, String args[]) {
     	Player p = hero.getPlayer();
@@ -59,7 +58,7 @@ public class SkillGroundpound extends ActiveSkill {
     	int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS.node(), 10, false);
         List<Entity> entites = p.getNearbyEntities(radius, radius, radius);
         int counter = SkillConfigManager.getUseSetting(hero, this, "targets", 6, false);
-        int damage = (int) ((SkillConfigManager.getUseSetting(hero, this, "BaseDamage", 6, false)) +
+        double damage = ((SkillConfigManager.getUseSetting(hero, this, "BaseDamage", 6, false)) +
     			((SkillConfigManager.getUseSetting(hero, this, "LevelMultiplier", 0.1, false)) * hero.getSkillLevel(this)));
         
         hero.setMana(hero.getMana() - (SkillConfigManager.getUseSetting(hero, this, "mana", 12, false)));

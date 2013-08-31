@@ -2,11 +2,11 @@ package me.G4meM0ment.RPGEssentials;
 
 import me.G4meM0ment.Junkie.Junkie;
 import me.G4meM0ment.Orbia.Orbia;
+import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.ReNature.ReNature;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +21,8 @@ public class RPGEssentials extends JavaPlugin{
 	private ReNature reNature;
 	private Junkie junkie;
 	private Orbia orbia;
+	private RPGItem rpgItem;	
+	
 	private CommandHandler ch;
 	
 	private WorldGuardPlugin wg;
@@ -46,6 +48,17 @@ public class RPGEssentials extends JavaPlugin{
 		
 		//Initialize messages
 		getLogger().info("Initializing sub-plugins:");
+		
+//################ Initializing RPGItem and debugging ################
+		rpgItem = new RPGItem(this);
+		boolean rpgItemEnabled = rpgItem.onEnable();
+
+		if(rpgItemEnabled && getConfig().getBoolean("RPGItemEnabled"))
+			getLogger().info("RPGItem enabled!");
+		else if (rpgItemEnabled)
+			getLogger().info("RPGItem found, but disabled in config!");
+		else
+			getLogger().info("RPGItem couldn't be enabled!");
 		
 //################ Initializing ReNature and debugging ################
 		reNature = new ReNature(this);

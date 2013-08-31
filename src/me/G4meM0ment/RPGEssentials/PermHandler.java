@@ -9,6 +9,9 @@ public class PermHandler {
 	public PermHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 	}
+	public PermHandler() {
+		
+	}
 
 	public boolean checkReloadPerms(Player p) {
 		if(plugin.getConfig().getBoolean("UsePermissions")) {
