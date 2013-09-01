@@ -14,6 +14,7 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
 import me.G4meM0ment.RPGItem.DataStorage.ItemData;
+import me.G4meM0ment.RPGItem.Handler.ListHandler;
 
 public class CustomItemHandler {
 	
@@ -21,14 +22,17 @@ public class CustomItemHandler {
 	private RPGItem rpgItem;
 	private ItemConfig itemConfig;
 	private ItemData itemData;
+	private ListHandler lh;
 	
 	public CustomItemHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 		rpgItem = new RPGItem();
 		itemConfig = new ItemConfig();
 		itemData = new ItemData();
+		lh = new ListHandler();
 	}
 	public CustomItemHandler() {
+		lh = new ListHandler();
 		
 	}
 	
@@ -69,4 +73,19 @@ public class CustomItemHandler {
 		return counter;
 	}
 
+	public void updateItem(ItemStack item) {
+		CustomItem customItem = lh.getCustomItem(ChatColor.stripColor(item.getItemMeta().getDisplayName()), Integer.parseInt(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)));
+		ItemMeta meta = item.getItemMeta();
+		File data = itemData.getFile(customItem.getDispName());
+		File config = itemConfig.getFile(customItem.getDispName());
+		
+		//set the meta information & get id specific values
+		meta.setDisplayName(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase())+customItem.getDispName());
+		meta.setLore(getLore(customItem));
+		itemData.getConfigurationSection(data, Integer.toString(customItem.getId()), true).set("durability", itemConfig.getConfig(config).getInt("durability"));
+		customItem.setItem(item);
+		
+		item.setItemMeta(meta);
+		item.setTypeId(customItem.getSkinId());
+	}
 }
