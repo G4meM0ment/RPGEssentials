@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -71,6 +70,10 @@ public class ItemConfig {
 	}
 	
 	public void reloadConfig(File configFile) {
+		if (configFile == null) {
+	    	configFile = new File(dir+"/RPGItem.yml");
+			plugin.getLogger().info(logTit+"Created config.");
+	    }
 		FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
@@ -79,6 +82,12 @@ public class ItemConfig {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
+	        try {
+				config.save(configFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 		plugin.getLogger().info(logTit+configFile.getName()+" config loaded.");
 	}
@@ -86,6 +95,7 @@ public class ItemConfig {
 		FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 	    if (config == null) {
 	        reloadConfig(configFile);
+	        config = YamlConfiguration.loadConfiguration(configFile);
 	    }
 	    return config;
 	}
@@ -96,7 +106,7 @@ public class ItemConfig {
 	    }
 	    try {
 	        config.save(configFile);
-	        plugin.getLogger().info(logTit+configFile.getName()+" config saved");
+	        Logger.getLogger(JavaPlugin.class.getName()).info(logTit+configFile.getName()+" config saved");
 	    } catch (IOException ex) {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }

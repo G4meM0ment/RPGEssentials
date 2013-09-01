@@ -71,15 +71,11 @@ public class ItemData {
 		return file;
 	}
 	
-	public ConfigurationSection getConfigurationSection(File file, String path, boolean create) {
-		if(getDataFile(file) == null) file = getFile(file.getName().replace(".yml", ""));
-		if(getDataFile(file).getConfigurationSection(path) == null && create) {
-			createDefaultSection(file, path);
-		}
-		return getDataFile(file).getConfigurationSection(path);
-	}
-	
 	public void reloadDataFile(File configFile) {
+		if (configFile == null) {
+	    	configFile = new File(dir+"/RPGItem.yml");
+			plugin.getLogger().info(logTit+"Created data file.");
+	    }
 		FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
@@ -88,14 +84,21 @@ public class ItemData {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
+	        try {
+				config.save(configFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	    }
 		plugin.getLogger().info(logTit+configFile.getName()+" data file loaded.");
 	}
 	
 	public FileConfiguration getDataFile(File configFile) {
 		FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-	    if (config == null) {
+	    if(config == null) {
 	        reloadDataFile(configFile);
+	        config = YamlConfiguration.loadConfiguration(configFile);
 	    }
 	    return config;
 	}
@@ -106,15 +109,9 @@ public class ItemData {
 	    }
 	    try {
 	        config.save(configFile);
-	        plugin.getLogger().info(logTit+configFile.getName()+" data file saved");
+	        Logger.getLogger(JavaPlugin.class.getName()).info(logTit+configFile.getName()+" data file saved");
 	    } catch (IOException ex) {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save data file to " + configFile, ex);
 	    }
 	}
-	
-	private void createDefaultSection(File file, String path) {
-		ConfigurationSection section = getDataFile(file).createSection(path);
-		section.set("durability", 0);
-	}
-
 }

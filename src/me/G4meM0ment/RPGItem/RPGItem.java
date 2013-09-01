@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
 import me.G4meM0ment.RPGItem.DataStorage.ItemData;
+import me.G4meM0ment.RPGItem.Listener.PListener;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,6 +20,7 @@ public class RPGItem {
 	private RPGEssentials plugin;
 	private ItemConfig itemConfig;
 	private ItemData itemData;
+	private PListener plistener;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -30,9 +32,11 @@ public class RPGItem {
 	
 	public RPGItem(RPGEssentials plugin) {
 		this.plugin = plugin;
-		dir = plugin.getDir()+"/RPGItem";
 		itemConfig = new ItemConfig(plugin);
 		itemData = new ItemData(plugin);
+		plistener = new PListener(plugin);
+		dir = plugin.getDir()+"/RPGItem";
+		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
 	}
 	public RPGItem() {
 	}
@@ -61,7 +65,7 @@ public class RPGItem {
 	
 	public void reloadConfig() {
 	    if (configFile == null) {
-	    	configFile = new File(plugin.getDataFolder()+dir+"/config.yml");
+	    	configFile = new File(dir+"/config.yml");
 			plugin.getLogger().info(logTit+"Created config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
@@ -96,5 +100,4 @@ public class RPGItem {
 	public String getLogTit() {
 		return logTit;
 	}
-
 }

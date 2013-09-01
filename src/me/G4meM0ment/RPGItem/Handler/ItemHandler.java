@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
@@ -38,7 +39,7 @@ public class ItemHandler {
 		if(!item.hasItemMeta()) return false;
 		if(item.getItemMeta().getDisplayName() == null) return false;
 		
-		int id = Integer.parseInt(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1));
+		int id = Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)));
 		if(id > 0) 
 			return true;
 		

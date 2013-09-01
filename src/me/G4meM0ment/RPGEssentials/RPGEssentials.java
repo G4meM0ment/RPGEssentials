@@ -193,5 +193,6 @@ public class RPGEssentials extends JavaPlugin{
 		reNature.reloadConfig();
 		junkie.reloadConfig();
 		orbia.reloadConfig();
+		rpgItem.reloadConfig();
 	}
  }

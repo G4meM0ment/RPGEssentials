@@ -42,21 +42,22 @@ public class InventoryHandler {
 		for(ItemStack item : inv.getContents()) {
 			if(itemHandler.isCustomItem(item)) {
 				ItemMeta meta = item.getItemMeta();
+				String name = meta.getDisplayName();
 				List<String> lore = meta.getLore();
 				int size = lore.size();
-				List<CustomItem> list = ListHandler.getCustomItemTypeList(item.getItemMeta().getDisplayName());
+				List<CustomItem> list = ListHandler.getCustomItemTypeList(ChatColor.stripColor(name));
 				
 				if(list == null) {
-					lh.initializeList(item.getItemMeta().getDisplayName());
-					list = ListHandler.getCustomItemTypeList(item.getItemMeta().getDisplayName());
+					lh.initializeList(ChatColor.stripColor(name));
+					list = ListHandler.getCustomItemTypeList(ChatColor.stripColor(name));
 				}
 				if(!lh.containsCustomItem(list, item)) {
-					FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(meta.getDisplayName()));
-					FileConfiguration data = itemData.getDataFile(itemData.getFile(meta.getDisplayName()));
+					FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
+					FileConfiguration data = itemData.getDataFile(itemData.getFile(name));
 					int id = Integer.valueOf(lore.get(size-1));
 					
 					ListHandler.addCustomItemToList(new CustomItem(item, ChatColor.stripColor(meta.getDisplayName()), id, config.getInt("skinId"), config.getInt("damage"), 
-						data.getConfigurationSection(Integer.toString(id)).getInt("durability"), lore.get(size-4), lore.get(size-3), lore.get(size-2), 
+						data.getConfigurationSection(Integer.toString(id)).getInt("durability"), lore.get(size-4), Integer.valueOf(ChatColor.stripColor(lore.get(size-3))), lore.get(size-2), 
 						Quality.valueOf(config.getString("quality")), config.getString("type"), config.getString("hand")), list);
 				}
 			}

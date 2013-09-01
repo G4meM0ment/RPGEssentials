@@ -4,12 +4,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class CustomItem{
 	
-	private int id, skinId, dmgValue, durability, defSkinId = 267, defDmgValue = 10, defDurability = 1000;
-	private String dispName, desc, price, lore, hand, type, defDesc = "An Item", defPrice = "Some Money", defLore = "No information are known about that item", defHand = "One-handed", defType = "sword";
+	private int id, skinId, dmgValue, durability, price, defSkinId = 267, defDmgValue = 10, defDurability = 1000, defPrice = 0;
+	private String dispName, desc, lore, hand, type, defDesc = "An Item", defLore = "No information are known about that item", defHand = "One-handed", defType = "sword";
 	private Quality quality, defQuality = Quality.COMMON;
 	private ItemStack item;
 	
-	public CustomItem(ItemStack item, String dispName, int id, int skinId, int dmgValue, int durability, String desc, String price, String lore, Quality quality, String type, String hand) {
+	public CustomItem(ItemStack item, String dispName, int id, int skinId, int dmgValue, int durability, String desc, int price, String lore, Quality quality, String type, String hand) {
 		this.item = item;
 		this.dispName = dispName;
 		this.id = id;
@@ -104,13 +104,13 @@ public class CustomItem{
 	}
 	
 	//Price getter/setter
-	public String getPrice() {
+	public int getPrice() {
 		return price;
 	}
-	public void setPrice(String price) {
+	public void setPrice(int price) {
 		this.price = price;
 	}
-	public String getDefPrice() {
+	public int getDefPrice() {
 		return defPrice;
 	}
 	

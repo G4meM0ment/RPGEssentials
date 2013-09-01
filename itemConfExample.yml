@@ -1,9 +1,9 @@
 durability: 1000
 skinId: 267
 damage: 10
-price: 50 A
-description: A normal iron sword
-lore: No information are known about that sword
-hand: One-Handed
-type: sword
-quality: common
+price: 50
+description: '&fA normal iron sword'
+lore: '&o&6No information are known about that sword'
+hand: '&fOne-Handed'
+type: '&fsword'
+quality: 'common'
