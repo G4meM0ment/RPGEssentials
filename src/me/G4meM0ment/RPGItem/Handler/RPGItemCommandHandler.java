@@ -30,8 +30,8 @@ public class RPGItemCommandHandler {
 		Player player = (Player) sender;
 		if(command.getName().equalsIgnoreCase("rpgitem") && args.length > 0 && args[0].equals("give") && !args[1].isEmpty() && sender instanceof Player) {
 			FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(args[1]));
-			customItemHandler.spawnCustomItem(player, new CustomItem(null, args[1], customItemHandler.getFreeId(args[1]), config.getInt("skinId"), config.getInt("damage"), config.getInt("durability"), 
-					config.getString("description"), config.getInt("price"), config.getString("lore"), Quality.valueOf(config.getString("quality").toUpperCase()),
+			customItemHandler.spawnCustomItem(player, new CustomItem(null, args[1], customItemHandler.getFreeId(args[1]), config.getInt("skinId"), config.getInt("damage"), config.getInt("damageMax"),
+					config.getInt("durability"), config.getString("description"), config.getInt("price"), config.getString("lore"), Quality.valueOf(config.getString("quality").toUpperCase()),
 					config.getString("type"), config.getString("hand")));
 			player.sendMessage("Item given!");
 			return true;

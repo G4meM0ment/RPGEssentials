@@ -1,8 +1,8 @@
 package me.G4meM0ment.RPGItem.Listener;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
-import me.G4meM0ment.RPGItem.Handler.InventoryHandler;
 import me.G4meM0ment.RPGItem.Handler.CustomItem.CustomItemHandler;
+import me.G4meM0ment.RPGItem.Handler.EventHandler.InventoryHandler;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,6 +39,6 @@ public class PListener implements Listener{
 		if(p == null || i == null) return;
 		
 		invHandler.processInventory(i);
-	}	
+	}
 
 }

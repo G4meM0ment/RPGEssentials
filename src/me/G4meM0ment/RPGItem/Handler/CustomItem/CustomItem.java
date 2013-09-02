@@ -4,17 +4,19 @@ import org.bukkit.inventory.ItemStack;
 
 public class CustomItem{
 	
-	private int id, skinId, dmgValue, durability, price, defSkinId = 267, defDmgValue = 10, defDurability = 1000, defPrice = 0;
+	private int id, skinId, dmgValue, dmgValueMax, durability, price, defSkinId = 267, defDmgValue = 10, defDurability = 1000, defPrice = 0, defDmgValueMax;
 	private String dispName, desc, lore, hand, type, defDesc = "An Item", defLore = "No information are known about that item", defHand = "One-handed", defType = "sword";
 	private Quality quality, defQuality = Quality.COMMON;
 	private ItemStack item;
 	
-	public CustomItem(ItemStack item, String dispName, int id, int skinId, int dmgValue, int durability, String desc, int price, String lore, Quality quality, String type, String hand) {
+	public CustomItem(ItemStack item, String dispName, int id, int skinId, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand) {
 		this.item = item;
 		this.dispName = dispName;
 		this.id = id;
 		this.skinId = skinId;
 		this.dmgValue = dmgValue;
+		defDmgValueMax = dmgValue;
+		this.dmgValueMax = dmgValueMax;
 		this.durability = durability;
 		this.desc = desc;
 		this.price = price;
@@ -30,6 +32,8 @@ public class CustomItem{
 		this.id = id;
 		skinId = defSkinId;
 		dmgValue = defDmgValue;
+		defDmgValueMax = dmgValue;
+		dmgValueMax = defDmgValueMax;
 		desc = defDesc;
 		price = defPrice;
 		lore = defLore;
@@ -37,7 +41,7 @@ public class CustomItem{
 		type = defType;
 		hand = defHand;
 	}
-	
+
 	//Item getter/setter
 	public ItemStack getItem() {
 		return item;
@@ -82,6 +86,17 @@ public class CustomItem{
 	}
 	public void setDefDmgValue(int i) {
 		defDmgValue = i;
+	}
+	
+	//Max damage getter/setter
+	public int getDmgValueMax() {
+		return dmgValueMax;
+	}
+	public void setDmgValueMax(int dmgValueMax) {
+		this.dmgValueMax = dmgValueMax;
+	}
+	public int getDefDmgValueMax() {
+		return defDmgValueMax;
 	}
 	
 	//Displayname getter/setter

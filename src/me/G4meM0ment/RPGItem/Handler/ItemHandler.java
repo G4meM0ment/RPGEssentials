@@ -1,12 +1,6 @@
 package me.G4meM0ment.RPGItem.Handler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
@@ -20,15 +14,10 @@ public class ItemHandler {
 	private RPGItem rpgItem;
 	private ItemData itemData;
 	
-	private String splitter;
-	private static List[] itemLists;
-	private static HashMap<String, List<CustomItem>> customItemTypes; 
-	
 	public ItemHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 		rpgItem = new RPGItem();
 		itemData = new ItemData();
-		customItemTypes = new HashMap<String, List<CustomItem>>();
 	}
 	public ItemHandler() {
 		rpgItem = new RPGItem();
@@ -38,8 +27,10 @@ public class ItemHandler {
 	public boolean isCustomItem(ItemStack item) {
 		if(!item.hasItemMeta()) return false;
 		if(item.getItemMeta().getDisplayName() == null) return false;
+		if(item.getItemMeta().getLore() == null) return false;
 		
-		int id = Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)));
+		int id = 0;
+		id = Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)));
 		if(id > 0) 
 			return true;
 		

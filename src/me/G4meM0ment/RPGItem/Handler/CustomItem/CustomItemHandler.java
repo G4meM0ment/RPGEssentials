@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,6 +16,7 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
 import me.G4meM0ment.RPGItem.DataStorage.ItemData;
+import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ListHandler;
 
 public class CustomItemHandler {
@@ -24,6 +26,7 @@ public class CustomItemHandler {
 	private ItemConfig itemConfig;
 	private ItemData itemData;
 	private ListHandler lh;
+	private ItemHandler itemHandler;
 	
 	public CustomItemHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -31,10 +34,11 @@ public class CustomItemHandler {
 		itemConfig = new ItemConfig();
 		itemData = new ItemData();
 		lh = new ListHandler();
+		itemHandler = new ItemHandler();
 	}
 	public CustomItemHandler() {
 		lh = new ListHandler();
-		
+		itemHandler = new ItemHandler();		
 	}
 	
 	public void spawnCustomItem(Player p, CustomItem customItem) {
@@ -42,17 +46,22 @@ public class CustomItemHandler {
 		ItemMeta meta = item.getItemMeta();
 		File data = itemData.getFile(customItem.getDispName());
 		File config = itemConfig.getFile(customItem.getDispName());
+		List<CustomItem> list = ListHandler.getCustomItemTypeList(customItem.getDispName());
 		
 		//set the meta information & get id specific values
 		meta.setDisplayName(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase()).colour+customItem.getDispName());
 		meta.setLore(getLore(customItem));
-		itemData.getDataFile(data).set(Integer.toString(customItem.getId())+".durability", itemConfig.getConfig(config).getInt("durability"));
+		FileConfiguration dataFile = itemData.getDataFile(data);
+		dataFile.set(Integer.toString(customItem.getId())+".durability", itemConfig.getConfig(config).getInt("durability"));
         try {
-        	itemData.getDataFile(data).save(data);
+        	dataFile.save(data);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+        if(list == null)
+        	lh.initializeList(customItem.getDispName());
+		ListHandler.addCustomItemToList(customItem, list);
 		customItem.setItem(item);
 		
 		item.setItemMeta(meta);
@@ -81,7 +90,7 @@ public class CustomItemHandler {
 	}
 
 	public void updateItem(ItemStack item) {
-		CustomItem customItem = lh.getCustomItem(ChatColor.stripColor(item.getItemMeta().getDisplayName()), Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
+		CustomItem customItem = getCustomItem(ChatColor.stripColor(item.getItemMeta().getDisplayName()), Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
 		ItemMeta meta = item.getItemMeta();
 		File data = itemData.getFile(customItem.getDispName());
 		File config = itemConfig.getFile(customItem.getDispName());
@@ -94,5 +103,33 @@ public class CustomItemHandler {
 		
 		item.setItemMeta(meta);
 		item.setTypeId(customItem.getSkinId());
+	}
+	
+	//get Item by its id
+	public CustomItem getCustomItem(String displayName, int specificItemId) {
+		for(CustomItem cItem : ListHandler.getCustomItemTypeList(displayName)) {
+			if(cItem.getId() == specificItemId)
+				return cItem;
+		}
+		return null;
+	}
+	
+	public void itemUsed(CustomItem item) {
+		if(item.getDurability() > 0)
+			item.setDurability(item.getDurability()-1);
+		repairCustomItem(item);
+	}
+	
+	public void repairCustomItem(CustomItem cItem) {
+		ItemStack item;
+		if(cItem != null && cItem.getItem() != null)
+			item = cItem.getItem();
+		else
+			return;
+		int cDurability = cItem.getDurability();
+		int maxCDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
+		int percent = (maxCDurability-cDurability)/maxCDurability * 100;
+		int durability = (item.getType().getMaxDurability()/100)*percent;
+		item.setDurability((short) durability);
 	}
 }

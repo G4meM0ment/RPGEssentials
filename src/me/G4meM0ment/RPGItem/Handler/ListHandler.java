@@ -28,15 +28,6 @@ public class ListHandler {
 		return getCustomItemTypes().get(customItemName);
 	}
 	
-	//get Item by its id
-	public CustomItem getCustomItem(String displayName, int specificItemId) {
-		for(CustomItem cItem : getCustomItemTypeList(displayName)) {
-			if(cItem.getId() == specificItemId)
-				return cItem;
-		}
-		return null;
-	}
-	
 	//Handling lists with specific custom items
 	public void initializeList(String customTypeName) {
 		getCustomItemTypes().put(customTypeName, new ArrayList<CustomItem>());
