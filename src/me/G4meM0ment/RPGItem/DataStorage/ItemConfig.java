@@ -63,7 +63,7 @@ public class ItemConfig {
 	public File getFile(String name) {
 		File file = getItemConfigs().get(name);
 		if(file == null) {
-			addConfigFile(new File(getDir()+name+".yml"));
+			addConfigFile(new File(getDir()+"/"+name+".yml"));
 			return getItemConfigs().get(name);
 		} else
 		return file;

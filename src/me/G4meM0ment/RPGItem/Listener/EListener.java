@@ -23,6 +23,7 @@ public class EListener implements Listener{
 		this.plugin = plugin;
 		itemHandler = new ItemHandler();
 		dmgHandler = new DamageHandler();
+		customItemHandler = new CustomItemHandler();
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -44,6 +45,6 @@ public class EListener implements Listener{
 			double newDmg = dmgHandler.handleDamagedEvent(e, event.getDamage(), null);
 			if(newDmg >= 0)
 				event.setDamage(newDmg);
-		}	
+		}
 	}
 }

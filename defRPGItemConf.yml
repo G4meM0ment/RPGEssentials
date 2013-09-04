@@ -1,3 +1,5 @@
 ItemTooltipGeneralInfoFormat: '&f%hand        %type'
 ItemTooltipDamageFormat: '&fDamage: %dmgValue'
 ItemTooltipPriceFormat: '&fPrice: %priceValue Aurei'
+ItemTooltipDescriptionFormat: '&f%description'
+ItemTooltipLoreFormat: '&o&6%lore'

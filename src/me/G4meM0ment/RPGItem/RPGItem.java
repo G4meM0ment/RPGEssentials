@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
 import me.G4meM0ment.RPGItem.DataStorage.ItemData;
+import me.G4meM0ment.RPGItem.Listener.BListener;
+import me.G4meM0ment.RPGItem.Listener.EListener;
 import me.G4meM0ment.RPGItem.Listener.PListener;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -21,6 +23,8 @@ public class RPGItem {
 	private ItemConfig itemConfig;
 	private ItemData itemData;
 	private PListener plistener;
+	private BListener blistener;
+	private EListener elistener;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -35,8 +39,12 @@ public class RPGItem {
 		itemConfig = new ItemConfig(plugin);
 		itemData = new ItemData(plugin);
 		plistener = new PListener(plugin);
+		blistener = new BListener(plugin);
+		elistener = new EListener(plugin);
 		dir = plugin.getDir()+"/RPGItem";
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(blistener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(elistener, plugin);
 	}
 	public RPGItem() {
 	}

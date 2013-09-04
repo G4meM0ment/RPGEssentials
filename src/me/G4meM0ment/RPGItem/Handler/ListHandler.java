@@ -13,17 +13,18 @@ public class ListHandler {
 	
 	private ItemHandler ItemHandler;
 	
-	private static HashMap<String, List<CustomItem>> customItemTypes; 
+	private static HashMap<String, List<CustomItem>> customItemTypes = new HashMap<String, List<CustomItem>>(); 
 	
 	public ListHandler() {
 		ItemHandler = new ItemHandler();
+		
 	}
 	
 	public static HashMap<String, List<CustomItem>> getCustomItemTypes() {
 		return customItemTypes;
 	}
 	
-	//Getting a list from the hasmap
+	//Getting a list from the hashmap
 	public static List<CustomItem> getCustomItemTypeList(String customItemName) {
 		return getCustomItemTypes().get(customItemName);
 	}

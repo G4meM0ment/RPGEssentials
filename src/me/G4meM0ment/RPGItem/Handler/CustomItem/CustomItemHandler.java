@@ -38,7 +38,9 @@ public class CustomItemHandler {
 	}
 	public CustomItemHandler() {
 		lh = new ListHandler();
-		itemHandler = new ItemHandler();		
+		itemHandler = new ItemHandler();	
+		itemConfig = new ItemConfig();
+		itemData = new ItemData();
 	}
 	
 	public void spawnCustomItem(Player p, CustomItem customItem) {
@@ -73,18 +75,18 @@ public class CustomItemHandler {
 		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipGeneralInfoFormat").replace("%hand", customItem.getHand()).replace("%type", customItem.getType())));
 		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipDamageFormat").replace("%dmgValue", Integer.toString(customItem.getDmgValue()))));
 		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipPriceFormat").replace("%priceValue", Integer.toString(customItem.getPrice()))));
-		lore.add(ChatColor.translateAlternateColorCodes('&', customItem.getDesc()));
-		lore.add(ChatColor.translateAlternateColorCodes('&', customItem.getLore()));
+		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipDescriptionFormat").replace("%description", customItem.getDesc())));
+		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipLoreFormat").replace("%lore", customItem.getLore())));
 		lore.add(ChatColor.BLACK+Integer.toString(customItem.getId()));
 		return lore;
 	}
 	
 	public int getFreeId(String name) {
 		int counter = 1;
-		ConfigurationSection section = itemData.getDataFile(itemData.getFile(name)).getConfigurationSection(Integer.toString(counter));
-		while(section != null) {
+		String id = itemData.getDataFile(itemData.getFile(name)).getString(counter+".durability");
+		while(id != null) {
 			counter++;
-			section = itemData.getDataFile(itemData.getFile(name)).getConfigurationSection(Integer.toString(counter));
+			id = itemData.getDataFile(itemData.getFile(name)).getString(counter+".durability");
 		}
 		return counter;
 	}
@@ -98,7 +100,7 @@ public class CustomItemHandler {
 		//set the meta information & get id specific values
 		meta.setDisplayName(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase())+customItem.getDispName());
 		meta.setLore(getLore(customItem));
-		itemData.getDataFile(data).set(Integer.toString(customItem.getId())+".durability", itemConfig.getConfig(config).getInt("durability"));
+//		itemData.getDataFile(data).set(Integer.toString(customItem.getId())+".durability", itemConfig.getConfig(config).getInt("durability"));
 		customItem.setItem(item);
 		
 		item.setItemMeta(meta);

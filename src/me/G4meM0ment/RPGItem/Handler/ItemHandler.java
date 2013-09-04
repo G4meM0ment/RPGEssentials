@@ -25,6 +25,7 @@ public class ItemHandler {
 	}
 	
 	public boolean isCustomItem(ItemStack item) {
+		if(item == null) return false;
 		if(!item.hasItemMeta()) return false;
 		if(item.getItemMeta().getDisplayName() == null) return false;
 		if(item.getItemMeta().getLore() == null) return false;

@@ -31,7 +31,7 @@ public class DamageHandler {
 		
 		if(cItem != null) {
 			int dmg = cItem.getDmgValue();
-			int maxDmg = cItem.getDefDmgValueMax();
+			int maxDmg = cItem.getDmgValueMax();
 			double randomDmg = ((Math.random()*(maxDmg-dmg))+dmg);
 			return randomDmg;
 		} else

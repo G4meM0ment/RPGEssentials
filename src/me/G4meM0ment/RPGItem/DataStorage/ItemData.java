@@ -65,7 +65,7 @@ public class ItemData {
 	public File getFile(String name) {
 		File file = getDataFiles().get(name);
 		if(file == null) {
-			addDataFile(new File(getDir()+name+".yml"));
+			addDataFile(new File(getDir()+"/"+name+".yml"));
 			return getDataFiles().get(name);
 		} else
 		return file;
