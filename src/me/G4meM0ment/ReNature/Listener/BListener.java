@@ -21,12 +21,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 
-import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.entity.BoardColls;
-import com.massivecraft.factions.entity.Faction;
-import com.massivecraft.mcore.MCore;
-import com.massivecraft.mcore.ps.PS;
-
 public class BListener implements Listener{
 	
 	private RPGEssentials plugin;

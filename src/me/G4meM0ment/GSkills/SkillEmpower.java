@@ -113,8 +113,6 @@ public class SkillEmpower extends ActiveSkill{
     public class InvertDamageEffect extends ExpirableEffect
     {
     	
-    	private long duration;
-    	private int damage;
     	private int mana;
     	private int stamina;
     	
@@ -123,8 +121,6 @@ public class SkillEmpower extends ActiveSkill{
     		super(skill, "Empower", duration);
         	this.types.add(EffectType.BENEFICIAL);
         	this.types.add(EffectType.DISPELLABLE);
-        	this.duration = duration;
-        	this.damage = damage;
         	this.mana = mana;
         	this.stamina = stamina;
     	}
