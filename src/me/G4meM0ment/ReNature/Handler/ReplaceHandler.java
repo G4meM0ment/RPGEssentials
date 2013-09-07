@@ -41,23 +41,16 @@ public class ReplaceHandler {
 	}
 	
 	public void start() {
-		recoverMillis = reNature.getConfig().getInt("recoverTime");
-		millis = (recoverMillis*20)/100;
+		/*recoverMillis = reNature.getConfig().getInt("recoverTime");
+		millis = (recoverMillis*20)/100; */
+		millis = 50000;
 		
-		new Thread() {
-			@Override
-			public void run() {
-				while(true) {
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+				public void run() {
 					if(blocks.size() > 0)
 						check(0);
-					try{
-						Thread.sleep(millis);
-					}catch(InterruptedException e) {
-						e.printStackTrace();
-					}
 				}
-			}
-		}.start();
+			}, 0, millis/5);
 	}
 	
 	private void check(int pos) {

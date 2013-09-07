@@ -1,8 +1,8 @@
 package me.G4meM0ment.RPGItem.Listener;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
-import me.G4meM0ment.RPGItem.Handler.CustomItem.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.DamageHandler;
 
 import org.bukkit.ChatColor;
@@ -27,7 +27,7 @@ public class EListener implements Listener{
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onEntityDamageOnEntityEvent(EntityDamageByEntityEvent event) {
+	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
 		Player p = null, e = null;
 		if(event.getDamager() instanceof Player)
 			p = (Player) event.getDamager();
@@ -36,8 +36,9 @@ public class EListener implements Listener{
 		
 		if(p != null) {
 			double newDmg = dmgHandler.handleDamageEvent(p);
-			customItemHandler.itemUsed(customItemHandler.getCustomItem(ChatColor.stripColor(p.getItemInHand().getItemMeta().getDisplayName()),
-					Integer.valueOf(ChatColor.stripColor(p.getItemInHand().getItemMeta().getLore().get(p.getItemInHand().getItemMeta().getLore().size()-1)))));
+			if(itemHandler.isCustomItem(p.getItemInHand()))
+				customItemHandler.itemUsed(customItemHandler.getCustomItem(ChatColor.stripColor(p.getItemInHand().getItemMeta().getDisplayName()),
+						Integer.valueOf(ChatColor.stripColor(p.getItemInHand().getItemMeta().getLore().get(p.getItemInHand().getItemMeta().getLore().size()-1)))));
 			if(newDmg >= 0)
 				event.setDamage(newDmg);
 		}
@@ -46,5 +47,5 @@ public class EListener implements Listener{
 			if(newDmg >= 0)
 				event.setDamage(newDmg);
 		}
-	}
+	}	
 }

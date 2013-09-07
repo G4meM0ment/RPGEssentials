@@ -5,7 +5,7 @@
 * fixed
 
 
-Version: 0.00.001
+Version: 0.00.001 #0001
     + ReNatur sub-plugin
     	+ RN config
     		+ list for denied blocks
@@ -15,6 +15,7 @@ Version: 0.00.001
     		+ Towny support
     		+ Factions support
         * recovering whole nature on disable
+        * asynchronous exception
     + Junkie sub-plugin
     + Orbia specific sub-plugin
     	+ faction support (not needed anymore)
@@ -22,6 +23,8 @@ Version: 0.00.001
     	+ SkillEmpower
     	+ SkillFear
     	+ SkillGroundpound
+    + RPGItem
+    	+ Items with special description, damage protection & powers
     * various alpha bugs
     * config won't disable sub-plugins
     ! ReNatur isn't able to get back some block types such as doors, paintings etc.

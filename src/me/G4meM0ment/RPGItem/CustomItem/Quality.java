@@ -1,4 +1,4 @@
-package me.G4meM0ment.RPGItem.Handler.CustomItem;
+package me.G4meM0ment.RPGItem.CustomItem;
 
 import org.bukkit.ChatColor;
 

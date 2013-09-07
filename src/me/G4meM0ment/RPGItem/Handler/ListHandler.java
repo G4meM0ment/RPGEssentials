@@ -7,17 +7,17 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
-import me.G4meM0ment.RPGItem.Handler.CustomItem.CustomItem;
+import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 
 public class ListHandler {
 	
-	private ItemHandler ItemHandler;
+	private ItemHandler itemHandler;
 	
-	private static HashMap<String, List<CustomItem>> customItemTypes = new HashMap<String, List<CustomItem>>(); 
+	private static HashMap<String, List<CustomItem>> customItemTypes = new HashMap<String, List<CustomItem>>();
+	private static String powers[] = new String[] {"speed","scuba","jump","nightvision","invisibility"};
 	
 	public ListHandler() {
-		ItemHandler = new ItemHandler();
-		
+		itemHandler = new ItemHandler();
 	}
 	
 	public static HashMap<String, List<CustomItem>> getCustomItemTypes() {
@@ -45,5 +45,9 @@ public class ListHandler {
 			}
 		}
 		return false;
+	}
+
+	public String[] getPowers() {
+		return powers;
 	}
 }

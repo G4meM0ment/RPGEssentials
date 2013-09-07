@@ -1,4 +1,4 @@
-package me.G4meM0ment.RPGItem.Handler.CustomItem;
+package me.G4meM0ment.RPGItem.Handler;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,18 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.material.MaterialData;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.RPGItem;
+import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
+import me.G4meM0ment.RPGItem.CustomItem.Quality;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
 import me.G4meM0ment.RPGItem.DataStorage.ItemData;
-import me.G4meM0ment.RPGItem.Handler.ItemHandler;
-import me.G4meM0ment.RPGItem.Handler.ListHandler;
 
 public class CustomItemHandler {
 	
@@ -37,6 +40,7 @@ public class CustomItemHandler {
 		itemHandler = new ItemHandler();
 	}
 	public CustomItemHandler() {
+		rpgItem = new RPGItem();
 		lh = new ListHandler();
 		itemHandler = new ItemHandler();	
 		itemConfig = new ItemConfig();
@@ -45,20 +49,24 @@ public class CustomItemHandler {
 	
 	public void spawnCustomItem(Player p, CustomItem customItem) {
 		ItemStack item = new ItemStack(customItem.getSkinId(), 1);
+		item.setData(new MaterialData(customItem.getData()));
 		ItemMeta meta = item.getItemMeta();
-		File data = itemData.getFile(customItem.getDispName());
-		File config = itemConfig.getFile(customItem.getDispName());
+		FileConfiguration data = itemData.getDataFile(itemData.getFile(customItem.getDispName()));
+		FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(customItem.getDispName()));
 		List<CustomItem> list = ListHandler.getCustomItemTypeList(customItem.getDispName());
 		
+		if(item.getTypeId() == 298 || item.getTypeId() == 299 || item.getTypeId() == 300 || item.getTypeId() == 301) {
+			LeatherArmorMeta lm = (LeatherArmorMeta) item.getItemMeta();
+			lm.setColor(Color.fromRGB(config.getInt("color.r"), config.getInt("color.g"), config.getInt("color.b")));
+		}
+		
 		//set the meta information & get id specific values
-		meta.setDisplayName(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase()).colour+customItem.getDispName());
+		meta.setDisplayName(Quality.valueOf(config.getString("quality").toUpperCase()).colour+customItem.getDispName());
 		meta.setLore(getLore(customItem));
-		FileConfiguration dataFile = itemData.getDataFile(data);
-		dataFile.set(Integer.toString(customItem.getId())+".durability", itemConfig.getConfig(config).getInt("durability"));
+		data.set(Integer.toString(customItem.getId())+".durability", config.getInt("durability"));
         try {
-        	dataFile.save(data);
+        	data.save(itemData.getFile(customItem.getDispName()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
         if(list == null)
@@ -73,7 +81,7 @@ public class CustomItemHandler {
 	public List<String> getLore(CustomItem customItem) {
 		List<String> lore = new ArrayList<String>();
 		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipGeneralInfoFormat").replace("%hand", customItem.getHand()).replace("%type", customItem.getType())));
-		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipDamageFormat").replace("%dmgValue", Integer.toString(customItem.getDmgValue()))));
+		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipDamageFormat").replace("%dmgValue", Integer.toString(customItem.getDmgValue())).replace("%maxDmgValue", Integer.toString(customItem.getDmgValueMax()))));
 		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipPriceFormat").replace("%priceValue", Integer.toString(customItem.getPrice()))));
 		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipDescriptionFormat").replace("%description", customItem.getDesc())));
 		lore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipLoreFormat").replace("%lore", customItem.getLore())));
@@ -98,7 +106,7 @@ public class CustomItemHandler {
 		File config = itemConfig.getFile(customItem.getDispName());
 		
 		//set the meta information & get id specific values
-		meta.setDisplayName(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase())+customItem.getDispName());
+		meta.setDisplayName(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase()).colour+customItem.getDispName());
 		meta.setLore(getLore(customItem));
 //		itemData.getDataFile(data).set(Integer.toString(customItem.getId())+".durability", itemConfig.getConfig(config).getInt("durability"));
 		customItem.setItem(item);
@@ -109,6 +117,7 @@ public class CustomItemHandler {
 	
 	//get Item by its id
 	public CustomItem getCustomItem(String displayName, int specificItemId) {
+		if(ListHandler.getCustomItemTypeList(displayName) == null) return null;
 		for(CustomItem cItem : ListHandler.getCustomItemTypeList(displayName)) {
 			if(cItem.getId() == specificItemId)
 				return cItem;
@@ -132,6 +141,8 @@ public class CustomItemHandler {
 		int maxCDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
 		int percent = (maxCDurability-cDurability)/maxCDurability * 100;
 		int durability = (item.getType().getMaxDurability()/100)*percent;
+		if(durability >= item.getType().getMaxDurability()-1)
+			durability = item.getType().getMaxDurability()-1;
 		item.setDurability((short) durability);
 	}
 }

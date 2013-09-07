@@ -1,5 +1,7 @@
 ItemTooltipGeneralInfoFormat: '&f%hand        %type'
-ItemTooltipDamageFormat: '&fDamage: %dmgValue'
+ItemTooltipDamageFormat: '&fDamage: %dmgValue - %maxDmgValue'
 ItemTooltipPriceFormat: '&fPrice: %priceValue Aurei'
 ItemTooltipDescriptionFormat: '&f%description'
-ItemTooltipLoreFormat: '&o&6%lore'
+ItemTooltipLoreFormat: '&o%lore'
+DurabilityLoss: true
+DurabilityAffectingUtility: 25

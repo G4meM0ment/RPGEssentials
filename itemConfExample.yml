@@ -1,10 +1,19 @@
 durability: 1000
 skinId: 267
+dataValue: 0
+color:
+  r: 0
+  g: 0
+  b: 0
 damage: 10
-damageMax: 40
+damageMax: 12
 price: 50
 description: A normal iron sword
-lore: No information are known about that sword
+lore: '&6No information are known about that sword'
 hand: one-handed
 type: sword
 quality: COMMON
+powers:
+  invisibility: 0
+enchantments:
+  knockback: 1

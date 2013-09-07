@@ -1,8 +1,8 @@
 package me.G4meM0ment.RPGItem.Handler.EventHandler;
 
+import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
+import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
-import me.G4meM0ment.RPGItem.Handler.CustomItem.CustomItem;
-import me.G4meM0ment.RPGItem.Handler.CustomItem.CustomItemHandler;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

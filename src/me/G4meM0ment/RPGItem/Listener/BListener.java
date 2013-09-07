@@ -1,7 +1,8 @@
 package me.G4meM0ment.RPGItem.Listener;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
-import me.G4meM0ment.RPGItem.Handler.CustomItem.CustomItemHandler;
+import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
+import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -15,10 +16,12 @@ public class BListener implements Listener{
 
 	private RPGEssentials plugin;
 	private CustomItemHandler customItemHandler;
+	private ItemHandler itemHandler;
 	
 	public BListener(RPGEssentials plugin) {
 		this.plugin = plugin;
 		customItemHandler = new CustomItemHandler();
+		itemHandler = new ItemHandler();
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -27,7 +30,8 @@ public class BListener implements Listener{
 		ItemMeta meta = event.getPlayer().getItemInHand().getItemMeta();
 		if(p == null || meta == null) return;
 		
-		customItemHandler.itemUsed(customItemHandler.getCustomItem(ChatColor.stripColor(meta.getDisplayName()),
-				Integer.valueOf(ChatColor.stripColor(meta.getLore().get(meta.getLore().size()-1)))));
+		if(itemHandler.isCustomItem(p.getItemInHand()))
+			customItemHandler.itemUsed(customItemHandler.getCustomItem(ChatColor.stripColor(meta.getDisplayName()),
+					Integer.valueOf(ChatColor.stripColor(meta.getLore().get(meta.getLore().size()-1)))));
 	}
 }

@@ -9,8 +9,10 @@ import java.util.logging.Logger;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
 import me.G4meM0ment.RPGItem.DataStorage.ItemData;
+import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 import me.G4meM0ment.RPGItem.Listener.BListener;
 import me.G4meM0ment.RPGItem.Listener.EListener;
+import me.G4meM0ment.RPGItem.Listener.InvListener;
 import me.G4meM0ment.RPGItem.Listener.PListener;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,12 +21,24 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class RPGItem {
 	
+	/*
+	 * TODO finish powers (add, unlimited, remove, configurable)
+	 * TODO make powers loss by less durability
+	 * TODO make next line for meta available
+	 * TODO add sub-ids
+	 * TODO make enchantments configurable
+	 * TODO fix leather armor coloring
+	 * TODO add bow dmg
+	 */
+	
 	private RPGEssentials plugin;
 	private ItemConfig itemConfig;
 	private ItemData itemData;
 	private PListener plistener;
 	private BListener blistener;
 	private EListener elistener;
+	private InvListener invlistener;
+	private PowerHandler ph;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -41,10 +55,13 @@ public class RPGItem {
 		plistener = new PListener(plugin);
 		blistener = new BListener(plugin);
 		elistener = new EListener(plugin);
+		invlistener = new InvListener(plugin);
+		ph = new PowerHandler(plugin);
 		dir = plugin.getDir()+"/RPGItem";
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(blistener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(elistener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(invlistener, plugin);
 	}
 	public RPGItem() {
 	}

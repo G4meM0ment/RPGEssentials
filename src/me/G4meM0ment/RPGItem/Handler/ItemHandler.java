@@ -5,8 +5,8 @@ import org.bukkit.inventory.ItemStack;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.RPGItem;
+import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 import me.G4meM0ment.RPGItem.DataStorage.ItemData;
-import me.G4meM0ment.RPGItem.Handler.CustomItem.CustomItem;
 
 public class ItemHandler {
 	

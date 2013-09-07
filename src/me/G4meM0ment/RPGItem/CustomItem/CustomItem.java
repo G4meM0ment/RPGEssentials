@@ -1,18 +1,19 @@
-package me.G4meM0ment.RPGItem.Handler.CustomItem;
+package me.G4meM0ment.RPGItem.CustomItem;
 
 import org.bukkit.inventory.ItemStack;
 
 public class CustomItem{
 	
-	private int id, skinId, dmgValue, dmgValueMax, durability, price, defSkinId = 267, defDmgValue = 10, defDurability = 1000, defPrice = 0, defDmgValueMax;
+	private int id, skinId, dmgValue, dmgValueMax, durability, price, data, defSkinId = 267, defDmgValue = 10, defDurability = 1000, defPrice = 0, defDmgValueMax, defData = 0;
 	private String dispName, desc, lore, hand, type, defDesc = "An Item", defLore = "No information are known about that item", defHand = "One-handed", defType = "sword";
 	private Quality quality, defQuality = Quality.COMMON;
 	private ItemStack item;
 	
-	public CustomItem(ItemStack item, String dispName, int id, int skinId, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand) {
+	public CustomItem(ItemStack item, String dispName, int id, int data, int skinId, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand) {
 		this.item = item;
 		this.dispName = dispName;
 		this.id = id;
+		this.data = data;
 		this.skinId = skinId;
 		this.dmgValue = dmgValue;
 		defDmgValueMax = dmgValue;
@@ -30,6 +31,7 @@ public class CustomItem{
 		this.item = item;
 		this.dispName = dispName;
 		this.id = id;
+		data = defData;
 		skinId = defSkinId;
 		dmgValue = defDmgValue;
 		defDmgValueMax = dmgValue;
@@ -56,6 +58,14 @@ public class CustomItem{
 	}
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	//Data value getter/setter
+	public int getData() {
+		return data;
+	}
+	public void setData(int data) {
+		this.data = data;
 	}
 	
 	//Skin getter/setter
