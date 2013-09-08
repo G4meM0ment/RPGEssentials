@@ -11,7 +11,6 @@ import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ListHandler;
 import me.G4meM0ment.RPGItem.Handler.PowerHandler;
-import net.minecraft.server.v1_6_R2.Enchantment;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,8 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class InventoryHandler {
 	
@@ -50,7 +47,7 @@ public class InventoryHandler {
 		powerHandler = new PowerHandler();
 	}
 	
-	public void processInventory(Inventory inv) {
+	public void processInventory(Inventory inv, Player p) {
 		if(inv == null) return;
 		for(ItemStack item : inv.getContents()) {
 			if(itemHandler.isCustomItem(item)) {
@@ -60,23 +57,23 @@ public class InventoryHandler {
 				int size = lore.size();
 				List<CustomItem> list;
 				
-				if(ListHandler.getCustomItemTypeList(ChatColor.stripColor(name)) == null) {
-					lh.initializeList(ChatColor.stripColor(name));
-					list = ListHandler.getCustomItemTypeList(ChatColor.stripColor(name));
+				if(ListHandler.getCustomItemTypeList(name) == null) {
+					lh.initializeList(name);
+					list = ListHandler.getCustomItemTypeList(name);
 				} else {
-					list = ListHandler.getCustomItemTypeList(ChatColor.stripColor(name));
+					list = ListHandler.getCustomItemTypeList(name);
 				}
 				if(!lh.containsCustomItem(list, item)) {
 					FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
 					FileConfiguration data = itemData.getDataFile(itemData.getFile(name));
 					int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
 
-					ListHandler.addCustomItemToList(new CustomItem(item, ChatColor.stripColor(meta.getDisplayName()), id, config.getInt("data"), config.getInt("skinId"), config.getInt("damage"), config.getInt("damageMax"),
+					ListHandler.addCustomItemToList(new CustomItem(item, name, id, config.getInt("data"), config.getInt("skinId"), config.getInt("damage"), config.getInt("damageMax"),
 						data.getInt(Integer.toString(id)+".durability"), config.getString("description"), config.getInt("price"), config.getString("lore"), 
 						Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand")), list);
 				}
 				else {
-					customItemHandler.updateItem(item);
+					customItemHandler.updateItem(item, p);
 				}
 			}
 		}
@@ -84,6 +81,7 @@ public class InventoryHandler {
 	
 	public void processArmor(Player p) {
 		if(p == null) return;
+		powerHandler.clearPowers(p);
 		for(ItemStack item : p.getInventory().getArmorContents()) {
 			if(itemHandler.isCustomItem(item)) {
 				ItemMeta meta = item.getItemMeta();
@@ -91,13 +89,10 @@ public class InventoryHandler {
 				List<String> lore = meta.getLore();
 				int size = lore.size();
 
-				FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
-				FileConfiguration data = itemData.getDataFile(itemData.getFile(name));
 				int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
 				CustomItem cItem = customItemHandler.getCustomItem(name, id);
 
-				customItemHandler.updateItem(item);
-				powerHandler.clearPowers(p);
+				customItemHandler.updateItem(item, p);
 				powerHandler.applyPower(p, cItem);
 			}
 		}
@@ -112,13 +107,10 @@ public class InventoryHandler {
 			List<String> lore = meta.getLore();
 			int size = lore.size();
 
-			FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
-			FileConfiguration data = itemData.getDataFile(itemData.getFile(name));
 			int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
 			CustomItem cItem = customItemHandler.getCustomItem(name, id);
 
-			customItemHandler.updateItem(item);
-			powerHandler.clearPowers(p);
+			customItemHandler.updateItem(item, p);
 			powerHandler.applyPower(p, cItem);
 		}
 	}

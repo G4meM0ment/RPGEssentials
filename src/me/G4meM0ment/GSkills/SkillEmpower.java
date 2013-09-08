@@ -102,7 +102,7 @@ public class SkillEmpower extends ActiveSkill{
     		Entity e = event.getEntity();
     		Entity d = event.getDamager();
     		if(d instanceof Player) {
-    			Hero h = plugin.getCharacterManager().getHero((Player) e);
+    			Hero h = plugin.getCharacterManager().getHero((Player) d);
     			if(h.hasEffect("Empower")) {
     				event.setDamage(event.getDamage()+se.damage);
     			}

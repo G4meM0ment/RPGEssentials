@@ -7,7 +7,9 @@ import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -28,7 +30,7 @@ public class DamageHandler {
 		ItemStack item = p.getItemInHand();
 		ItemMeta meta = item.getItemMeta();
 		CustomItem cItem = customItemHandler.getCustomItem(ChatColor.stripColor(meta.getDisplayName()), Integer.parseInt(ChatColor.stripColor(meta.getLore().get(meta.getLore().size()-1))));
-		
+
 		if(cItem != null) {
 			int dmg = cItem.getDmgValue();
 			int maxDmg = cItem.getDmgValueMax();

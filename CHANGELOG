@@ -25,6 +25,8 @@ Version: 0.00.001 #0001
     	+ SkillGroundpound
     + RPGItem
     	+ Items with special description, damage protection & powers
+    	+ Heroes support (damage added upon class specific dmg)
+    	+ converter to convert old rpg items into new ones
     * various alpha bugs
     * config won't disable sub-plugins
     ! ReNatur isn't able to get back some block types such as doors, paintings etc.

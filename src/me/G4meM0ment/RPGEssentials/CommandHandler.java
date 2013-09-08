@@ -56,7 +56,7 @@ public class CommandHandler{
 	
 	private boolean exec(CommandSender sender, Command command, String label, String[] args) {
 		Player player = (Player) sender;
-		if(args.length > 0 && args[0].equals("reload") && sender instanceof Player && ph.checkReloadPerms(player)) {
+		if(args.length > 0 && args[0].equals("reload") && sender instanceof Player && ph.hasReloadPerms(player)) {
 			plugin.reloadRPGEssentials();
 			player.sendMessage("RPGEssentials all plugins reloaded!");
 		    return true;

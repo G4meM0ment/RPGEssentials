@@ -16,6 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGEssentials.DataStorage.FileHandler;
 import me.G4meM0ment.RPGItem.RPGItem;
+import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
+import me.G4meM0ment.RPGItem.Handler.ListHandler;
 
 public class ItemData {
 	
@@ -34,6 +36,7 @@ public class ItemData {
 		this.plugin = plugin;
 		rpgItem = new RPGItem();
 		fileHandler = new FileHandler();
+		
 		dir = plugin.getDir()+"/RPGItem/data";
 		folder = new File(dir);
 		logTit = rpgItem.getLogTit();
@@ -113,5 +116,26 @@ public class ItemData {
 	    } catch (IOException ex) {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save data file to " + configFile, ex);
 	    }
+	}
+	
+	public void reloadDataFiles() {
+		for(File file : dataFiles.values()) {
+			reloadDataFile(file);
+		}
+	}
+	
+	public void saveDataToFiles() {
+		for(String s : ListHandler.getCustomItemTypes().keySet()) {
+			for(CustomItem item : ListHandler.getCustomItemTypeList(s)) {
+				File data = getFile(s);
+				FileConfiguration dataFile = getDataFile(data);
+				dataFile.set(item.getId()+".durability", item.getDurability());
+				try {
+					dataFile.save(data);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }

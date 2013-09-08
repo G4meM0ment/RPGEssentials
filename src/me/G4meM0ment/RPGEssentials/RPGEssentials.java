@@ -2,6 +2,7 @@ package me.G4meM0ment.RPGEssentials;
 
 import me.G4meM0ment.Junkie.Junkie;
 import me.G4meM0ment.Orbia.Orbia;
+import me.G4meM0ment.RPGEssentials.Schedule.Schedule;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.ReNature.ReNature;
 
@@ -11,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.herocraftonline.heroes.Heroes;
 import com.massivecraft.factions.Factions;
 import com.massivecraft.mcore.MCore;
 import com.palmergames.bukkit.towny.Towny;
@@ -21,7 +23,8 @@ public class RPGEssentials extends JavaPlugin{
 	private ReNature reNature;
 	private Junkie junkie;
 	private Orbia orbia;
-	private RPGItem rpgItem;	
+	private RPGItem rpgItem;
+	private Schedule schedule;
 	
 	private CommandHandler ch;
 	
@@ -29,6 +32,7 @@ public class RPGEssentials extends JavaPlugin{
 	private MCore mcore;
 	private Factions factions;
 	private Towny towny;
+	private Heroes heroes;
 	
 	private String dir = "plugins/RPGEssentials";
 	
@@ -93,17 +97,24 @@ public class RPGEssentials extends JavaPlugin{
 				
 		//Finished initializing plugin enabled
 		getLogger().info("Initialization done!");
-			
-		//Plguin enabled
-		getLogger().info("Enabled version "+pdf.getVersion());
 		
 //################ Init APIs ###################
 		wg = initWorldGuard();
 		mcore = initMCore();
 		factions = initFactions();
 		towny = initTowny();
+		heroes = initHeroes();
+		
+//############### Startsing scheduler #################
+		schedule = new Schedule(this);
+		Thread time = new Thread(schedule);
+		time.start();
+		getLogger().info("Setup schedule");
+		
+		//Plguin enabled
+		getLogger().info("Enabled version "+pdf.getVersion());
 	}
-	
+
 	@Override
 	public void onDisable() {
 		//Disable messages
@@ -113,6 +124,9 @@ public class RPGEssentials extends JavaPlugin{
 		
 		//Disable sub-plugins
 		getLogger().info("Disabling sub-plugins:");
+		
+		if(rpgItem.onDisable())
+			getLogger().info("RPGItem disabled!");
 		
 		if(reNature.onDisable())
 			getLogger().info("ReNature disabled!");
@@ -181,6 +195,19 @@ public class RPGEssentials extends JavaPlugin{
 		return towny;
 	}
 	
+	private Heroes initHeroes() {
+	    Plugin plugin = getServer().getPluginManager().getPlugin("Heroes");
+	 
+	    if (plugin == null || !(plugin instanceof Heroes)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+		getLogger().info("Heroes found enabled features");
+	    return (Heroes) plugin;
+	}
+	public Heroes getHeroes() {
+		return heroes;
+	}
+	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(ch.onCommand(sender, command, label, args))
 			return true;
@@ -193,6 +220,11 @@ public class RPGEssentials extends JavaPlugin{
 		reNature.reloadConfig();
 		junkie.reloadConfig();
 		orbia.reloadConfig();
-		rpgItem.reloadConfig();
+		rpgItem.reloadConfigs();
+		
+	}
+	
+	public RPGItem getRPGItem() {
+		return rpgItem;
 	}
  }

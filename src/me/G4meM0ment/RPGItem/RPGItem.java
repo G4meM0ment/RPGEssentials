@@ -9,12 +9,15 @@ import java.util.logging.Logger;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
 import me.G4meM0ment.RPGItem.DataStorage.ItemData;
+import me.G4meM0ment.RPGItem.Handler.MetaHandler;
 import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 import me.G4meM0ment.RPGItem.Listener.BListener;
 import me.G4meM0ment.RPGItem.Listener.EListener;
+import me.G4meM0ment.RPGItem.Listener.HeroesListener;
 import me.G4meM0ment.RPGItem.Listener.InvListener;
 import me.G4meM0ment.RPGItem.Listener.PListener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -29,15 +32,18 @@ public class RPGItem {
 	 * TODO make enchantments configurable
 	 * TODO fix leather armor coloring
 	 * TODO add bow dmg
+	 * TODO save data
+	 * TODO reload item configs on reload
 	 */
 	
 	private RPGEssentials plugin;
 	private ItemConfig itemConfig;
 	private ItemData itemData;
-	private PListener plistener;
-	private BListener blistener;
-	private EListener elistener;
-	private InvListener invlistener;
+	private PListener pListener;
+	private BListener bListener;
+	private EListener eListener;
+	private InvListener invListener;
+	private HeroesListener hListener;
 	private PowerHandler ph;
 	
 	private static File configFile;
@@ -52,22 +58,25 @@ public class RPGItem {
 		this.plugin = plugin;
 		itemConfig = new ItemConfig(plugin);
 		itemData = new ItemData(plugin);
-		plistener = new PListener(plugin);
-		blistener = new BListener(plugin);
-		elistener = new EListener(plugin);
-		invlistener = new InvListener(plugin);
+		pListener = new PListener(plugin);
+		bListener = new BListener(plugin);
+		eListener = new EListener(plugin);
+		invListener = new InvListener(plugin);
+		hListener = new HeroesListener();
 		ph = new PowerHandler(plugin);
+		
 		dir = plugin.getDir()+"/RPGItem";
-		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
-		plugin.getServer().getPluginManager().registerEvents(blistener, plugin);
-		plugin.getServer().getPluginManager().registerEvents(elistener, plugin);
-		plugin.getServer().getPluginManager().registerEvents(invlistener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(pListener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(bListener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(eListener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(invListener, plugin);
+		if(plugin.getHeroes() != null)
+			plugin.getServer().getPluginManager().registerEvents(hListener, plugin);
 	}
 	public RPGItem() {
 	}
 	
 	public boolean onEnable() {
-		//TODO load configs
 		isDisabling = false;
 		File exItem = new File(dir+"/items/RPGItem.yml");
 		File exData = new File(dir+"/data/RPGItem.yml");
@@ -79,19 +88,30 @@ public class RPGItem {
 		itemData.saveDataFile(exData);
 		itemConfig.initializeItemConfigs();
 		itemData.initializeDataFiles();
+		MetaHandler.setSplitter(getConfig().getInt("FormatLineSize"));
 		return true;
 	}
 	
 	public boolean onDisable() {
-		//TODO save configs return true
 		isDisabling = true;
+		saveData();
 		return true;
+	}
+	
+	public void reloadConfigs() {
+		reloadConfig();
+		itemConfig.reloadConfigs();
+		itemData.reloadDataFiles();
+	}
+	public void saveData() {
+		itemData = new ItemData();
+		itemData.saveDataToFiles();
 	}
 	
 	public void reloadConfig() {
 	    if (configFile == null) {
 	    	configFile = new File(dir+"/config.yml");
-			plugin.getLogger().info(logTit+"Created config.");
+			Bukkit.getLogger().info(logTit+"Created config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
@@ -102,7 +122,7 @@ public class RPGItem {
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
 	    }
-		plugin.getLogger().info(logTit+"Config loaded.");
+	    Bukkit.getLogger().info(logTit+"Config loaded.");
 	}
 	public FileConfiguration getConfig() {
 	    if (config == null) {
@@ -116,7 +136,7 @@ public class RPGItem {
 	    }
 	    try {
 	        config.save(configFile);
-	        plugin.getLogger().info(logTit+"Config saved");
+	        Bukkit.getLogger().info(logTit+"Config saved");
 	    } catch (IOException ex) {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }
@@ -124,5 +144,9 @@ public class RPGItem {
 	
 	public String getLogTit() {
 		return logTit;
+	}
+	
+	public boolean isDisabling() {
+		return isDisabling;
 	}
 }

@@ -15,12 +15,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGEssentials.DataStorage.FileHandler;
 import me.G4meM0ment.RPGItem.RPGItem;
+import me.G4meM0ment.RPGItem.Handler.ListHandler;
 
 public class ItemConfig {
 	
 	private RPGEssentials plugin;
 	private RPGItem rpgItem;
 	private FileHandler fileHandler;
+	private ListHandler lh;
+	
 	private static String defConfig = "itemConfExample.yml";
 	private static String logTit;
 	
@@ -32,6 +35,8 @@ public class ItemConfig {
 		this.plugin = plugin;
 		rpgItem = new RPGItem();
 		fileHandler = new FileHandler();
+		lh = new ListHandler();
+		
 		dir = plugin.getDir()+"/RPGItem/items";
 		folder = new File(dir);
 		logTit = rpgItem.getLogTit();
@@ -39,6 +44,7 @@ public class ItemConfig {
 	public ItemConfig() {
 		rpgItem = new RPGItem();
 		fileHandler = new FileHandler();
+		lh = new ListHandler();
 	}
 	
 	public void initializeItemConfigs() {
@@ -110,6 +116,13 @@ public class ItemConfig {
 	    } catch (IOException ex) {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }
+	}
+	
+	public void reloadConfigs() {
+		for(File file : itemConfigs.values()) {
+			reloadConfig(file);
+		}
+		lh.updateItems();
 	}
 
 }
