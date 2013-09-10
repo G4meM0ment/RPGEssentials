@@ -76,7 +76,7 @@ public class ListHandler {
 				cItem.setSkinId(config.getInt("skinId"));
 				cItem.setType(config.getString("type"));
 				
-				customItemHandler.updateItem(cItem.getItem(), null);
+				customItemHandler.updateItem(cItem.getItem(), null, true);
 			}
 		}
 	}

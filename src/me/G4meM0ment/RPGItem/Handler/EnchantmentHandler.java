@@ -13,7 +13,9 @@ public class EnchantmentHandler {
 	}
 	
 	public Enchantment getEnchantment(String enchantName) {
-		switch(enchantName) {
+		return Enchantment.getByName(enchantName.toUpperCase());
+		
+		/*switch(enchantName) {
 			case "arrow_damage":
 				return Enchantment.ARROW_DAMAGE;
 			case "arrow_fire":
@@ -57,10 +59,10 @@ public class EnchantmentHandler {
 			case "water_worker":
 				return Enchantment.WATER_WORKER;
 		}
-		return null;
+		return null; */
 	}
 
-	public ItemStack addEnchantments(ItemStack item, FileConfiguration config) {
+	protected void addEnchantments(ItemStack item, FileConfiguration config) {
 		for(String s : lh.getEnchantments()) {
 			if(config.getInt("enchantments."+s) >= 1) {
 				Enchantment enchant = getEnchantment(s);
@@ -68,6 +70,11 @@ public class EnchantmentHandler {
 					item.addUnsafeEnchantment(enchant, config.getInt("enchantments."+s));
 			}
 		}
-		return item;
+	}
+	
+	protected void removeEnchantments(ItemStack item) {
+		for(Enchantment e : item.getEnchantments().keySet()) {
+			item.removeEnchantment(e);
+		}
 	}
 }

@@ -47,7 +47,7 @@ public class InventoryHandler {
 		powerHandler = new PowerHandler();
 	}
 	
-	public void processInventory(Inventory inv, Player p) {
+	public void processInventory(Inventory inv, Player p, boolean fullUpdate) {
 		if(inv == null) return;
 		for(ItemStack item : inv.getContents()) {
 			if(itemHandler.isCustomItem(item)) {
@@ -73,7 +73,7 @@ public class InventoryHandler {
 						Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand")), list);
 				}
 				else {
-					customItemHandler.updateItem(item, p);
+					customItemHandler.updateItem(item, p, fullUpdate);
 				}
 			}
 		}
@@ -92,7 +92,7 @@ public class InventoryHandler {
 				int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
 				CustomItem cItem = customItemHandler.getCustomItem(name, id);
 
-				customItemHandler.updateItem(item, p);
+				customItemHandler.updateItem(item, p, false);
 				powerHandler.applyPower(p, cItem);
 			}
 		}
@@ -110,7 +110,7 @@ public class InventoryHandler {
 			int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
 			CustomItem cItem = customItemHandler.getCustomItem(name, id);
 
-			customItemHandler.updateItem(item, p);
+			customItemHandler.updateItem(item, p, false);
 			powerHandler.applyPower(p, cItem);
 		}
 	}

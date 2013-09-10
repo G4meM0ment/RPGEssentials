@@ -39,6 +39,8 @@ public class BListener implements Listener{
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent event) {
+		if(!reNature.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
+			return;
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
 		if(reFaction.isFaction(event.getBlock().getLocation()))
@@ -52,6 +54,8 @@ public class BListener implements Listener{
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event) {
+		if(!reNature.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
+			return;
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
 		if(reFaction.isFaction(event.getBlock().getLocation()))
@@ -82,6 +86,8 @@ public class BListener implements Listener{
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onBlockSpread(BlockSpreadEvent event) {
+		if(!reNature.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
+			return;
 		if(reFaction.isFaction(event.getBlock().getLocation()))
 			return;
 		
@@ -102,6 +108,8 @@ public class BListener implements Listener{
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onPaintingBreak(HangingBreakEvent event) {
+		if(!reNature.getConfig().getStringList("worlds").contains((event.getEntity().getWorld().getName())))
+			return;
 		if(reFaction.isFaction(event.getEntity().getLocation()))
 			return;
 		

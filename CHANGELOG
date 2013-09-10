@@ -11,6 +11,7 @@ Version: 0.00.001 #0001
     		+ list for denied blocks
     		+ list for denied relatives
     		+ list for relatives to track
+    		+ multiworld support
     	+ dependencies
     		+ Towny support
     		+ Factions support
@@ -27,8 +28,11 @@ Version: 0.00.001 #0001
     	+ Items with special description, damage protection & powers
     	+ Heroes support (damage added upon class specific dmg)
     	+ converter to convert old rpg items into new ones
+    	+ convert command
+    	+ permissions
+    	! enchantments need to have the same name as they have in bukkit, view bukkit docu for names
+    + UnamedPortalPlugin
     * various alpha bugs
     * config won't disable sub-plugins
-    ! ReNatur isn't able to get back some block types such as doors, paintings etc.
     ! Junkie isn't ready to be used
     

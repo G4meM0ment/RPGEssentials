@@ -127,7 +127,7 @@ public class ReplaceHandler {
 	public boolean contains(Location l) {
 		List<NBlock> blocks = getBlockList();
 		for(NBlock b : blocks) {
-			if(b.getBlock().getLocation() == l)
+			if(b.getBlock().getLocation().distance(l) == 0)
 				return true;
 		}
 		return false;

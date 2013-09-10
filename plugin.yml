@@ -8,8 +8,8 @@ commands:
     ge:
         aliases: [ge]
         description: command
-        usage: /<command> [reload]
+        usage: /ge [reload]
     rpgitem:
         aliases: [rpgitem]
         description: items
-        usage: /<command> [give] [item]
+        usage: /rpgitem help

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -57,7 +58,7 @@ public class CustomItemHandler {
 		else
 			item.setItemMeta(metaHandler.getItemMeta(customItem, p));
 		item.setData(new MaterialData(customItem.getData()));
-		item = enchantHandler.addEnchantments(item, config);
+		enchantHandler.addEnchantments(item, config);
 		
 		//setting up id specific durability
 		data.set(Integer.toString(customItem.getId())+".durability", config.getInt("durability"));
@@ -85,7 +86,7 @@ public class CustomItemHandler {
 		return counter;
 	}
 
-	public void updateItem(ItemStack item, Player p) {
+	public void updateItem(ItemStack item, Player p, boolean fullUpdate) {
 		CustomItem customItem = getCustomItem(ChatColor.stripColor(item.getItemMeta().getDisplayName()), Integer.valueOf((ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)))));
 		if(customItem == null) return;
 		ItemMeta meta = item.getItemMeta();
@@ -99,6 +100,10 @@ public class CustomItemHandler {
 		
 		item.setItemMeta(meta);
 		item.setTypeId(customItem.getSkinId());	
+		if(fullUpdate) {
+			enchantHandler.removeEnchantments(item);
+			enchantHandler.addEnchantments(item, itemConfig.getConfig(config));
+		}
 		item.setData(new MaterialData(customItem.getData()));
 	}
 	

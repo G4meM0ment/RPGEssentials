@@ -1,6 +1,7 @@
 package me.G4meM0ment.RPGItem.Handler;
 
 import org.bukkit.ChatColor;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;

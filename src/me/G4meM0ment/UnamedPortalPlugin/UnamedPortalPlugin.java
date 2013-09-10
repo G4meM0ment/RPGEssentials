@@ -1,4 +1,4 @@
-package me.G4meM0ment.Junkie;
+package me.G4meM0ment.UnamedPortalPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,14 +6,14 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.UnamedPortalPlugin.Listener.PListener;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.G4meM0ment.Junkie.Listener.PListener;
-import me.G4meM0ment.RPGEssentials.RPGEssentials;
-
-public class Junkie {
+public class UnamedPortalPlugin {
 
 	private RPGEssentials plugin;
 	private PListener plistener;
@@ -21,10 +21,10 @@ public class Junkie {
 	private static File configFile;
 	private static FileConfiguration config = null;
 	
-	private static String logTit = "Junkie: ";
+	private static String logTit = "UnamedPortalPlugin: ";
 	private static String dir;
 
-	public Junkie(RPGEssentials plugin) {
+	public UnamedPortalPlugin(RPGEssentials plugin) {
 		this.plugin = plugin;
 		plistener = new PListener(plugin);
 		
@@ -34,12 +34,12 @@ public class Junkie {
 		
 		configFile = new File(dir+"/config.yml");
 	}
-	public Junkie() {
+	public UnamedPortalPlugin() {
 
 	}
 
 	public boolean onEnable() {
-		if(!plugin.getConfig().getBoolean("JunkieEnabled"))
+		if(!plugin.getConfig().getBoolean("UnamedPortalPluginEnabled"))
 			return true;
 		
 		//creating config or loading
@@ -64,13 +64,13 @@ public class Junkie {
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
-	    InputStream defConfigStream = plugin.getResource("defJunkConf.yml");
+	    InputStream defConfigStream = plugin.getResource("defUPPConf.yml");
 	    if (defConfigStream != null) {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
 	    }
-		plugin.getLogger().info(logTit+"Config Loaded.");
+		plugin.getLogger().info(logTit+"Config loaded.");
 	}
 	public FileConfiguration getConfig() {
 	    if (config == null) {

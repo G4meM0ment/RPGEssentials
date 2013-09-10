@@ -30,7 +30,7 @@ public class PListener implements Listener{
 		Inventory i = p.getInventory();
 		if(p == null || i == null) return;
 		
-		invHandler.processInventory(i, p);
+		invHandler.processInventory(i, p, true);
 		invHandler.processArmor(p);
 		invHandler.processItem(p);
 	}
@@ -41,7 +41,7 @@ public class PListener implements Listener{
 		Inventory i = p.getInventory();
 		if(p == null || i == null) return;
 		
-		invHandler.processInventory(i, p);
+		invHandler.processInventory(i, p, false);
 		itemData.saveDataToFiles();
 	}
 }

@@ -56,7 +56,7 @@ public class InvListener implements Listener{
 		Player p = (Player) event.getInventory().getHolder();
 		if(p == null) return;
 		
-		invHandler.processInventory(p.getInventory(), p);
+		invHandler.processInventory(p.getInventory(), p, false);
 		//invHandler.processArmor(p);
 		//invHandler.processItem(p);
 	}

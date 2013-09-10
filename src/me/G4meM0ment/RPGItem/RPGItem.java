@@ -25,15 +25,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class RPGItem {
 	
 	/*
-	 * TODO finish powers (add, unlimited, remove, configurable)
-	 * TODO make powers loss by less durability
-	 * TODO make next line for meta available
-	 * TODO add sub-ids
-	 * TODO make enchantments configurable
-	 * TODO fix leather armor coloring
-	 * TODO add bow dmg
-	 * TODO save data
-	 * TODO reload item configs on reload
 	 */
 	
 	private RPGEssentials plugin;
