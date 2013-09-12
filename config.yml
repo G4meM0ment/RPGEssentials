@@ -1,5 +1,7 @@
-ReNatureEnabled: true
-JunkieEnabled: true
+ReNatureEnabled: false
+JunkieEnabled: false
 OrbiaEnabled: false
-RPGItemEnabled: true
+RPGItemEnabled: false
+UnnamedPortalPluginEnabled: false
+RentableEnabled: false
 UsePermissions: true

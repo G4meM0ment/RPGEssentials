@@ -1,6 +1,7 @@
 package me.G4meM0ment.RPGEssentials;
 
 import me.G4meM0ment.RPGItem.Handler.RPGItemCommandHandler;
+import me.G4meM0ment.UnamedPortalPlugin.Handler.UPPCommandHandler;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,17 +12,20 @@ public class CommandHandler{
 	private RPGEssentials plugin;
 	private PermHandler ph;
 	private RPGItemCommandHandler rpgItemCmdHandler;
+	private UPPCommandHandler uppCmdHandler;
 	
 	private String mainCmd = "ge";
 	private String reNatureCmd = "rn";
 	private String junkieCmd = "junkie";
 	private String orbiaCmd = "orbia";
 	private String rpgItemCmd = "rpgitem";
+	private String UPPCmd = "upp";
 	
 	public CommandHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 		ph = new PermHandler(plugin);
 		rpgItemCmdHandler = new RPGItemCommandHandler(plugin);
+		uppCmdHandler = new UPPCommandHandler(plugin);
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -44,6 +48,11 @@ public class CommandHandler{
 		//ReNature cmds
 		if(command.getName().equalsIgnoreCase(reNatureCmd)) {
 			return rpgItemCmdHandler.exec(sender, command, label, args);
+		}
+		
+		//UPP cmds
+		if(command.getName().equalsIgnoreCase(UPPCmd)) {
+			return uppCmdHandler.exec(sender, command, label, args);
 		}
 		
 		//Orbia specific plugin cmds

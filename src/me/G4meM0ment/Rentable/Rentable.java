@@ -1,4 +1,4 @@
-package me.G4meM0ment.UnamedPortalPlugin;
+package me.G4meM0ment.Rentable;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,64 +7,58 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
-import me.G4meM0ment.UnamedPortalPlugin.Listener.PListener;
+import me.G4meM0ment.Rentable.Listener.BListener;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class UnamedPortalPlugin {
-
+public class Rentable {
+	
 	private RPGEssentials plugin;
-	private PListener plistener;
+	private BListener bListener;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
 	
-	private static String logTit = "UnamedPortalPlugin: ";
+	private static String logTit = "Rentable: ";
 	private static String dir;
+	private static Logger logger;
 
-	public UnamedPortalPlugin(RPGEssentials plugin) {
+	public Rentable(RPGEssentials plugin) {
 		this.plugin = plugin;
-		plistener = new PListener(plugin);
+		bListener = new BListener(plugin);
 		
-		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(bListener, plugin);
 		
-		dir = plugin.getDir()+"/Junkie";
-		
+		dir = plugin.getDir()+"/Rentable";
+		logger = plugin.getLogger();
 		configFile = new File(dir+"/config.yml");
+		
 	}
-	public UnamedPortalPlugin() {
-
+	public Rentable() {
 	}
 
 	public boolean onEnable() {
-		if(!plugin.getConfig().getBoolean("UnamedPortalPluginEnabled"))
-			return true;
-		
 		//creating config or loading
 		reloadConfig();
 		saveConfig();
-		
 		return true;
 	}
 
 	public boolean onDisable() {
-		//saving config
-		saveConfig();
-		plugin.getLogger().info(logTit+"Config saved");
 		return true;
 	}
 	
 	public void reloadConfig() {
 	    if (configFile == null) {
-	    	configFile = new File(plugin.getDataFolder()+dir, "/config.yml");
+	    	configFile = new File(dir, "/config.yml");
 			plugin.getLogger().info(logTit+"Created Config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
-	    InputStream defConfigStream = plugin.getResource("defUPPConf.yml");
+	    InputStream defConfigStream = plugin.getResource("defRentConf.yml");
 	    if (defConfigStream != null) {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
@@ -88,5 +82,15 @@ public class UnamedPortalPlugin {
 	    } catch (IOException ex) {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }
+	}
+	
+	public String getLogTit() {
+		return logTit;
+	}
+	public String getDir() {
+		return dir;
+	}
+	public Logger getLogger() {
+		return logger;
 	}
 }

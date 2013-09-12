@@ -7,9 +7,13 @@ softdepend: [Spout, Jail, WorldGuard, Factions, MCore]
 commands:
     ge:
         aliases: [ge]
-        description: command
+        description: Command for the main plugin
         usage: /ge [reload]
     rpgitem:
         aliases: [rpgitem]
-        description: items
+        description: Main command for RPGItem
         usage: /rpgitem help
+    upp:
+        aliases: [upp]
+        description: Main command for UnnamedPortalPlugin
+        usage: /upp help

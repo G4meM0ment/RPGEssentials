@@ -5,17 +5,22 @@ import me.G4meM0ment.Orbia.Orbia;
 import me.G4meM0ment.RPGEssentials.Schedule.Schedule;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.ReNature.ReNature;
+import me.G4meM0ment.Rentable.Rentable;
+import me.G4meM0ment.UnamedPortalPlugin.UnnamedPortalPlugin;
+import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.herocraftonline.heroes.Heroes;
 import com.massivecraft.factions.Factions;
 import com.massivecraft.mcore.MCore;
 import com.palmergames.bukkit.towny.Towny;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class RPGEssentials extends JavaPlugin{
@@ -24,11 +29,15 @@ public class RPGEssentials extends JavaPlugin{
 	private Junkie junkie;
 	private Orbia orbia;
 	private RPGItem rpgItem;
+	private UnnamedPortalPlugin upp;
+	private Rentable rent;
 	private Schedule schedule;
 	
 	private CommandHandler ch;
 	
+	private Economy econ;
 	private WorldGuardPlugin wg;
+	private WorldEditPlugin we;
 	private MCore mcore;
 	private Factions factions;
 	private Towny towny;
@@ -85,6 +94,26 @@ public class RPGEssentials extends JavaPlugin{
 		else
 			getLogger().info("Junkie couldn't be enabled!");
 		
+//################ Initializing UnnamedPortalPlugin and debugging ################
+		upp = new UnnamedPortalPlugin(this);
+		boolean uppEnabled = upp.onEnable();
+		if(uppEnabled && getConfig().getBoolean("UnnamedPortalPluginEnabled"))
+			getLogger().info("UnnamedPortalPlugin enabled!");
+		else if(uppEnabled)
+			getLogger().info("UnnamedPortalPlugin found, but disabled in config!");
+		else
+			getLogger().info("UnnamedPortalPlugin couldn't be enabled!");
+		
+//################ Initializing Rentable and debugging ################
+		rent = new Rentable(this);
+		boolean rentEnabled = rent.onEnable();
+		if(rentEnabled && getConfig().getBoolean("RentableEnabled"))
+			getLogger().info("RentablePlugin enabled!");
+		else if(rentEnabled)
+			getLogger().info("RentablePlugin found, but disabled in config!");
+		else
+			getLogger().info("RentablePlugin couldn't be enabled!");
+		
 //################ Initializing Orbia and debugging ################
 		orbia = new Orbia(this);
 		boolean orbiaEnabled = orbia.onEnable();
@@ -99,6 +128,12 @@ public class RPGEssentials extends JavaPlugin{
 		getLogger().info("Initialization done!");
 		
 //################ Init APIs ###################
+	    if (!setupEconomy() ) {
+	        getLogger().info("Disabled due to no Vault dependency found!");
+	        getServer().getPluginManager().disablePlugin(this);
+	        return;
+	    }
+		we = initWorldEdit();
 		wg = initWorldGuard();
 		mcore = initMCore();
 		factions = initFactions();
@@ -140,6 +175,37 @@ public class RPGEssentials extends JavaPlugin{
 	
 	public String getDir() {
 		return dir;
+	}
+	
+    private boolean setupEconomy() {
+    	if (getServer().getPluginManager().getPlugin("Vault") == null) {
+    		this.getLogger().info("Vault not found");
+    		return false;
+    	}
+    	RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+    	if (rsp == null) {
+    		this.getLogger().info("No economy plugin found!");
+    		return true;
+    	}
+    	econ = rsp.getProvider();
+    	return econ != null;
+    }
+    public Economy getEconomy() {
+    	return econ;
+    }
+	
+	private WorldEditPlugin initWorldEdit() {
+	    Plugin plugin = getServer().getPluginManager().getPlugin("WorldEdit");
+	 
+	    // WorldEdit may not be loaded
+	    if (plugin == null || !(plugin instanceof WorldEditPlugin)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+		getLogger().info("WorldEdit found enabled features");
+	    return (WorldEditPlugin) plugin;
+	}
+	public WorldEditPlugin getWorldEdit() {
+		return we;
 	}
 	
 	private WorldGuardPlugin initWorldGuard() {
@@ -226,5 +292,9 @@ public class RPGEssentials extends JavaPlugin{
 	
 	public RPGItem getRPGItem() {
 		return rpgItem;
+	}
+
+	public UnnamedPortalPlugin getUnnamedPortalPlugin() {
+		return upp;
 	}
  }
