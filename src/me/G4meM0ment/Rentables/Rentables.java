@@ -1,4 +1,4 @@
-package me.G4meM0ment.Rentable;
+package me.G4meM0ment.Rentables;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,13 +7,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
-import me.G4meM0ment.Rentable.Listener.BListener;
+import me.G4meM0ment.Rentables.Listener.BListener;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Rentable {
+public class Rentables {
 	
 	private RPGEssentials plugin;
 	private BListener bListener;
@@ -25,7 +25,7 @@ public class Rentable {
 	private static String dir;
 	private static Logger logger;
 
-	public Rentable(RPGEssentials plugin) {
+	public Rentables(RPGEssentials plugin) {
 		this.plugin = plugin;
 		bListener = new BListener(plugin);
 		
@@ -36,7 +36,7 @@ public class Rentable {
 		configFile = new File(dir+"/config.yml");
 		
 	}
-	public Rentable() {
+	public Rentables() {
 	}
 
 	public boolean onEnable() {

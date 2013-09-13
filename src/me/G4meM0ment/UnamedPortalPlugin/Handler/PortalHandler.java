@@ -9,12 +9,12 @@ import me.G4meM0ment.UnamedPortalPlugin.Portal.Portal;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 
 public class PortalHandler {
 	
@@ -74,18 +74,18 @@ public class PortalHandler {
 					public void run() {
 						for(Block b : portal.getBlocks()) {
 							if(p.getLocation().distance(b.getLocation()) < 1) {
-								p.getWorld().playEffect(portalEvent.getPortal().getDestination(), Effect.POTION_BREAK, new Potion(PotionType.REGEN));
+								playWooshEffect(p.getLocation());
 								p.teleport(portalEvent.getPortal().getDestination());
-								p.getWorld().playEffect(portalEvent.getPortal().getDestination(), Effect.POTION_BREAK, new Potion(PotionType.REGEN));
+								playWooshEffect(portalEvent.getPortal().getDestination());
 							}
 						}
 					}
 				}, 80L); 
 			}
 			else { 
-				p.getWorld().playEffect(portalEvent.getPortal().getDestination(), Effect.POTION_BREAK, new Potion(PotionType.REGEN));
+				playWooshEffect(p.getLocation());
 				p.teleport(portalEvent.getPortal().getDestination());
-				p.getWorld().playEffect(portalEvent.getPortal().getDestination(), Effect.POTION_BREAK, new Potion(PotionType.REGEN));
+				playWooshEffect(portalEvent.getPortal().getDestination());
 			}
 		}
 	}
@@ -113,8 +113,20 @@ public class PortalHandler {
 	}
 	public void removePortal(Portal portal) {
 		if(portal == null) return;
+		portalData = new PortalData();
 		getPortals().remove(portal.getID());
 		portalData.getConfig().set(portal.getID(), null);
 		portalData.saveConfig();
+	}
+	
+	private void playWooshEffect(Location loc) {
+		if(!upp.getConfig().getBoolean("WooshEffect")) return;
+		World world = loc.getWorld();
+		world.playEffect(loc, Effect.ENDER_SIGNAL, 0);
+		world.playEffect(loc, Effect.ENDER_SIGNAL, 0);
+		world.playEffect(loc, Effect.SMOKE, 4);
+		world.playEffect(loc, Effect.SMOKE, 4);
+		world.playEffect(loc, Effect.SMOKE, 4);
+		world.playEffect(loc, Effect.GHAST_SHOOT, 0);
 	}
 }

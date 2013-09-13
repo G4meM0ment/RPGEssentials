@@ -1,4 +1,6 @@
-package me.G4meM0ment.Rentable.Listener;
+package me.G4meM0ment.Rentables.Listener;
+
+import java.util.List;
 
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -10,7 +12,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
-import me.G4meM0ment.Rentable.Handler.RentableHandler;
+import me.G4meM0ment.Rentables.Handler.RentableHandler;
 
 public class BListener implements Listener{
 	
@@ -20,14 +22,12 @@ public class BListener implements Listener{
 	
 	public BListener(RPGEssentials plugin) {
 		this.plugin = plugin;
-		rh = new RentableHandler(plugin);
+		rh = new RentableHandler();
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onSignChange(SignChangeEvent event) {
 		if(event.getBlock() == null) return;
-		
-		System.out.println("Debug: 1");
 		
 		Player p = event.getPlayer();
 		Selection sel = plugin.getWorldEdit().getSelection(p);
@@ -46,7 +46,13 @@ public class BListener implements Listener{
 					time = s.split(":")[1];
 				}
 			}
-			rh.proceedRentable((Sign) event.getBlock().getState(), header, price, time, sel);
+			List<String> newLines = rh.proceedRentable((Sign) event.getBlock().getState(), header, price, time, sel);
+			if(newLines == null) return;
+			else {
+				for(int i = 0; i < 4; i++) {
+					event.setLine(i, newLines.get(i));
+				}
+			}
 		}
 	}
 

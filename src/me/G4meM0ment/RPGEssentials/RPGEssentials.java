@@ -5,7 +5,7 @@ import me.G4meM0ment.Orbia.Orbia;
 import me.G4meM0ment.RPGEssentials.Schedule.Schedule;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.ReNature.ReNature;
-import me.G4meM0ment.Rentable.Rentable;
+import me.G4meM0ment.Rentables.Rentables;
 import me.G4meM0ment.UnamedPortalPlugin.UnnamedPortalPlugin;
 import net.milkbowl.vault.economy.Economy;
 
@@ -30,7 +30,7 @@ public class RPGEssentials extends JavaPlugin{
 	private Orbia orbia;
 	private RPGItem rpgItem;
 	private UnnamedPortalPlugin upp;
-	private Rentable rent;
+	private Rentables rent;
 	private Schedule schedule;
 	
 	private CommandHandler ch;
@@ -105,7 +105,7 @@ public class RPGEssentials extends JavaPlugin{
 			getLogger().info("UnnamedPortalPlugin couldn't be enabled!");
 		
 //################ Initializing Rentable and debugging ################
-		rent = new Rentable(this);
+		rent = new Rentables(this);
 		boolean rentEnabled = rent.onEnable();
 		if(rentEnabled && getConfig().getBoolean("RentableEnabled"))
 			getLogger().info("RentablePlugin enabled!");

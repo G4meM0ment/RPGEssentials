@@ -1,4 +1,4 @@
-package me.G4meM0ment.UnamedPortalPlugin.DataStorage;
+package me.G4meM0ment.Rentables.DataStorage;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.G4meM0ment.UnamedPortalPlugin.UnnamedPortalPlugin;
-import me.G4meM0ment.UnamedPortalPlugin.Handler.PortalHandler;
-import me.G4meM0ment.UnamedPortalPlugin.Portal.Portal;
+import me.G4meM0ment.Rentables.Handler.RentableHandler;
+import me.G4meM0ment.Rentables.Rentable.Rentable;
+import me.G4meM0ment.Rentables.Rentables;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,45 +20,45 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class PortalData {
+public class RentableData {
 	
-	private UnnamedPortalPlugin upp;
-	private PortalHandler ph;
+	private Rentables rent;
+	private RentableHandler rh;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
-	private static String defConfig = "portalDataFileExample.yml";
+	private static String defConfig = "rentDataFileExample.yml";
 	private static String logTit;
 	
 	private static String dir;
 
-	public PortalData(UnnamedPortalPlugin upp) {
-		this.upp = upp;
-		ph = new PortalHandler(upp);
+	public RentableData(Rentables rent) {
+		this.rent = rent;
+		rh = new RentableHandler();
 		
-		dir = upp.getDir()+"/data";
-		logTit = upp.getLogTit();
+		dir = rent.getDir()+"/data";
+		logTit = rent.getLogTit();
 		configFile = new File(dir+"/data.yml");
 	}
 
-	public PortalData() {
-		upp = new UnnamedPortalPlugin();
-		ph = new PortalHandler(upp);
+	public RentableData() {
+		rent = new Rentables();
+		rh = new RentableHandler();
 	}
 	
 	public String getDir() {
 		return dir;
 	}
 	
-	public void initializePortals() {
-		Iterator<String> portalData = getConfig().getKeys(false).iterator();
-		while(portalData.hasNext()) {
-			String path = portalData.next();
+	public void initializeRentables() {
+		Iterator<String> rentData = getConfig().getKeys(false).iterator();
+		while(rentData.hasNext()) {
+			String path = rentData.next();
 			Iterator<String> iterCounter = getConfig().getConfigurationSection(path+".location").getKeys(false).iterator();
 			List<Block> blocks = new ArrayList<Block>();
 			
-			Location dest = new Location(Bukkit.getWorld(getConfig().getString(path+".destination.world")),
-					getConfig().getInt(path+".destination.x"), getConfig().getInt(path+".destination.y"), getConfig().getInt(path+".destination.z"));
+			Location sign = new Location(Bukkit.getWorld(getConfig().getString(path+".sign.world")),
+					getConfig().getInt(path+".sign.x"), getConfig().getInt(path+".sign.y"), getConfig().getInt(path+".sign.z"));
 			
 			while(iterCounter.hasNext()) {
 				String counted = iterCounter.next();
@@ -66,14 +66,14 @@ public class PortalData {
 						getConfig().getInt(path+".location."+counted+".x"), getConfig().getInt(path+".location."+counted+".y"), getConfig().getInt(path+".location."+counted+".z"));
 				blocks.add(l.getBlock());
 			}
-			ph.getPortals().put(path, new Portal(path, blocks, dest));
+			rh.getRentables().put(path, new Rentable(sign.getBlock(), blocks, path, 0, 0));
 		}
 	}
 	
 	public void reloadConfig() {
 	    if (configFile == null) {
 	    	configFile = new File(dir, "/data.yml");
-			upp.getLogger().info(logTit+"Created Config.");
+			rent.getLogger().info(logTit+"Created Config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
@@ -84,7 +84,7 @@ public class PortalData {
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
 	    }
-		upp.getLogger().info(logTit+"Config loaded.");
+		rent.getLogger().info(logTit+"Config loaded.");
 	}
 	public FileConfiguration getConfig() {
 	    if (config == null) {
@@ -98,7 +98,7 @@ public class PortalData {
 	    }
 	    try {
 	        config.save(configFile);
-	        upp.getLogger().info(logTit+"Config saved");
+	        rent.getLogger().info(logTit+"Config saved");
 	    } catch (IOException ex) {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }

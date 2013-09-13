@@ -8,7 +8,7 @@
 	<classpathentry kind="lib" path="../APIs/worldguard-5.8.jar"/>
 	<classpathentry kind="lib" path="../APIs/Towny.jar"/>
 	<classpathentry kind="lib" path="../APIs/craftbukkit.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/worldedit-5.5.7.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/Vault.jar"/>
+	<classpathentry kind="lib" path="../APIs/worldedit-5.5.7.jar"/>
+	<classpathentry kind="lib" path="../APIs/Vault.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
