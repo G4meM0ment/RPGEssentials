@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -112,9 +111,9 @@ public class ItemData {
 	    }
 	    try {
 	        config.save(configFile);
-	        Logger.getLogger(JavaPlugin.class.getName()).info(logTit+configFile.getName()+" data file saved");
+	        plugin.getLogger().info(logTit+configFile.getName()+" data file saved");
 	    } catch (IOException ex) {
-	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save data file to " + configFile, ex);
+	        plugin.getLogger().log(Level.SEVERE, logTit+"Could not save data file to " + configFile, ex);
 	    }
 	}
 	

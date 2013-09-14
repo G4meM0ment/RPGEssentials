@@ -8,7 +8,6 @@ import org.bukkit.block.Block;
 
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.bukkit.selections.Selection;
-import com.sk89q.worldedit.regions.CuboidRegion;
 
 public class WorldEditHandler {
 
@@ -18,7 +17,7 @@ public class WorldEditHandler {
 	
 	public List<Block> getSelectedBlocks(Selection sel) {
 		List<Block> blocks = new ArrayList<Block>();
-        if (sel instanceof CuboidRegion) {
+//        if (sel instanceof CuboidRegion) {
             Vector min = sel.getNativeMinimumPoint();
             Vector max = sel.getNativeMaximumPoint();
             for(int x = min.getBlockX();x <= max.getBlockX(); x=x+1){
@@ -29,7 +28,7 @@ public class WorldEditHandler {
                     }
                 }
             }
-        }
+//        }
         return blocks;
 	}
 }

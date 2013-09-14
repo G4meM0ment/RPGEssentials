@@ -5,11 +5,13 @@ import org.bukkit.entity.Player;
 
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.InventoryHandler;
+import me.G4meM0ment.Rentables.Handler.RentableHandler;
 
 public class ScheduleHandler {
 	
 	private RPGItem rpgItem;
 	private InventoryHandler invHandler;
+	private RentableHandler rentHandler;
 	
 	private static int seconds;
 	private static int minutes;
@@ -19,6 +21,7 @@ public class ScheduleHandler {
 	public ScheduleHandler() {
 		rpgItem = new RPGItem();
 		invHandler = new InventoryHandler();
+		rentHandler = new RentableHandler();
 	}
 	
 	public void callSecond() {
@@ -37,6 +40,7 @@ public class ScheduleHandler {
 			minutes = 0;
 		minutes++;
 		
+		rentHandler.checkRentables();
 		if(minutes == 15 || minutes == 30 || minutes == 45 || minutes == 60)
 			rpgItem.saveData();
 	}

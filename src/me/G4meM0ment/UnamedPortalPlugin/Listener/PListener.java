@@ -27,7 +27,7 @@ public class PListener implements Listener{
 		Player p = event.getPlayer();
 		Block b = event.getPlayer().getLocation().getBlock();
 		if(p == null || b == null) return;
-		if(ph.isPortal(b) && pm.hasPortalPerm(p, ph.getPortal(b))) {
+		if(ph.isPortal(b) && pm.hasPortalPerm(p, ph.getPortal(b)) && !ph.hasToWait(p)) {
 			ph.accessedPortal(p, ph.getPortal(b));
 		}	
 	}

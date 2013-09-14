@@ -12,17 +12,19 @@ import org.bukkit.event.block.SignChangeEvent;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.Rentables.Handler.PermHandler;
 import me.G4meM0ment.Rentables.Handler.RentableHandler;
 
 public class BListener implements Listener{
 	
 	private RPGEssentials plugin;
 	private RentableHandler rh;
-	
+	private PermHandler ph;
 	
 	public BListener(RPGEssentials plugin) {
 		this.plugin = plugin;
 		rh = new RentableHandler();
+		ph = new PermHandler(plugin);
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -30,9 +32,14 @@ public class BListener implements Listener{
 		if(event.getBlock() == null) return;
 		
 		Player p = event.getPlayer();
+		Player owner = event.getPlayer();
 		Selection sel = plugin.getWorldEdit().getSelection(p);
-		if(p == null /*|| sel == null*/) return;
+		if(p == null || sel == null) return;
 		//TODO add messenger
+		if(!ph.hasRentablesPerm(p)) return;
+		//TODO add messenger
+		if(rh.getPlayersAdminModeEnabled().contains(p))
+			owner = null;
 		
 		String header = null, price = null, time = null;
 		if(event.getLine(0).equalsIgnoreCase("[Rent]")) {
@@ -46,7 +53,7 @@ public class BListener implements Listener{
 					time = s.split(":")[1];
 				}
 			}
-			List<String> newLines = rh.proceedRentable((Sign) event.getBlock().getState(), header, price, time, sel);
+			List<String> newLines = rh.proceedRentable((Sign) event.getBlock().getState(), header, price, time, sel, owner);
 			if(newLines == null) return;
 			else {
 				for(int i = 0; i < 4; i++) {
@@ -55,5 +62,4 @@ public class BListener implements Listener{
 			}
 		}
 	}
-
 }

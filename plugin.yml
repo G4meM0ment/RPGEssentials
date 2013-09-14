@@ -17,3 +17,7 @@ commands:
         aliases: [upp]
         description: Main command for UnnamedPortalPlugin
         usage: /upp help
+    rentables:
+        aliases: [rentables]
+        description: Main command for Rentables
+        usage: /rentables help

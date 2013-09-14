@@ -22,6 +22,7 @@ public class PortalHandler {
 	private PortalData portalData;
 	
 	private static HashMap<String, Portal> portals = new HashMap<String, Portal>();
+	private static HashMap<Player, Long> usedMillis = new HashMap<Player, Long>(); 
 	
 	public PortalHandler(UnnamedPortalPlugin upp) {
 		this.upp = upp;
@@ -60,6 +61,10 @@ public class PortalHandler {
 	public HashMap<String, Portal> getPortals() {
 		return portals;
 	}
+	
+	public HashMap<Player, Long> getUsedPortalMillis() {
+		return usedMillis;
+	}
 
 	public void accessedPortal(final Player p, final Portal portal) {
 		if(p == null || portal == null || portal.getDestination() == null) return;
@@ -67,6 +72,7 @@ public class PortalHandler {
 		final PortalEvent portalEvent = new PortalEvent(portal, p);
 		Bukkit.getServer().getPluginManager().callEvent(portalEvent);
 		if(!portalEvent.isCancelled()) {
+			getUsedPortalMillis().put(p, System.currentTimeMillis());
 			if(!upp.getConfig().getBoolean("UseOnMove")) {
 				p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 240, 1000));
 				Bukkit.getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() {
@@ -128,5 +134,14 @@ public class PortalHandler {
 		world.playEffect(loc, Effect.SMOKE, 4);
 		world.playEffect(loc, Effect.SMOKE, 4);
 		world.playEffect(loc, Effect.GHAST_SHOOT, 0);
+	}
+
+	public boolean hasToWait(Player p) {
+		if(!getUsedPortalMillis().containsKey(p))
+			return false;
+		if(System.currentTimeMillis() - getUsedPortalMillis().get(p) < upp.getConfig().getLong("PortalCooldown"))
+			return true;
+		else
+			return false;
 	}
 }

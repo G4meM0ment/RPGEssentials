@@ -18,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class RentableData {
@@ -56,7 +57,10 @@ public class RentableData {
 			String path = rentData.next();
 			Iterator<String> iterCounter = getConfig().getConfigurationSection(path+".location").getKeys(false).iterator();
 			List<Block> blocks = new ArrayList<Block>();
-			
+			Player owner = null;
+			if(!getConfig().getString(path+".owner").isEmpty())
+				owner = Bukkit.getPlayer(getConfig().getString(path+".owner"));
+				
 			Location sign = new Location(Bukkit.getWorld(getConfig().getString(path+".sign.world")),
 					getConfig().getInt(path+".sign.x"), getConfig().getInt(path+".sign.y"), getConfig().getInt(path+".sign.z"));
 			
@@ -66,7 +70,15 @@ public class RentableData {
 						getConfig().getInt(path+".location."+counted+".x"), getConfig().getInt(path+".location."+counted+".y"), getConfig().getInt(path+".location."+counted+".z"));
 				blocks.add(l.getBlock());
 			}
-			rh.getRentables().put(path, new Rentable(sign.getBlock(), blocks, path, 0, 0));
+			
+			Rentable r = new Rentable(sign.getBlock(), blocks, path, getConfig().getString(path+".header"), getConfig().getDouble(path+".price"), getConfig().getInt(path+".time"), owner);
+			if(!getConfig().getString(path+".renter").isEmpty())
+				r.setRenter(Bukkit.getPlayer(getConfig().getString(path+".renter")));
+			if(!getConfig().getString(path+".preRenter").isEmpty())
+				r.setPreRenter(Bukkit.getPlayer(getConfig().getString(path+".preRenter")));
+			r.setRemaining(getConfig().getInt(path+".remaining"));
+			
+			rh.getRentables().put(path, r);
 		}
 	}
 	

@@ -17,10 +17,8 @@ import me.G4meM0ment.RPGItem.Listener.HeroesListener;
 import me.G4meM0ment.RPGItem.Listener.InvListener;
 import me.G4meM0ment.RPGItem.Listener.PListener;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class RPGItem {
 	
@@ -41,6 +39,7 @@ public class RPGItem {
 	private static FileConfiguration config = null;
 	
 	private static String logTit = "RPGItem: ";
+	private static Logger logger;
 	private static String dir;
 	private static boolean isDisabling;
 	private static String defConfig = "defRPGItemConf.yml"; 
@@ -56,6 +55,7 @@ public class RPGItem {
 		hListener = new HeroesListener();
 		ph = new PowerHandler(plugin);
 		
+		logger = plugin.getLogger();
 		dir = plugin.getDir()+"/RPGItem";
 		plugin.getServer().getPluginManager().registerEvents(pListener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(bListener, plugin);
@@ -102,7 +102,7 @@ public class RPGItem {
 	public void reloadConfig() {
 	    if (configFile == null) {
 	    	configFile = new File(dir+"/config.yml");
-			Bukkit.getLogger().info(logTit+"Created config.");
+	    	getLogger().info(logTit+"Created config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
@@ -113,7 +113,7 @@ public class RPGItem {
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
 	    }
-	    Bukkit.getLogger().info(logTit+"Config loaded.");
+	    getLogger().info(logTit+"Config loaded.");
 	}
 	public FileConfiguration getConfig() {
 	    if (config == null) {
@@ -127,14 +127,18 @@ public class RPGItem {
 	    }
 	    try {
 	        config.save(configFile);
-	        Bukkit.getLogger().info(logTit+"Config saved");
+	        getLogger().info(logTit+"Config saved");
 	    } catch (IOException ex) {
-	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
+	    	getLogger().log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }
 	}
 	
 	public String getLogTit() {
 		return logTit;
+	}
+	
+	public Logger getLogger() {
+		return logger;
 	}
 	
 	public boolean isDisabling() {

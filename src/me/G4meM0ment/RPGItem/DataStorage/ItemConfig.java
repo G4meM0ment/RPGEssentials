@@ -6,11 +6,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGEssentials.DataStorage.FileHandler;
@@ -112,9 +110,9 @@ public class ItemConfig {
 	    }
 	    try {
 	        config.save(configFile);
-	        Logger.getLogger(JavaPlugin.class.getName()).info(logTit+configFile.getName()+" config saved");
+	        plugin.getLogger().info(logTit+configFile.getName()+" config saved");
 	    } catch (IOException ex) {
-	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
+	        plugin.getLogger().log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }
 	}
 	

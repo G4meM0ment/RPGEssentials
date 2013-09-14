@@ -16,6 +16,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.griefcraft.lwc.LWC;
+import com.griefcraft.lwc.LWCPlugin;
 import com.herocraftonline.heroes.Heroes;
 import com.massivecraft.factions.Factions;
 import com.massivecraft.mcore.MCore;
@@ -42,6 +44,8 @@ public class RPGEssentials extends JavaPlugin{
 	private Factions factions;
 	private Towny towny;
 	private Heroes heroes;
+	private LWCPlugin lwcp;
+	private LWC lwc;
 	
 	private String dir = "plugins/RPGEssentials";
 	
@@ -104,15 +108,15 @@ public class RPGEssentials extends JavaPlugin{
 		else
 			getLogger().info("UnnamedPortalPlugin couldn't be enabled!");
 		
-//################ Initializing Rentable and debugging ################
+//################ Initializing Rentables and debugging ################
 		rent = new Rentables(this);
 		boolean rentEnabled = rent.onEnable();
 		if(rentEnabled && getConfig().getBoolean("RentableEnabled"))
-			getLogger().info("RentablePlugin enabled!");
+			getLogger().info("Rentables enabled!");
 		else if(rentEnabled)
-			getLogger().info("RentablePlugin found, but disabled in config!");
+			getLogger().info("Rentables found, but disabled in config!");
 		else
-			getLogger().info("RentablePlugin couldn't be enabled!");
+			getLogger().info("Rentables couldn't be enabled!");
 		
 //################ Initializing Orbia and debugging ################
 		orbia = new Orbia(this);
@@ -139,6 +143,7 @@ public class RPGEssentials extends JavaPlugin{
 		factions = initFactions();
 		towny = initTowny();
 		heroes = initHeroes();
+		lwc = initLWC();
 		
 //############### Startsing scheduler #################
 		schedule = new Schedule(this);
@@ -178,13 +183,13 @@ public class RPGEssentials extends JavaPlugin{
 	}
 	
     private boolean setupEconomy() {
-    	if (getServer().getPluginManager().getPlugin("Vault") == null) {
+    	if(getServer().getPluginManager().getPlugin("Vault") == null) {
     		this.getLogger().info("Vault not found");
     		return false;
     	}
     	RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
     	if (rsp == null) {
-    		this.getLogger().info("No economy plugin found!");
+    		getLogger().info("No economy plugin found!");
     		return true;
     	}
     	econ = rsp.getProvider();
@@ -272,6 +277,19 @@ public class RPGEssentials extends JavaPlugin{
 	}
 	public Heroes getHeroes() {
 		return heroes;
+	}
+	
+	private LWC initLWC() {
+	    Plugin plugin = getServer().getPluginManager().getPlugin("LWC");
+	 
+	    if (plugin == null || !(plugin instanceof LWCPlugin)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+		getLogger().info("LWC found enabled features");
+	    return ((LWCPlugin) plugin).getLWC();
+	}
+	public LWC getLWC() {
+		return lwc;
 	}
 	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

@@ -7,7 +7,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.Rentables.DataStorage.RentableData;
 import me.G4meM0ment.Rentables.Listener.BListener;
+import me.G4meM0ment.Rentables.Listener.PListener;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,21 +19,25 @@ public class Rentables {
 	
 	private RPGEssentials plugin;
 	private BListener bListener;
+	private PListener pListener;
+	private RentableData rentData;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
 	
-	private static String logTit = "Rentable: ";
+	private static String logTit = "Rentables: ";
 	private static String dir;
 	private static Logger logger;
 
 	public Rentables(RPGEssentials plugin) {
 		this.plugin = plugin;
 		bListener = new BListener(plugin);
+		pListener = new PListener();
 		
 		plugin.getServer().getPluginManager().registerEvents(bListener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(pListener, plugin);
 		
-		dir = plugin.getDir()+"/Rentable";
+		dir = plugin.getDir()+"/Rentables";
 		logger = plugin.getLogger();
 		configFile = new File(dir+"/config.yml");
 		
@@ -41,8 +47,12 @@ public class Rentables {
 
 	public boolean onEnable() {
 		//creating config or loading
+		rentData = new RentableData(this);
 		reloadConfig();
 		saveConfig();
+		rentData.reloadConfig();
+		rentData.saveConfig();
+		rentData.initializeRentables();
 		return true;
 	}
 
