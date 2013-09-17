@@ -17,23 +17,24 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import com.herocraftonline.heroes.characters.CharacterDamageManager.ProjectileType;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
 
 public class MetaHandler {
 	
 	private static RPGEssentials plugin;
-	private RPGItem rpgItem;
+	private RPGItem subplugin;
 	private ItemConfig itemConfig;
 	private static int splitter = 39;
 	
 	public MetaHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
-		rpgItem = new RPGItem();
+		subplugin = new RPGItem();
 		itemConfig = new ItemConfig();
 	}
 	public MetaHandler() {
-		rpgItem = new RPGItem();
+		subplugin = new RPGItem();
 		itemConfig = new ItemConfig();
 	}
 	
@@ -54,8 +55,8 @@ public class MetaHandler {
 			Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
 			HeroClass hClass = h.getHeroClass();
 			double baseDamage = 0;
-			if(customItem.getItem().getType() == Material.BOW) 
-				baseDamage = hClass.getItemDamage(Material.ARROW);
+			if(customItem.getItem().getType() == Material.BOW)
+				baseDamage = hClass.getProjectileDamage(ProjectileType.ARROW);
 			else
 				if(hClass.getItemDamage(customItem.getItem().getType()) != null)
 					baseDamage = hClass.getItemDamage(customItem.getItem().getType());
@@ -63,11 +64,11 @@ public class MetaHandler {
 			dmg = (int) (baseDamage+(hClass.getItemDamageLevel(customItem.getItem().getType())*h.getLevel()));
 		}
 		
-		preLore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipGeneralInfoFormat").replace("%hand", customItem.getHand()).replace("%type", customItem.getType())));
-		preLore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipDamageFormat").replace("%dmgValue", Integer.toString(customItem.getDmgValue()+dmg)).replace("%maxDmgValue", Integer.toString(customItem.getDmgValueMax()+dmg))));
-		preLore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipPriceFormat").replace("%priceValue", Integer.toString(customItem.getPrice()))));
-		preLore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipDescriptionFormat").replace("%description", customItem.getDesc())));
-		preLore.add(ChatColor.translateAlternateColorCodes('&', rpgItem.getConfig().getString("ItemTooltipLoreFormat").replace("%lore", customItem.getLore())));
+		preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipGeneralInfoFormat").replace("%hand", customItem.getHand()).replace("%type", customItem.getType())));
+		preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipDamageFormat").replace("%dmgValue", Integer.toString(customItem.getDmgValue()+dmg)).replace("%maxDmgValue", Integer.toString(customItem.getDmgValueMax()+dmg))));
+		preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipPriceFormat").replace("%priceValue", Integer.toString(customItem.getPrice()))));
+		preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipDescriptionFormat").replace("%description", customItem.getDesc())));
+		preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipLoreFormat").replace("%lore", customItem.getLore())));
 		
 		for(String s : preLore) {
 			if(s.length() < splitter) {

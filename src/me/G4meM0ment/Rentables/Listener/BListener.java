@@ -2,11 +2,15 @@ package me.G4meM0ment.Rentables.Listener;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 
 import com.sk89q.worldedit.bukkit.selections.Selection;
@@ -14,6 +18,7 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.Rentables.Handler.PermHandler;
 import me.G4meM0ment.Rentables.Handler.RentableHandler;
+import me.G4meM0ment.Rentables.Rentable.Rentable;
 
 public class BListener implements Listener{
 	
@@ -59,6 +64,20 @@ public class BListener implements Listener{
 				for(int i = 0; i < 4; i++) {
 					event.setLine(i, newLines.get(i));
 				}
+			}
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onBlockBreak(BlockBreakEvent event) {
+		Block b = event.getBlock();
+		if(b.getType() == Material.SIGN_POST || b.getType() == Material.WALL_SIGN) {
+			Rentable r = rh.getRentableBySign(b);
+			if(r != null) {
+				if((!r.getOwner().isEmpty() && Bukkit.getPlayer(r.getOwner()) == event.getPlayer()) || ph.hasRentablesAdminPerm(event.getPlayer())) {
+					rh.removeRentable(r);
+				}
+
 			}
 		}
 	}

@@ -26,6 +26,7 @@ public class ReNature {
 	private static String logTit = "ReNature: ";
 	private static String dir;
 	private static boolean isDisabling;
+	private static boolean isEnabled = false;
 	
 	public ReNature(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -52,14 +53,17 @@ public class ReNature {
 		
 		//starting the recreating process
 		rh.start();
+		
+		isEnabled = true;
 		return true;
 	}
 	
 	public boolean onDisable() {
-		isDisabling = true;
-		saveConfig();
+		isDisabling = true;		
 		
 		rh.workList();
+		
+		isEnabled = false;
 		return true;
 	}
 	
@@ -103,5 +107,9 @@ public class ReNature {
 	
 	public String getLogTit() {
 		return logTit;
+	}
+	
+	public boolean isEnabled() {
+		return isEnabled;
 	}
 }

@@ -14,7 +14,7 @@ import me.G4meM0ment.ReNature.CustomTypes.NBlock;
 public class ReplaceHandler {
 	
 	private RPGEssentials plugin;
-	private ReNature reNature;
+	private ReNature subplugin;
 	
 	private static List<NBlock> blocks = new ArrayList<NBlock>();
 	private int millis = 50000;
@@ -22,7 +22,7 @@ public class ReplaceHandler {
 	
 	public ReplaceHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
-		reNature = new ReNature();
+		subplugin = new ReNature();
 	}
 	public ReplaceHandler() {
 	}
@@ -106,14 +106,14 @@ public class ReplaceHandler {
 		for(NBlock b : new ArrayList<NBlock>(getBlockList())) {
 			forceRenew(b);
 		}
-		plugin.getLogger().info(reNature.getLogTit()+"Nature recovered completely");
+		plugin.getLogger().info(subplugin.getLogTit()+"Nature recovered completely");
 	}
 	
 	private boolean checkPlayers(List<Player> players, Block b) {
-		if(reNature.isDisabling())
+		if(subplugin.isDisabling())
 			return false;
 		//TODO check if online players listed...
-		int dist = reNature.getConfig().getInt("playerRespawnDistance");
+		int dist = subplugin.getConfig().getInt("playerRespawnDistance");
 		for(Player p : players) {
 			if(p.getLocation().distance(b.getLocation()) > dist) {
 				continue;

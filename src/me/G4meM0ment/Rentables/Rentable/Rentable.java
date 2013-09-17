@@ -12,9 +12,9 @@ public class Rentable {
 	private String id, header;
 	private int time, remaining = 0;
 	private double price;
-	private Player renter = null, preRenter = null, owner;
+	private String renter = "", preRenter = "", owner;
 
-	public Rentable(Block sign, List<Block> blocks, String id, String header, double price, int time, Player owner) {
+	public Rentable(Block sign, List<Block> blocks, String id, String header, double price, int time, String owner) {
 		this.sign = sign;
 		this.blocks = blocks;
 		this.id = id;
@@ -73,24 +73,24 @@ public class Rentable {
 		this.remaining = remaining;
 	}
 
-	public Player getRenter() {
+	public String getRenter() {
 		return renter;
 	}
-	public void setRenter(Player renter) {
+	public void setRenter(String renter) {
 		this.renter = renter;
 	}
 	
-	public Player getPreRenter() {
+	public String getPreRenter() {
 		return preRenter;
 	}
-	public void setPreRenter(Player preRenter) {
+	public void setPreRenter(String preRenter) {
 		this.preRenter = preRenter;
 	}
 	
-	public Player getOwner() {
+	public String getOwner() {
 		return owner;
 	}
-	public void setOwner(Player owner) {
+	public void setOwner(String owner) {
 		this.owner = owner;
 	}
 }

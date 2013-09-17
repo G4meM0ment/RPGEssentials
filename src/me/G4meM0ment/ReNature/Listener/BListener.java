@@ -25,13 +25,13 @@ public class BListener implements Listener{
 	
 	private RPGEssentials plugin;
 	private ReplaceHandler rh;
-	private ReNature reNature;
+	private ReNature subplugin;
 	private ReFaction reFaction;
 	
 	public BListener(RPGEssentials plugin) {
 		this.plugin = plugin;
 		rh = new ReplaceHandler();
-		reNature = new ReNature();
+		subplugin = new ReNature();
 		reFaction = new ReFaction(plugin);
 	}
 	
@@ -39,7 +39,7 @@ public class BListener implements Listener{
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		if(!reNature.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
+		if(!subplugin.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
 			return;
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
@@ -54,7 +54,7 @@ public class BListener implements Listener{
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event) {
-		if(!reNature.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
+		if(!subplugin.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
 			return;
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
@@ -63,7 +63,7 @@ public class BListener implements Listener{
 
 		final Block b = event.getBlock();
 		
-		if(reNature.getConfig().getIntegerList("deniedIDs").contains(b.getTypeId()))
+		if(subplugin.getConfig().getIntegerList("deniedIDs").contains(b.getTypeId()))
 			event.setCancelled(true);
 		
 		NBlock nb = new NBlock(b, b.getTypeId(), b.getData());
@@ -86,7 +86,7 @@ public class BListener implements Listener{
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onBlockSpread(BlockSpreadEvent event) {
-		if(!reNature.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
+		if(!subplugin.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
 			return;
 		if(reFaction.isFaction(event.getBlock().getLocation()))
 			return;
@@ -108,12 +108,12 @@ public class BListener implements Listener{
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onPaintingBreak(HangingBreakEvent event) {
-		if(!reNature.getConfig().getStringList("worlds").contains((event.getEntity().getWorld().getName())))
+		if(!subplugin.getConfig().getStringList("worlds").contains((event.getEntity().getWorld().getName())))
 			return;
 		if(reFaction.isFaction(event.getEntity().getLocation()))
 			return;
 		
-		if(reNature.getConfig().getIntegerList("deniedIDs").contains(event.getEntity().getType().getTypeId()))
+		if(subplugin.getConfig().getIntegerList("deniedIDs").contains(event.getEntity().getType().getTypeId()))
 			event.setCancelled(true);
 	}
 	
@@ -127,8 +127,8 @@ public class BListener implements Listener{
 		Block f = new Location(loc.getWorld(), loc.getX(), loc.getY(), loc.getZ()-1).getBlock();
 		Block a = new Location(loc.getWorld(), loc.getX(), loc.getY()+1, loc.getZ()).getBlock();
 		Block d = new Location(loc.getWorld(), loc.getX(), loc.getY()-1, loc.getZ()).getBlock();
-		List<Integer> rIDs = reNature.getConfig().getIntegerList("relativeIDs");
-		List<Integer> dIDs = reNature.getConfig().getIntegerList("relativeDeniedIDs");
+		List<Integer> rIDs = subplugin.getConfig().getIntegerList("relativeIDs");
+		List<Integer> dIDs = subplugin.getConfig().getIntegerList("relativeDeniedIDs");
 		
 		if(dIDs.contains(r.getTypeId())) {
 			return false;

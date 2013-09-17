@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-public class RPGItemCommandHandler {
+public class CommandHandler {
 
 	private RPGEssentials plugin;
 	private PermHandler ph;
@@ -21,7 +21,7 @@ public class RPGItemCommandHandler {
 	private ItemConfig itemConfig;
 	private Converter converter;
 	
-	public RPGItemCommandHandler(RPGEssentials plugin) {
+	public CommandHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 		ph = new PermHandler(plugin);
 		customItemHandler = new CustomItemHandler(plugin);
@@ -44,7 +44,7 @@ public class RPGItemCommandHandler {
 			Player p = null;
 			String name = getName(args);
 			if(sender instanceof Player) {
-				p = (Player) sender;
+				p = player;
 				if(!ph.hasRPGItemGivePerms(p)) {
 					//TODO add messenger
 					return false;
@@ -56,11 +56,29 @@ public class RPGItemCommandHandler {
 				name = getName(rearrangeGiveArgs(args));
 			}
 			
-			if(p == null) return false;
+			if(p == null) {
+				if(sender instanceof Player)
+					player.sendMessage("Cannot find player");
+				else
+					plugin.getLogger().info("Cannot find player");
+				//TODO add messenger
+				return true;
+			}
+			if(itemConfig.getFile(name) == null) {
+				p.sendMessage("No such item, or config wasn't loaded properly");
+				//TODO add messenger
+				return true;
+			}
+			
 			FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
 			customItemHandler.spawnCustomItem(p, new CustomItem(null, config.getString("displayName"), customItemHandler.getFreeId(name), config.getInt("data"), config.getInt("skinId"),
 					config.getInt("damage"), config.getInt("damageMax"), config.getInt("durability"), config.getString("description"), config.getInt("price"), config.getString("lore"),
 					Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand")));
+			
+			if(sender instanceof Player)
+				player.sendMessage("Item given: "+name);
+			else
+				plugin.getLogger().info("Item given: "+name);
 			//TODO add messenger
 			return true;
 		}
@@ -120,9 +138,9 @@ public class RPGItemCommandHandler {
     
     private String[] rearrangeGiveArgs(String[] args) {
 		int counter = -2;
-		String[] newArgs = new String[args.length-1];
+		String[] newArgs = new String[args.length];
 		for(String s : args) {
-			if(counter <= -1) {
+			if(counter < 0) {
 				counter++;
 				continue;
 			}

@@ -16,11 +16,11 @@ import com.massivecraft.factions.entity.UPlayer;
 public class PListener implements Listener{
 	
 	private RPGEssentials plugin;
-	private Orbia orbia;
+	private Orbia subplugin;
 		
 	public PListener(RPGEssentials plugin){
 		this.plugin = plugin;
-		orbia = new Orbia();
+		subplugin = new Orbia();
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -35,8 +35,8 @@ public class PListener implements Listener{
 		Faction faction2 = uk.getFaction();
 		
 		if(faction.getRelationTo(faction2).isAtLeast(Rel.ENEMY)) {
-			up.setPower(up.getPower() - orbia.getConfig().getDouble("factionsPowerLossOnEnemyKill"));
-			up.sendMessage("You lost "+orbia.getConfig().getDouble("factionsPowerLossOnEnemyKill")+" power!");
+			up.setPower(up.getPower() - subplugin.getConfig().getDouble("factionsPowerLossOnEnemyKill"));
+			up.sendMessage("You lost "+subplugin.getConfig().getDouble("factionsPowerLossOnEnemyKill")+" power!");
 		}
 	}
 

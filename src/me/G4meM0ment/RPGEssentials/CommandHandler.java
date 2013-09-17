@@ -1,8 +1,8 @@
 package me.G4meM0ment.RPGEssentials;
 
-import me.G4meM0ment.RPGItem.Handler.RPGItemCommandHandler;
-import me.G4meM0ment.Rentables.Handler.RentablesCommandHandler;
-import me.G4meM0ment.UnamedPortalPlugin.Handler.UPPCommandHandler;
+import me.G4meM0ment.RPGItem.RPGItem;
+import me.G4meM0ment.Rentables.Rentables;
+import me.G4meM0ment.UnamedPortalPlugin.UnnamedPortalPlugin;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,9 +12,12 @@ public class CommandHandler{
 	
 	private RPGEssentials plugin;
 	private PermHandler ph;
-	private RPGItemCommandHandler rpgItemCmdHandler;
-	private UPPCommandHandler uppCmdHandler;
-	private RentablesCommandHandler rentCmdHandler;
+	private me.G4meM0ment.RPGItem.Handler.CommandHandler rpgItemCmdHandler;
+	private me.G4meM0ment.UnamedPortalPlugin.Handler.CommandHandler uppCmdHandler;
+	private me.G4meM0ment.Rentables.Handler.CommandHandler rentCmdHandler;
+	private RPGItem rpgitem;
+	private UnnamedPortalPlugin upp;
+	private Rentables rentables;
 	
 	private String mainCmd = "ge";
 	private String reNatureCmd = "rn";
@@ -27,9 +30,12 @@ public class CommandHandler{
 	public CommandHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 		ph = new PermHandler(plugin);
-		rpgItemCmdHandler = new RPGItemCommandHandler(plugin);
-		uppCmdHandler = new UPPCommandHandler(plugin);
-		rentCmdHandler = new RentablesCommandHandler(plugin);
+		rpgitem = new RPGItem();
+		upp = new UnnamedPortalPlugin();
+		rentables = new Rentables();
+		rpgItemCmdHandler = new me.G4meM0ment.RPGItem.Handler.CommandHandler(plugin);
+		uppCmdHandler = new me.G4meM0ment.UnamedPortalPlugin.Handler.CommandHandler(plugin);
+		rentCmdHandler = new me.G4meM0ment.Rentables.Handler.CommandHandler(plugin);
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -41,7 +47,10 @@ public class CommandHandler{
 		
 		//RPGItem commands
 		if(command.getName().equalsIgnoreCase(rpgItemCmd)) {
-			return rpgItemCmdHandler.exec(sender, command, label, args);
+			if(rpgitem.isEnabled())
+				return rpgItemCmdHandler.exec(sender, command, label, args);
+			else {}
+				//TODO add messenger
 		}
 		
 		//Junkie cmds
@@ -56,12 +65,18 @@ public class CommandHandler{
 		
 		//UPP cmds
 		if(command.getName().equalsIgnoreCase(UPPCmd)) {
-			return uppCmdHandler.exec(sender, command, label, args);
+			if(upp.isEnabled())
+				return uppCmdHandler.exec(sender, command, label, args);
+			else {}
+				//TODO add messenger
 		}
 		
 		//Rentables cmds
 		if(command.getName().equalsIgnoreCase(rentCmd)) {
-			return rentCmdHandler.exec(sender, command, label, args);
+			if(rentables.isEnabled())
+				return rentCmdHandler.exec(sender, command, label, args);
+			else {}
+			//TODO add messenger
 		}
 		
 		//Orbia specific plugin cmds

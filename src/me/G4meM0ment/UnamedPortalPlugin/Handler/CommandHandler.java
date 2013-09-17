@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
-public class UPPCommandHandler {
+public class CommandHandler {
 	
 	private RPGEssentials plugin;
 	private PortalHandler ph;
@@ -25,7 +25,7 @@ public class UPPCommandHandler {
 	private PermHandler permHandler;
 	private PortalData portalData;
 	
-	public UPPCommandHandler(RPGEssentials plugin) {
+	public CommandHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 		ph = new PortalHandler(plugin.getUnnamedPortalPlugin());
 		weHandler = new WorldEditHandler();
@@ -60,9 +60,9 @@ public class UPPCommandHandler {
 			}
 			else {}
 				//TODO add messenger
+			
 			Selection sel = plugin.getWorldEdit().getSelection(player);
 
-		
 			if(sel == null) {
 				List<Block> blocks = new ArrayList<Block>();
 				blocks.add(player.getLocation().getBlock());

@@ -18,7 +18,7 @@ import me.G4meM0ment.RPGItem.Handler.ListHandler;
 public class ItemConfig {
 	
 	private RPGEssentials plugin;
-	private RPGItem rpgItem;
+	private RPGItem subplugin;
 	private FileHandler fileHandler;
 	private ListHandler lh;
 	
@@ -31,16 +31,16 @@ public class ItemConfig {
 	
 	public ItemConfig(RPGEssentials plugin) {
 		this.plugin = plugin;
-		rpgItem = new RPGItem();
+		subplugin = new RPGItem();
 		fileHandler = new FileHandler();
 		lh = new ListHandler();
 		
 		dir = plugin.getDir()+"/RPGItem/items";
 		folder = new File(dir);
-		logTit = rpgItem.getLogTit();
+		logTit = subplugin.getLogTit();
 	}
 	public ItemConfig() {
-		rpgItem = new RPGItem();
+		subplugin = new RPGItem();
 		fileHandler = new FileHandler();
 		lh = new ListHandler();
 	}
@@ -66,10 +66,10 @@ public class ItemConfig {
 	
 	public File getFile(String name) {
 		File file = getItemConfigs().get(name);
-		if(file == null) {
-			addConfigFile(new File(getDir()+"/"+name+".yml"));
-			return getItemConfigs().get(name);
-		} else
+//		if(file == null) {
+//			addConfigFile(new File(getDir()+"/"+name+".yml"));
+//			return getItemConfigs().get(name);
+//		} else
 		return file;
 	}
 	

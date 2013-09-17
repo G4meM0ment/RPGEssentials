@@ -1,6 +1,4 @@
-Wand: 271
 UseOnMove: true
 EnforcePortalAccess: true
 PortalCooldown: 10000
-ClearOnRemove: false
 WooshEffect: true

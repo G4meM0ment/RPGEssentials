@@ -22,7 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class PortalData {
 	
-	private UnnamedPortalPlugin upp;
+	private UnnamedPortalPlugin subplugin;
 	private PortalHandler ph;
 	
 	private static File configFile;
@@ -32,18 +32,18 @@ public class PortalData {
 	
 	private static String dir;
 
-	public PortalData(UnnamedPortalPlugin upp) {
-		this.upp = upp;
-		ph = new PortalHandler(upp);
+	public PortalData(UnnamedPortalPlugin subplugin) {
+		this.subplugin = subplugin;
+		ph = new PortalHandler(subplugin);
 		
-		dir = upp.getDir()+"/data";
-		logTit = upp.getLogTit();
+		dir = subplugin.getDir()+"/data";
+		logTit = subplugin.getLogTit();
 		configFile = new File(dir+"/data.yml");
 	}
 
 	public PortalData() {
-		upp = new UnnamedPortalPlugin();
-		ph = new PortalHandler(upp);
+		subplugin = new UnnamedPortalPlugin();
+		ph = new PortalHandler(subplugin);
 	}
 	
 	public String getDir() {
@@ -68,12 +68,13 @@ public class PortalData {
 			}
 			ph.getPortals().put(path, new Portal(path, blocks, dest));
 		}
+		subplugin.getLogger().info(logTit+"Portals loaded and initialized");
 	}
 	
 	public void reloadConfig() {
 	    if (configFile == null) {
 	    	configFile = new File(dir, "/data.yml");
-			upp.getLogger().info(logTit+"Created Config.");
+	    	subplugin.getLogger().info(logTit+"Created Config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
@@ -84,7 +85,7 @@ public class PortalData {
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
 	    }
-		upp.getLogger().info(logTit+"Config loaded.");
+	    subplugin.getLogger().info(logTit+"Config loaded.");
 	}
 	public FileConfiguration getConfig() {
 	    if (config == null) {
@@ -98,9 +99,9 @@ public class PortalData {
 	    }
 	    try {
 	        config.save(configFile);
-	        upp.getLogger().info(logTit+"Config saved");
+	        subplugin.getLogger().info(logTit+"Config saved");
 	    } catch (IOException ex) {
-	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
+	    	subplugin.getLogger().log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }
 	}
 }

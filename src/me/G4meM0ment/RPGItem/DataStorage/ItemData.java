@@ -6,11 +6,10 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGEssentials.DataStorage.FileHandler;
@@ -21,7 +20,7 @@ import me.G4meM0ment.RPGItem.Handler.ListHandler;
 public class ItemData {
 	
 	private RPGEssentials plugin;
-	private RPGItem rpgItem;
+	private RPGItem subplugin;
 	private FileHandler fileHandler;
 	
 	private static String defConfig = "itemDataFileExample.yml";
@@ -33,15 +32,17 @@ public class ItemData {
 	
 	public ItemData(RPGEssentials plugin) {
 		this.plugin = plugin;
-		rpgItem = new RPGItem();
+		subplugin = new RPGItem();
 		fileHandler = new FileHandler();
 		
 		dir = plugin.getDir()+"/RPGItem/data";
 		folder = new File(dir);
-		logTit = rpgItem.getLogTit();
+		logTit = subplugin.getLogTit();
+		
+		startAutoSaver();
 	}
 	public ItemData() {
-		rpgItem = new RPGItem();
+		subplugin = new RPGItem();
 		fileHandler = new FileHandler();
 	}
 	
@@ -123,6 +124,14 @@ public class ItemData {
 		}
 	}
 	
+	private void startAutoSaver() {
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				saveDataToFiles();
+			}
+		}, 0, 30000);
+	}
 	public void saveDataToFiles() {
 		for(String s : ListHandler.getCustomItemTypes().keySet()) {
 			for(CustomItem item : ListHandler.getCustomItemTypeList(s)) {
@@ -136,5 +145,6 @@ public class ItemData {
 				}
 			}
 		}
+		subplugin.getLogger().info(logTit+"Item data saved");
 	}
 }

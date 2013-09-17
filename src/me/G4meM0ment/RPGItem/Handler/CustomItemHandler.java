@@ -6,14 +6,12 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
-import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 import me.G4meM0ment.RPGItem.CustomItem.Quality;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;

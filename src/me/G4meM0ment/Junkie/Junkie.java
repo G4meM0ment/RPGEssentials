@@ -23,6 +23,7 @@ public class Junkie {
 	
 	private static String logTit = "Junkie: ";
 	private static String dir;
+	private static boolean isEnabled = false;
 
 	public Junkie(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -46,13 +47,12 @@ public class Junkie {
 		reloadConfig();
 		saveConfig();
 		
+		isEnabled = true;
 		return true;
 	}
 
-	public boolean onDisable() {
-		//saving config
-		saveConfig();
-		plugin.getLogger().info(logTit+"Config saved");
+	public boolean onDisable() {		
+		isEnabled = false;
 		return true;
 	}
 	
@@ -88,5 +88,9 @@ public class Junkie {
 	    } catch (IOException ex) {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }
+	}
+	
+	public boolean isEnabled() {
+		return isEnabled;
 	}
 }

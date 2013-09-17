@@ -21,7 +21,7 @@ public class PowerHandler {
 	//TODO add regeneration, 
 	
 	private RPGEssentials plugin;
-	private RPGItem rpgitem;
+	private RPGItem subplugin;
 	private ItemConfig itemConfig;
 	private ItemData itemData;
 	private ListHandler lh;
@@ -30,14 +30,14 @@ public class PowerHandler {
 	
 	public PowerHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
-		rpgitem = new RPGItem();
+		subplugin = new RPGItem();
 		itemConfig = new ItemConfig();
 		itemData = new ItemData();
 		lh = new ListHandler();
 		start();
 	}
 	public PowerHandler() {
-		rpgitem = new RPGItem();
+		subplugin = new RPGItem();
 		itemConfig = new ItemConfig();
 		itemData = new ItemData();
 		lh = new ListHandler();
@@ -68,12 +68,12 @@ public class PowerHandler {
 		if(dataFile == null || configFile == null) return;
 		FileConfiguration config = itemConfig.getConfig(configFile);
 		FileConfiguration data = itemData.getDataFile(dataFile);
-		if(rpgitem.getConfig().getInt("DurabilityAffectingUtility") > 0) {
+		if(subplugin.getConfig().getInt("DurabilityAffectingUtility") > 0) {
 
 			int durability = data.getInt(Integer.toString(item.getId()));
 			int maxDurability = config.getInt("durability");
 			int percent = (durability * 100) / maxDurability;
-			if(percent < rpgitem.getConfig().getInt("DurabilityAffectingUtility"))
+			if(percent < subplugin.getConfig().getInt("DurabilityAffectingUtility"))
 				return;
 		}
 		

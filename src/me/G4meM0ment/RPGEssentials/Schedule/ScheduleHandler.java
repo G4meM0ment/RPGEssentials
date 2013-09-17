@@ -1,17 +1,6 @@
 package me.G4meM0ment.RPGEssentials.Schedule;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import me.G4meM0ment.RPGItem.RPGItem;
-import me.G4meM0ment.RPGItem.Handler.EventHandler.InventoryHandler;
-import me.G4meM0ment.Rentables.Handler.RentableHandler;
-
 public class ScheduleHandler {
-	
-	private RPGItem rpgItem;
-	private InventoryHandler invHandler;
-	private RentableHandler rentHandler;
 	
 	private static int seconds;
 	private static int minutes;
@@ -19,30 +8,20 @@ public class ScheduleHandler {
 	private static int days;
 	
 	public ScheduleHandler() {
-		rpgItem = new RPGItem();
-		invHandler = new InventoryHandler();
-		rentHandler = new RentableHandler();
 	}
 	
 	public void callSecond() {
 		if(seconds >= 60)
 			seconds = 0;
 		seconds++;
-		
-		for(Player p : Bukkit.getServer().getOnlinePlayers()) {
-			invHandler.processArmor(p);
-			invHandler.processItem(p);
-		}
+
 	}
 
 	public void callMinute() {
 		if(minutes >= 60)
 			minutes = 0;
 		minutes++;
-		
-		rentHandler.checkRentables();
-		if(minutes == 15 || minutes == 30 || minutes == 45 || minutes == 60)
-			rpgItem.saveData();
+
 	}
 
 	public void callHour() {
@@ -54,7 +33,4 @@ public class ScheduleHandler {
 	public void callDay() {
 		days++;
 	}
-
-
-
 }

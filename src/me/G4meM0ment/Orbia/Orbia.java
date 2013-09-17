@@ -22,6 +22,7 @@ public class Orbia {
 	
 	private static String logTit = "Orbia: ";
 	private static String dir;
+	private static boolean isEnabled = false;
 
 	public Orbia(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -45,13 +46,12 @@ public class Orbia {
 		reloadConfig();
 		saveConfig();
 		
+		isEnabled = true;
 		return true;
 	}
 
 	public boolean onDisable() {
-		//saving config
-		saveConfig();
-		plugin.getLogger().info(logTit+"Config saved");
+		isEnabled = false;
 		return true;
 	}
 	
@@ -87,5 +87,9 @@ public class Orbia {
 	    } catch (IOException ex) {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }
+	}
+	
+	public boolean isEnabled() {
+		return isEnabled;
 	}
 }

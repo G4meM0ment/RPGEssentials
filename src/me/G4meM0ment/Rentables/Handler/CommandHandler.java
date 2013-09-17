@@ -6,13 +6,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class RentablesCommandHandler {
+public class CommandHandler {
 	
 	private RPGEssentials plugin;
 	private PermHandler permHandler;
 	private RentableHandler rh;
 	
-	public RentablesCommandHandler(RPGEssentials plugin) {
+	public CommandHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 		permHandler = new PermHandler(plugin);
 		rh = new RentableHandler();

@@ -18,14 +18,14 @@ import org.bukkit.potion.PotionEffectType;
 
 public class PortalHandler {
 	
-	private UnnamedPortalPlugin upp;
+	private UnnamedPortalPlugin subplugin;
 	private PortalData portalData;
 	
 	private static HashMap<String, Portal> portals = new HashMap<String, Portal>();
 	private static HashMap<Player, Long> usedMillis = new HashMap<Player, Long>(); 
 	
-	public PortalHandler(UnnamedPortalPlugin upp) {
-		this.upp = upp;
+	public PortalHandler(UnnamedPortalPlugin subplugin) {
+		this.subplugin = subplugin;
 	}
 	
 	public boolean isPortal(Block b) {
@@ -33,6 +33,7 @@ public class PortalHandler {
 		
 		for(Portal p : getPortals().values()) {
 			for(Block block : p.getBlocks()) {
+				if(block.getLocation().getWorld() != b.getLocation().getWorld()) continue;
 				if(block.getLocation().distance(b.getLocation()) == 0) {
 					return true;
 				}
@@ -44,6 +45,7 @@ public class PortalHandler {
 	public Portal getPortal(Block b) {
 		for(Portal p : getPortals().values()) {
 			for(Block block : p.getBlocks()) {
+				if(block.getLocation().getWorld() != b.getLocation().getWorld()) continue;
 				if(block.getLocation().distance(b.getLocation()) == 0)
 					return p;
 			}
@@ -73,7 +75,7 @@ public class PortalHandler {
 		Bukkit.getServer().getPluginManager().callEvent(portalEvent);
 		if(!portalEvent.isCancelled()) {
 			getUsedPortalMillis().put(p, System.currentTimeMillis());
-			if(!upp.getConfig().getBoolean("UseOnMove")) {
+			if(!subplugin.getConfig().getBoolean("UseOnMove")) {
 				p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 240, 1000));
 				Bukkit.getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() {
 					@Override
@@ -126,7 +128,7 @@ public class PortalHandler {
 	}
 	
 	private void playWooshEffect(Location loc) {
-		if(!upp.getConfig().getBoolean("WooshEffect")) return;
+		if(!subplugin.getConfig().getBoolean("WooshEffect")) return;
 		World world = loc.getWorld();
 		world.playEffect(loc, Effect.ENDER_SIGNAL, 0);
 		world.playEffect(loc, Effect.ENDER_SIGNAL, 0);
@@ -139,7 +141,7 @@ public class PortalHandler {
 	public boolean hasToWait(Player p) {
 		if(!getUsedPortalMillis().containsKey(p))
 			return false;
-		if(System.currentTimeMillis() - getUsedPortalMillis().get(p) < upp.getConfig().getLong("PortalCooldown"))
+		if(System.currentTimeMillis() - getUsedPortalMillis().get(p) < subplugin.getConfig().getLong("PortalCooldown"))
 			return true;
 		else
 			return false;

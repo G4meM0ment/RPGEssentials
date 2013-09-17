@@ -8,9 +8,11 @@ import java.util.logging.Logger;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.Rentables.DataStorage.RentableData;
+import me.G4meM0ment.Rentables.Handler.RentableHandler;
 import me.G4meM0ment.Rentables.Listener.BListener;
 import me.G4meM0ment.Rentables.Listener.PListener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +23,7 @@ public class Rentables {
 	private BListener bListener;
 	private PListener pListener;
 	private RentableData rentData;
+	private RentableHandler rentHandler;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -28,11 +31,13 @@ public class Rentables {
 	private static String logTit = "Rentables: ";
 	private static String dir;
 	private static Logger logger;
+	private static boolean isEnabled = false;
 
 	public Rentables(RPGEssentials plugin) {
 		this.plugin = plugin;
 		bListener = new BListener(plugin);
 		pListener = new PListener();
+		rentHandler = new RentableHandler();
 		
 		plugin.getServer().getPluginManager().registerEvents(bListener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(pListener, plugin);
@@ -52,14 +57,28 @@ public class Rentables {
 		saveConfig();
 		rentData.reloadConfig();
 		rentData.saveConfig();
-		rentData.initializeRentables();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				rentData.initializeRentables();
+				rentHandler.startRentableChecker();
+			}
+		});
+		
+		isEnabled = true;
 		return true;
 	}
 
 	public boolean onDisable() {
+		isEnabled = false;
 		return true;
 	}
 	
+	public void reloadConfigs() {
+		reloadConfig();
+		rentData.reloadConfig();
+		rentData.initializeRentables();
+	}
 	public void reloadConfig() {
 	    if (configFile == null) {
 	    	configFile = new File(dir, "/config.yml");
@@ -102,5 +121,9 @@ public class Rentables {
 	}
 	public Logger getLogger() {
 		return logger;
+	}
+	
+	public boolean isEnabled() {
+		return isEnabled;
 	}
 }

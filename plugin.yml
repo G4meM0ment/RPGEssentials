@@ -2,8 +2,8 @@ name: RPGEssentials
 main: me.G4meM0ment.RPGEssentials.RPGEssentials
 version: 0.00.001
 Author: [G4meM0ment, Eatingyou]
-depend: [Vault]
-softdepend: [Spout, Jail, WorldGuard, Factions, MCore]
+depend: [Vault, WorldEdit]
+softdepend: [Spout, Jail, WorldGuard, Factions, MCore, MyWorlds, Heroes, Towny, Citizens]
 commands:
     ge:
         aliases: [ge]

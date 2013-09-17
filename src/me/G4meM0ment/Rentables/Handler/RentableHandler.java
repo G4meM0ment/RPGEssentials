@@ -11,6 +11,7 @@ import me.G4meM0ment.Rentables.DataStorage.RentableData;
 import me.G4meM0ment.Rentables.Rentable.Rentable;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -36,6 +37,7 @@ public class RentableHandler {
 		
 		for(Rentable r : getRentables().values()) {
 			for(Block block : r.getBlocks()) {
+				if(block.getLocation().getWorld() != b.getLocation().getWorld()) continue;
 				if(block.getLocation().distance(b.getLocation()) == 0) {
 					return true;
 				}
@@ -47,6 +49,7 @@ public class RentableHandler {
 		if(b == null) return false;
 		
 		for(Rentable r : getRentables().values()) {
+			if(r.getSign().getLocation().getWorld() != b.getLocation().getWorld()) continue;
 			if(r.getSign().getLocation().distance(b.getLocation()) == 0) {
 					return true;
 			}
@@ -56,6 +59,7 @@ public class RentableHandler {
 	
 	public Rentable getRentableBySign(Block b) {
 		for(Rentable r : getRentables().values()) {
+			if(r.getSign().getLocation().getWorld() != b.getLocation().getWorld()) continue;
 			if(r.getSign().getLocation().distance(b.getLocation()) == 0)
 					return r;
 		}
@@ -64,6 +68,7 @@ public class RentableHandler {
 	public Rentable getRentableByBlock(Block b) {
 		for(Rentable r : getRentables().values()) {
 			for(Block block : r.getBlocks()) {
+				if(block.getLocation().getWorld() != b.getLocation().getWorld()) continue;
 				if(block.getLocation().distance(b.getLocation()) == 0)
 					return r;
 			}
@@ -127,8 +132,7 @@ public class RentableHandler {
 		int id = getFreeId();
 		String formattedHeader = "["+header+"]";
 		String ownerName = owner.getName();
-		if(true) { //TODO check if in admin mode
-			owner = null;
+		if(getPlayersAdminModeEnabled().contains(owner)) {
 			ownerName = "";
 		}
 		
@@ -161,7 +165,7 @@ public class RentableHandler {
 			counter++;
 		}
 		rentData.saveConfig();
-		getRentables().put(Integer.toString(id), new Rentable(sign, blocks, Integer.toString(id), formattedHeader, price, time, owner));
+		getRentables().put(Integer.toString(id), new Rentable(sign, blocks, Integer.toString(id), formattedHeader, price, time, ownerName));
 	}
 	
 	public int getFreeId() {
@@ -176,29 +180,33 @@ public class RentableHandler {
 	}
 	
 	public void rentRentable(Rentable rent, Player p) {
-		if(rent.getRenter() != p && rent.getRenter() != null) return; //TODO add messenger
+		if(!rent.getRenter().equalsIgnoreCase(p.getName()) && !rent.getRenter().isEmpty()) return; //TODO add messenger
 		
 		Rentables rentables = new Rentables();
 		RPGEssentials plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
 		rentData = new RentableData();
 		
-		if(rent.getRenter() == null)
-			privateRentable(rent, p);
-		if(plugin.getEconomy() != null && plugin.getEconomy().getBalance(p.getName()) >= rent.getPrice()) {
-			plugin.getEconomy().withdrawPlayer(p.getName(), rent.getPrice());
-			if(rent.getOwner() != null)
-				plugin.getEconomy().depositPlayer(rent.getOwner().getName(), rent.getPrice());
+		if(rent.getRenter().isEmpty())
+			privaticeRentable(rent, p);
+		if(plugin.getEconomy() != null) {
+			if(plugin.getEconomy().getBalance(p.getName()) >= rent.getPrice()) {
+				plugin.getEconomy().withdrawPlayer(p.getName(), rent.getPrice());
+				if(!rent.getOwner().isEmpty())
+					plugin.getEconomy().depositPlayer(rent.getOwner(), rent.getPrice());
+			}
 		} else {
 			//TODO add messenger
+			p.sendMessage("Not enough money");
+			return;
 		}
 		
-		rent.setRenter(p);
+		rent.setRenter(p.getName());
 		rent.setRemaining(rent.getRemaining()+rent.getTime());
 		p.sendMessage("Rented rentable");
 		
 		Sign sign = (Sign) rent.getSign().getState();
 		sign.setLine(0, rent.getHeader());
-		sign.setLine(1, rent.getRenter().getName());
+		sign.setLine(1, rent.getRenter());
 		sign.setLine(2, rentables.getConfig().getString("RentedFormat"));
 		sign.setLine(3, rent.getRemaining()+" mins");
 		sign.update();
@@ -217,11 +225,12 @@ public class RentableHandler {
 		if(plugin.getEconomy() != null) 
 			currency = plugin.getEconomy().currencyNamePlural();
 		
-		publicRentable(rent, rent.getRenter());
+		publishRentable(rent, rent.getRenter());
 		
 		rent.setPreRenter(rent.getRenter());
-		rent.setRenter(null);
-		rent.getPreRenter().sendMessage("Rentable expired");
+		rent.setRenter("");
+		if(Bukkit.getPlayer(rent.getPreRenter()) != null)
+			Bukkit.getPlayer(rent.getPreRenter()).sendMessage("Rentable expired");
 
 		Sign sign = (Sign) rent.getSign().getState();
 		sign.setLine(0, rent.getHeader());
@@ -232,15 +241,23 @@ public class RentableHandler {
 		//TODO add messenger
 		
 		rentData.getConfig().set(rent.getID()+".renter", "");
-		rentData.getConfig().set(rent.getID()+".preRenter", rent.getPreRenter().getName());
+		rentData.getConfig().set(rent.getID()+".preRenter", rent.getPreRenter());
 		rentData.getConfig().set(rent.getID()+".remaining", 0);
 		rentData.saveConfig();
 	}
 	
+	public void startRentableChecker() {
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() {
+			@Override
+			public void run() {
+				checkRentables();
+			}
+		}, 0, 1200);
+	}
 	public void checkRentables() {
 		rentData = new RentableData();
 		for(Rentable r : getRentables().values()) {
-			if(r.getRenter() == null) continue;
+			if(r.getRenter().isEmpty()) continue;
 			if(r.getRemaining() < 1) {
 				unrentRentable(r);
 			}
@@ -248,14 +265,20 @@ public class RentableHandler {
 				r.setRemaining(r.getRemaining()-1);
 				rentData.getConfig().set(r.getID()+".remaining", r.getRemaining()-1);
 				rentData.saveConfig();
-				Sign sign = (Sign) r.getSign().getState();
-				sign.setLine(3, r.getRemaining()+" mins");
-				sign.update();
+				if(r.getSign().getType() == Material.WALL_SIGN || r.getSign().getType() == Material.SIGN_POST) {
+					try{
+						Sign sign = (Sign) r.getSign().getState();
+						sign.setLine(3, r.getRemaining()+" mins");
+						sign.update();
+					}catch(ClassCastException e) {
+						((RPGEssentials)Bukkit.getPluginManager().getPlugin("RPGEssentials")).getLogger().info("Rentables: Could not cast to sign ("+r.getID()+")");
+					}
+				}
 			}
 		}
 	}
 	
-	private void publicRentable(Rentable r, Player p) {
+	private void publishRentable(Rentable r, String p) {
 		RPGEssentials plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
 		LWC lwc = plugin.getLWC();
 		
@@ -267,7 +290,7 @@ public class RentableHandler {
 			}
 		}
 	}
-	private void privateRentable(Rentable r, Player p) {
+	private void privaticeRentable(Rentable r, Player p) {
 		RPGEssentials plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
 		LWC lwc = plugin.getLWC();
 		
@@ -278,5 +301,11 @@ public class RentableHandler {
 				lwc.getPhysicalDatabase().registerProtection(b.getTypeId(), Type.PRIVATE, b.getWorld().getName(), p.getName(), "" /*PW*/, b.getX(), b.getY(), b.getZ());
 			}
 		}
+	}
+
+	public void removeRentable(Rentable r) {
+		if(r == null) return;
+		rentData = new RentableData();
+		rentData.getConfig().set(r.getID(), null);
 	}
 }

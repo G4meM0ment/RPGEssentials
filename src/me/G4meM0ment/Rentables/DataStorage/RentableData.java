@@ -23,7 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class RentableData {
 	
-	private Rentables rent;
+	private Rentables subplugin;
 	private RentableHandler rh;
 	
 	private static File configFile;
@@ -33,17 +33,17 @@ public class RentableData {
 	
 	private static String dir;
 
-	public RentableData(Rentables rent) {
-		this.rent = rent;
+	public RentableData(Rentables subplugin) {
+		this.subplugin = subplugin;
 		rh = new RentableHandler();
 		
-		dir = rent.getDir()+"/data";
-		logTit = rent.getLogTit();
+		dir = subplugin.getDir()+"/data";
+		logTit = subplugin.getLogTit();
 		configFile = new File(dir+"/data.yml");
 	}
 
 	public RentableData() {
-		rent = new Rentables();
+		subplugin = new Rentables();
 		rh = new RentableHandler();
 	}
 	
@@ -54,12 +54,9 @@ public class RentableData {
 	public void initializeRentables() {
 		Iterator<String> rentData = getConfig().getKeys(false).iterator();
 		while(rentData.hasNext()) {
-			String path = rentData.next();
+			String path = rentData.next();			
 			Iterator<String> iterCounter = getConfig().getConfigurationSection(path+".location").getKeys(false).iterator();
 			List<Block> blocks = new ArrayList<Block>();
-			Player owner = null;
-			if(!getConfig().getString(path+".owner").isEmpty())
-				owner = Bukkit.getPlayer(getConfig().getString(path+".owner"));
 				
 			Location sign = new Location(Bukkit.getWorld(getConfig().getString(path+".sign.world")),
 					getConfig().getInt(path+".sign.x"), getConfig().getInt(path+".sign.y"), getConfig().getInt(path+".sign.z"));
@@ -71,21 +68,21 @@ public class RentableData {
 				blocks.add(l.getBlock());
 			}
 			
-			Rentable r = new Rentable(sign.getBlock(), blocks, path, getConfig().getString(path+".header"), getConfig().getDouble(path+".price"), getConfig().getInt(path+".time"), owner);
-			if(!getConfig().getString(path+".renter").isEmpty())
-				r.setRenter(Bukkit.getPlayer(getConfig().getString(path+".renter")));
-			if(!getConfig().getString(path+".preRenter").isEmpty())
-				r.setPreRenter(Bukkit.getPlayer(getConfig().getString(path+".preRenter")));
+			Rentable r = new Rentable(sign.getBlock(), blocks, path, getConfig().getString(path+".header"), getConfig().getDouble(path+".price"), getConfig().getInt(path+".time"), getConfig().getString(path+".owner"));
+			
+			r.setRenter(getConfig().getString(path+".renter"));
+			r.setPreRenter(getConfig().getString(path+".preRenter"));
 			r.setRemaining(getConfig().getInt(path+".remaining"));
 			
 			rh.getRentables().put(path, r);
 		}
+		subplugin.getLogger().info(logTit+"Rentables loaded and initialized");
 	}
 	
 	public void reloadConfig() {
 	    if (configFile == null) {
 	    	configFile = new File(dir, "/data.yml");
-			rent.getLogger().info(logTit+"Created Config.");
+	    	subplugin.getLogger().info(logTit+"Created Config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
@@ -96,7 +93,7 @@ public class RentableData {
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
 	    }
-		rent.getLogger().info(logTit+"Config loaded.");
+	    subplugin.getLogger().info(logTit+"Config loaded.");
 	}
 	public FileConfiguration getConfig() {
 	    if (config == null) {
@@ -110,9 +107,8 @@ public class RentableData {
 	    }
 	    try {
 	        config.save(configFile);
-	        rent.getLogger().info(logTit+"Config saved");
 	    } catch (IOException ex) {
-	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
+	    	subplugin.getLogger().log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }
 	}
 }

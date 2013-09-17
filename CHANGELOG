@@ -32,6 +32,13 @@ Version: 0.00.001 #0001
     	+ permissions
     	! enchantments need to have the same name as they have in bukkit, view bukkit docu for names
     + UnamedPortalPlugin
+    	+ add portals (also with worldedit)
+    	+ set portal destination
+    	+ woosh effect
+    	+ portal permissions
+    	+ portal cooldown
+    + Rentables
+    	+ create rentable areas with worldedit and signs
     * various alpha bugs
     * config won't disable sub-plugins
     ! Junkie isn't ready to be used

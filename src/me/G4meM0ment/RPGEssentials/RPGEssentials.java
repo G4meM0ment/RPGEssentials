@@ -2,11 +2,11 @@ package me.G4meM0ment.RPGEssentials;
 
 import me.G4meM0ment.Junkie.Junkie;
 import me.G4meM0ment.Orbia.Orbia;
-import me.G4meM0ment.RPGEssentials.Schedule.Schedule;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.ReNature.ReNature;
 import me.G4meM0ment.Rentables.Rentables;
 import me.G4meM0ment.UnamedPortalPlugin.UnnamedPortalPlugin;
+import net.dandielo.citizens.traders_v3.bukkit.DtlTraders;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.command.Command;
@@ -33,7 +33,7 @@ public class RPGEssentials extends JavaPlugin{
 	private RPGItem rpgItem;
 	private UnnamedPortalPlugin upp;
 	private Rentables rent;
-	private Schedule schedule;
+//	private Schedule schedule;
 	
 	private CommandHandler ch;
 	
@@ -46,6 +46,7 @@ public class RPGEssentials extends JavaPlugin{
 	private Heroes heroes;
 	private LWCPlugin lwcp;
 	private LWC lwc;
+	private DtlTraders dtlTraders;
 	
 	private String dir = "plugins/RPGEssentials";
 	
@@ -62,72 +63,82 @@ public class RPGEssentials extends JavaPlugin{
 		} catch(Exception e) {
 			getLogger().info("Could not load config.");
 		}
-		
 		//Initialize messages
 		getLogger().info("Initializing sub-plugins:");
 		
 //################ Initializing RPGItem and debugging ################
-		rpgItem = new RPGItem(this);
-		boolean rpgItemEnabled = rpgItem.onEnable();
+		if(getConfig().getBoolean("RPGItemEnabled")) {
+			rpgItem = new RPGItem(this);
+			boolean rpgItemEnabled = rpgItem.onEnable();
 
-		if(rpgItemEnabled && getConfig().getBoolean("RPGItemEnabled"))
-			getLogger().info("RPGItem enabled!");
-		else if (rpgItemEnabled)
-			getLogger().info("RPGItem found, but disabled in config!");
+			if(rpgItemEnabled)
+				getLogger().info("RPGItem enabled!");
+			else
+				getLogger().info("RPGItem couldn't be enabled!");
+		}
 		else
-			getLogger().info("RPGItem couldn't be enabled!");
+			getLogger().info("RPGItem found, but disabled in config!");
 		
 //################ Initializing ReNature and debugging ################
-		reNature = new ReNature(this);
-		boolean reNatureEnabled = reNature.onEnable();
+		if(getConfig().getBoolean("ReNatureEnabled")) {
+			reNature = new ReNature(this);
+			boolean reNatureEnabled = reNature.onEnable();
 
-		if(reNatureEnabled && getConfig().getBoolean("ReNatureEnabled"))
-			getLogger().info("ReNature enabled!");
-		else if (reNatureEnabled)
+			if(reNatureEnabled)
+				getLogger().info("ReNature enabled!");
+			else
+				getLogger().info("ReNature couldn't be enabled!");
+		} else
 			getLogger().info("ReNature found, but disabled in config!");
-		else
-			getLogger().info("ReNature couldn't be enabled!");
 		
 //################ Initializing Junkie and debugging ################
-		junkie = new Junkie(this);
-		boolean junkieEnabled = junkie.onEnable();
-		if(junkieEnabled && getConfig().getBoolean("JunkieEnabled"))
-			getLogger().info("Junkie enabled!");
-		else if (junkieEnabled)
+		if(getConfig().getBoolean("JunkieEnabled")) {
+			junkie = new Junkie(this);
+			boolean junkieEnabled = junkie.onEnable();
+		
+			if(junkieEnabled)
+				getLogger().info("Junkie enabled!");
+			else
+				getLogger().info("Junkie couldn't be enabled!");
+		} else
 			getLogger().info("Junkie found, but disabled in config!");
-		else
-			getLogger().info("Junkie couldn't be enabled!");
 		
 //################ Initializing UnnamedPortalPlugin and debugging ################
-		upp = new UnnamedPortalPlugin(this);
-		boolean uppEnabled = upp.onEnable();
-		if(uppEnabled && getConfig().getBoolean("UnnamedPortalPluginEnabled"))
-			getLogger().info("UnnamedPortalPlugin enabled!");
-		else if(uppEnabled)
+		if(getConfig().getBoolean("UnnamedPortalPluginEnabled")) {
+			upp = new UnnamedPortalPlugin(this);
+			boolean uppEnabled = upp.onEnable();
+			
+			if(uppEnabled)
+				getLogger().info("UnnamedPortalPlugin enabled!");
+			else
+				getLogger().info("UnnamedPortalPlugin couldn't be enabled!");
+		} else
 			getLogger().info("UnnamedPortalPlugin found, but disabled in config!");
-		else
-			getLogger().info("UnnamedPortalPlugin couldn't be enabled!");
 		
 //################ Initializing Rentables and debugging ################
-		rent = new Rentables(this);
-		boolean rentEnabled = rent.onEnable();
-		if(rentEnabled && getConfig().getBoolean("RentableEnabled"))
-			getLogger().info("Rentables enabled!");
-		else if(rentEnabled)
+		if(getConfig().getBoolean("RentablesEnabled")) {
+			rent = new Rentables(this);
+			boolean rentEnabled = rent.onEnable();
+			
+			if(rentEnabled)
+				getLogger().info("Rentables enabled!");
+			else
+				getLogger().info("Rentables couldn't be enabled!");
+		} else
 			getLogger().info("Rentables found, but disabled in config!");
-		else
-			getLogger().info("Rentables couldn't be enabled!");
 		
 //################ Initializing Orbia and debugging ################
-		orbia = new Orbia(this);
-		boolean orbiaEnabled = orbia.onEnable();
-		if(orbiaEnabled && getConfig().getBoolean("OrbiaEnabled"))
-			getLogger().info("Orbia enabled!");
-		else if (orbiaEnabled)
+		if(getConfig().getBoolean("OrbiaEnabled")) {
+			orbia = new Orbia(this);
+			boolean orbiaEnabled = orbia.onEnable();
+			
+			if(orbiaEnabled)
+				getLogger().info("Orbia enabled!");
+			else
+				getLogger().info("Orbia couldn't be enabled!");
+		} else
 			getLogger().info("Orbia found, but disabled in config!");
-		else
-			getLogger().info("Orbia couldn't be enabled!");
-				
+		
 		//Finished initializing plugin enabled
 		getLogger().info("Initialization done!");
 		
@@ -144,12 +155,13 @@ public class RPGEssentials extends JavaPlugin{
 		towny = initTowny();
 		heroes = initHeroes();
 		lwc = initLWC();
+		dtlTraders = initDtlTraders();
 		
 //############### Startsing scheduler #################
-		schedule = new Schedule(this);
-		Thread time = new Thread(schedule);
-		time.start();
-		getLogger().info("Setup schedule");
+//		schedule = new Schedule(this);
+//		Thread time = new Thread(schedule);
+//		time.start();
+//		getLogger().info("Setup schedule");
 		
 		//Plguin enabled
 		getLogger().info("Enabled version "+pdf.getVersion());
@@ -159,23 +171,34 @@ public class RPGEssentials extends JavaPlugin{
 	public void onDisable() {
 		//Disable messages
 		getServer().getScheduler().cancelTasks(this);
-		saveConfig();
 		getLogger().info("Config saved");
 		
 		//Disable sub-plugins
 		getLogger().info("Disabling sub-plugins:");
 		
-		if(rpgItem.onDisable())
-			getLogger().info("RPGItem disabled!");
+		if(rpgItem.isEnabled())
+			if(rpgItem.onDisable())
+				getLogger().info("RPGItem disabled!");
 		
-		if(reNature.onDisable())
-			getLogger().info("ReNature disabled!");
-			
-		if(junkie.onDisable())
-			getLogger().info("Junkie disabled!");
+		if(reNature.isEnabled())
+			if(reNature.onDisable())
+				getLogger().info("ReNature disabled!");
 		
-		if(orbia.onDisable())
-			getLogger().info("Orbia disabled!");
+		if(junkie.isEnabled())
+			if(junkie.onDisable())
+				getLogger().info("Junkie disabled!");
+		
+		if(upp.isEnabled())
+			if(upp.onDisable())
+				getLogger().info("UnnamedPortalPlugin disabled!");
+		
+		if(rent.isEnabled())
+			if(rent.onDisable())
+				getLogger().info("Rentables disabled!");
+		
+		if(orbia.isEnabled())
+			if(orbia.onDisable())
+				getLogger().info("Orbia disabled!");
 	}
 	
 	public String getDir() {
@@ -292,6 +315,19 @@ public class RPGEssentials extends JavaPlugin{
 		return lwc;
 	}
 	
+	private DtlTraders initDtlTraders() {
+	    Plugin plugin = getServer().getPluginManager().getPlugin("dtlTraders");
+	 
+	    if (plugin == null || !(plugin instanceof DtlTraders)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+		getLogger().info("dtlTraders found enabled features");
+	    return (DtlTraders) plugin;
+	}
+	public DtlTraders getDtlTraders() {
+		return dtlTraders;
+	}
+	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(ch.onCommand(sender, command, label, args))
 			return true;
@@ -301,11 +337,18 @@ public class RPGEssentials extends JavaPlugin{
 	
 	public void reloadRPGEssentials() {
 		reloadConfig();
-		reNature.reloadConfig();
-		junkie.reloadConfig();
-		orbia.reloadConfig();
-		rpgItem.reloadConfigs();
-		
+		if(getConfig().getBoolean("ReNatureEnabled"))
+			reNature.reloadConfig();
+		if(getConfig().getBoolean("JunkieEnabled"))
+			junkie.reloadConfig();
+		if(getConfig().getBoolean("OrbiaEnabled"))
+			orbia.reloadConfig();
+		if(getConfig().getBoolean("RPGItemEnabled"))
+			rpgItem.reloadConfigs();
+		if(getConfig().getBoolean("RentablesEnabled"))
+			rent.reloadConfigs();
+		if(getConfig().getBoolean("UnnamedPortalPluginEnabled"))
+			upp.reloadConfigs();
 	}
 	
 	public RPGItem getRPGItem() {

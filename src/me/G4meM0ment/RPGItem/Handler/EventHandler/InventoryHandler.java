@@ -12,6 +12,7 @@ import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ListHandler;
 import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -37,6 +38,8 @@ public class InventoryHandler {
 		lh = new ListHandler();
 		customItemHandler = new CustomItemHandler();
 		powerHandler = new PowerHandler();
+		
+		startInventoryChecker();
 	}
 	public InventoryHandler() {
 		itemHandler = new ItemHandler();
@@ -77,6 +80,18 @@ public class InventoryHandler {
 				}
 			}
 		}
+	}
+	
+	private void startInventoryChecker() {
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				for(Player p : Bukkit.getServer().getOnlinePlayers()) {
+					processArmor(p);
+					processItem(p);
+				}
+			}
+		}, 0, 60);
 	}
 	
 	public void processArmor(Player p) {

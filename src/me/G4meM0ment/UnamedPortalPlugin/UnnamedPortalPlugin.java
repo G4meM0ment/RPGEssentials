@@ -10,6 +10,7 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.UnamedPortalPlugin.DataStorage.PortalData;
 import me.G4meM0ment.UnamedPortalPlugin.Listener.PListener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +27,7 @@ public class UnnamedPortalPlugin {
 	private static String logTit = "UnnamedPortalPlugin: ";
 	private static String dir;
 	private static Logger logger;
+	private static boolean isEnabled = false;
 
 	public UnnamedPortalPlugin(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -49,14 +51,27 @@ public class UnnamedPortalPlugin {
 		saveConfig();
 		portalData.reloadConfig();
 		portalData.saveConfig();
-		portalData.initializePortals();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				portalData.initializePortals();
+			}
+		});
+		
+		isEnabled = true;
 		return true;
 	}
 
 	public boolean onDisable() {
+		isEnabled = false;
 		return true;
 	}
 	
+	public void reloadConfigs() {
+		reloadConfig();
+		portalData.reloadConfig();
+		portalData.initializePortals();
+	}
 	public void reloadConfig() {
 	    if (configFile == null) {
 	    	configFile = new File(dir, "/config.yml");
@@ -99,5 +114,9 @@ public class UnnamedPortalPlugin {
 	}
 	public Logger getLogger() {
 		return logger;
+	}
+	
+	public boolean isEnabled() {
+		return isEnabled;
 	}
 }
