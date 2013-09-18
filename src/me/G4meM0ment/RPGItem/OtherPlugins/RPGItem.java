@@ -19,14 +19,21 @@ import net.dandielo.citizens.traders_v3.utils.items.flags.Abstract;
 
 @Attribute(name="RpgItem", key=".rpg")
 public class RPGItem extends ItemFlag{
-	
-	private CustomItemHandler customItemHandler;
-	private ItemHandler itemHandler;
+	/* Init both handlers by instances? Singleton system */
+	private /*static*/ CustomItemHandler customItemHandler; // = CustomItemHandler.getInstance();
+	private /*static*/ ItemHandler itemHandler; // = ItemHandler.getInstance();
 	
 	private int rpgID;
 	
 	public RPGItem(String key) {
 		super(key);
+		
+		//I think it would be better to change both CustomItemHandler and ItemHandler into singletons
+		//and get instances of them
+		//
+		//customItemHandler = CustomItemHandler.getInstance();
+		//itemHandler = ItemHandler.getInstance();
+		
 		customItemHandler = new CustomItemHandler();
 		itemHandler = new ItemHandler();
 	}
@@ -34,38 +41,26 @@ public class RPGItem extends ItemFlag{
 	@Override
 	public void onAssign(ItemStack item, boolean endItem) throws InvalidItemException 
 	{
-		//IF THE ITEM IS ABSTRACT THEN WE check the endItem boolean
-	    //{
-			// IT IT'S FALSE then we dont generate a new value, we set the lore with <undefined> and DONT use the saved value (that will prevent generating ID's when the item needs just to be displayed in the traders stock)
-			//...
-			//...
-	
-			//ELSE we need to generate a new ID and and set it at the end of the lore
-			//...
-		    //...
-	    //}
-	
-	    //ELSE IF THE ITEM IS NOT ABSTRACT THEN
-	    //We add att the end of the lore the Saved ID 
-	    //...
-	    //...
-	
 		//get the existing lore
 		ItemMeta meta = item.getItemMeta();
-		if (meta.getLore() == null )
-			meta.setLore(new ArrayList<String>());
+		List<String> itemLore = meta.getLore();
+		if ( itemLore == null ) //If no lore exists create a new list for it
+			itemLore = new ArrayList<String>();
 		
-        if ( this.item.hasFlag(Abstract.class) )
-        {
-            if ( endItem ) 
-                meta.getLore().add(ChatColor.BLACK+Integer.toString(customItemHandler.getFreeId((ChatColor.stripColor(meta.getDisplayName())))));
-            else
-                meta.getLore().add(ChatColor.BLACK+"undefined");
-        }
-        //if it's not abstract
-        else
-            meta.getLore().add(ChatColor.BLACK+Integer.toString(this.rpgID));
-		//save the new lore
+		//Check if the item is Abstract = In traders stock or used for copmaring when selling that item
+	        if ( this.item.hasFlag(Abstract.class) )
+	        {
+			if ( endItem ) 
+				itemLore.add(ChatColor.BLACK+Integer.toString(customItemHandler.getFreeId((ChatColor.stripColor(meta.getDisplayName())))));
+			else
+				itemLore.add(ChatColor.BLACK+"undefined");
+	        }
+	        //if it's not abstract use the old ID
+	        else
+		        itemLore.add(ChatColor.BLACK+Integer.toString(this.rpgID));
+		
+		//save the new lore and metadata
+		meta.setLore(itemLore);
 		item.setItemMeta(meta);
 	}
 	
@@ -75,44 +70,40 @@ public class RPGItem extends ItemFlag{
 		if ( !item.getItemMeta().hasLore() )
 			throw new AttributeValueNotFoundException();
 		
-		//get the lore without any dtlTrader lore lines
-		//REMOVE ANY LINE THAT WAS ADDED BY DTLTRADER PLUGIN
+		//Get only the Items Lore
 		List<String> cleanedLore = NBTUtils.getLore(item);
 	
-		//CHECK IF THE LORE STILL HAS ENTRIES
+		//enough lore to be an RPG item?
 		if ( cleanedLore.isEmpty() )
 			throw new AttributeValueNotFoundException();
-	
+			
+		//Create a clone of the item and set the cleaned lore to it (needs to be done when selling an item)
+		Item itemClone = item.clone();
+		itemClone.getMeta().setLore(cleanedLore);
 		
-		if(itemHandler.isCustomItem(item)) 
-		{
-			if(this.item.hasFlag(Abstract.class))
-				this.rpgID = -1;
-			else
-				this.rpgID = Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)));
-		} else 
+		//Is this a custom RPG item?
+		if(!itemHandler.isCustomItem(itemClone)) 
 			throw new AttributeValueNotFoundException();
-		//Read the last line and check it if it's a RPG item
-		//...
-		//...
-		//...
-		//if not then throw this exception: throw new AttributeValueNotFoundException();
-	
-		//Now we check if the ITEM is ABSTRACT, that means the item is only in the traders stock or is only used for a short time to compare items
-		//IF the items is ABSTRACT then we set the id to -1 (that means we can forget it and it's not needed)
-		//...
-		//...
-	
-		//ELSE we save the items ID from the lore, and remove the LAST LORE LINE
-		//...
-		//...
+			
+		//Do we need to save the ID
+		if(this.item.hasFlag(Abstract.class))
+			this.rpgID = -1;
+		else
+		//get the last lore lone from the cleaned lore
+			this.rpgID = Integer.parseInt(ChatColor.stripColor(cleanedLore.get(cleanedLore.size()-1)));
+		
+		//remove the last line from the lore
+		cleanedLore.remove(cleanedLore.size()-1);
+		
+		//set back the lore
+		ItemMeta meta = item.getItemMeta();
+		meta.setLore(cleanedLore); //dunno if this might make some problems later, for now its ok :) 
+		item.setItemMeta(meta);
 	}
 	
 	@Override
 	public boolean equalsStrong(ItemFlag that) 
 	{
-		//NOW WE CHECK ITEMS, if both items will ahve value -1 then its a check againts an item in the traders stock and an item the player tries to sell
-		//If the ID of THIS item IS NOT -1 THEN IT WILL FAIL AGAINST OTHER ITEMS IN THE PLAYERS INVENTORY AND ADDED AS A SEPARATE ITEM (new STACK)
 		return ((RPGItem) that).rpgID == this.rpgID;
 	}
 	
