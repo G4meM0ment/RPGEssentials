@@ -30,7 +30,17 @@ public class ItemHandler {
 		if(item.getItemMeta().getLore() == null) return false;
 		
 		int id = 0;
-		id = Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)));
+		
+		try
+		{
+		    //Try to get the ID 
+		    id = Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)));
+		} catch( NumberFormatException e )
+		{
+		    //ID not found set it to 0
+		    id = 0;
+		}
+		
 		if(id > 0) 
 			return true;
 		
