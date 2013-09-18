@@ -78,8 +78,8 @@ public class RPGItem extends ItemFlag{
 			throw new AttributeValueNotFoundException();
 			
 		//Create a clone of the item and set the cleaned lore to it (needs to be done when selling an item)
-		Item itemClone = item.clone();
-		itemClone.getMeta().setLore(cleanedLore);
+		ItemStack itemClone = item.clone();
+		itemClone.getItemMeta().setLore(cleanedLore);
 		
 		//Is this a custom RPG item?
 		if(!itemHandler.isCustomItem(itemClone)) 

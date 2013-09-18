@@ -85,7 +85,13 @@ public class CustomItemHandler {
 	}
 
 	public void updateItem(ItemStack item, Player p, boolean fullUpdate) {
-		CustomItem customItem = getCustomItem(ChatColor.stripColor(item.getItemMeta().getDisplayName()), Integer.valueOf((ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)))));
+		int id = 0;
+		try {
+			id = Integer.valueOf((ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
+		}catch (NumberFormatException e) {}
+		if(id == 0) return;
+		
+		CustomItem customItem = getCustomItem(ChatColor.stripColor(item.getItemMeta().getDisplayName()), id);
 		if(customItem == null) return;
 		ItemMeta meta = item.getItemMeta();
 		File config = itemConfig.getFile(customItem.getDispName());

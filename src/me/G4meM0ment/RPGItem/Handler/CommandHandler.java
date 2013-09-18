@@ -1,6 +1,7 @@
 package me.G4meM0ment.RPGItem.Handler;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.RPGItem.Converter.Converter;
 import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 import me.G4meM0ment.RPGItem.CustomItem.Quality;
@@ -20,9 +21,11 @@ public class CommandHandler {
 	private CustomItemHandler customItemHandler;
 	private ItemConfig itemConfig;
 	private Converter converter;
+	private RPGItem subplugin;
 	
 	public CommandHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
+		subplugin = new RPGItem();
 		ph = new PermHandler(plugin);
 		customItemHandler = new CustomItemHandler(plugin);
 		itemConfig = new ItemConfig();
@@ -35,8 +38,40 @@ public class CommandHandler {
 		if(args.length > 0 && args[0].equals("help")) {
 			if(sender instanceof Player) {
 				//TODO add messenger
+				return true;
 			} else {
 				//TODO add messenger
+				return true;
+			}
+		}
+		
+		if(args.length > 0 && args[0].equals("reload")) {
+			if(sender instanceof Player) {
+				if(!ph.hasRPGItemReloadPerms(player)) {
+					//TODO add messenger
+					return true;
+				}
+				subplugin.reloadConfigs();
+				player.sendMessage("RPGItem reloaded!");
+				return true;
+			} else {
+				subplugin.reloadConfigs();
+				plugin.getLogger().info(subplugin.getLogTit()+"Configs reloaded!");
+				return true;
+			}
+		}
+		
+		if(args.length > 0 && args[0].equals("list")) {
+			if(sender instanceof Player) {
+				if(!ph.hasRPGItemGivePerms(player)) {
+					//TODO add messenger
+					return true;
+				}
+				player.sendMessage("Available items: "+ListHandler.getCustomItemTypes().keySet());
+				return true;
+			} else {
+				plugin.getLogger().info(subplugin.getLogTit()+"Available items: "+ListHandler.getCustomItemTypes().keySet());
+				return true;
 			}
 		}
 		
@@ -47,7 +82,7 @@ public class CommandHandler {
 				p = player;
 				if(!ph.hasRPGItemGivePerms(p)) {
 					//TODO add messenger
-					return false;
+					return true;
 				}
 			}
 
@@ -87,7 +122,7 @@ public class CommandHandler {
 			if(sender instanceof Player) {
 				if(!ph.hasRPGItemConvertPerms((Player)sender)) {
 					//TODO add messenger
-					return false;
+					return true;
 				}
 			}
 			String argsString = getName(args);
@@ -95,6 +130,7 @@ public class CommandHandler {
 			String newName = argsString.split("id:")[2];
 			CustomItem cloned = customItemHandler.getCustomItem(newName, customItemHandler.getFreeId(newName)-1);
 			converter.convertCustomItems(oldName, cloned);
+			return true;
 		}
 		return false;
 	}
