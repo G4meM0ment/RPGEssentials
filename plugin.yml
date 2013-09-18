@@ -3,7 +3,7 @@ main: me.G4meM0ment.RPGEssentials.RPGEssentials
 version: 0.00.001
 Author: [G4meM0ment, Eatingyou]
 depend: [Vault, WorldEdit]
-softdepend: [Spout, Jail, WorldGuard, Factions, MCore, MyWorlds, Heroes, Towny, Citizens]
+softdepend: [Spout, Jail, WorldGuard, Factions, MCore, MyWorlds, Heroes, Towny, Citizens, dtlTraders]
 commands:
     ge:
         aliases: [ge]

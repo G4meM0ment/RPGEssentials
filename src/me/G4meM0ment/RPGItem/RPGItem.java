@@ -19,6 +19,7 @@ import me.G4meM0ment.RPGItem.Listener.PListener;
 import net.dandielo.citizens.traders_v3.core.exceptions.attributes.AttributeInvalidClassException;
 import net.dandielo.citizens.traders_v3.utils.items.ItemFlag;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -69,20 +70,29 @@ public class RPGItem {
 	public boolean onEnable() {
 		isDisabling = false;
 		File exItem = new File(dir+"/items/RPGItem.yml");
+		File exData = new File(dir+"/data/RPGItem.yml");
 		reloadConfig();
 		saveConfig();
 		itemConfig.reloadConfig(exItem);
 		itemConfig.saveConfig(exItem);
+		itemData.addDataFile(exData);
+		itemData.saveDataFile(exData);
 		itemConfig.initializeItemConfigs();
 		itemData.initializeDataFiles();
 		MetaHandler.setSplitter(getConfig().getInt("FormatLineSize"));
 		
-		if(plugin.getDtlTraders() != null)
-			try {
-				ItemFlag.registerFlag(me.G4meM0ment.RPGItem.OtherPlugins.RPGItem.class);
-			} catch (AttributeInvalidClassException e) {
-				plugin.getLogger().info(logTit+"Could not register dtlTrader flag!");
+		//Run methods which needs an enabled server/plugin
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				if(plugin.getDtlTraders() != null)
+					try {
+						ItemFlag.registerFlag(me.G4meM0ment.RPGItem.OtherPlugins.RPGItem.class);
+					} catch (AttributeInvalidClassException e) {
+						plugin.getLogger().info(logTit+"Could not register dtlTrader flag!");
+					}
 			}
+		});
 		
 		isEnabled = true;
 		return true;
