@@ -229,8 +229,8 @@ public class RentableHandler {
 		
 		rent.setPreRenter(rent.getRenter());
 		rent.setRenter("");
-		if(Bukkit.getPlayer(rent.getPreRenter()) != null)
-			Bukkit.getPlayer(rent.getPreRenter()).sendMessage("Rentable expired");
+		if(Bukkit.getPlayerExact(rent.getPreRenter()) != null)
+			Bukkit.getPlayerExact(rent.getPreRenter()).sendMessage("Rentable expired");
 
 		Sign sign = (Sign) rent.getSign().getState();
 		sign.setLine(0, rent.getHeader());

@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.Rentables.DataStorage.LabelConfig;
 import me.G4meM0ment.Rentables.DataStorage.RentableData;
 import me.G4meM0ment.Rentables.Handler.RentableHandler;
 import me.G4meM0ment.Rentables.Listener.BListener;
@@ -23,6 +24,7 @@ public class Rentables {
 	private BListener bListener;
 	private PListener pListener;
 	private RentableData rentData;
+	private LabelConfig labelConfig;
 	private RentableHandler rentHandler;
 	
 	private static File configFile;
@@ -38,7 +40,7 @@ public class Rentables {
 		bListener = new BListener(plugin);
 		pListener = new PListener();
 		rentHandler = new RentableHandler();
-		
+
 		plugin.getServer().getPluginManager().registerEvents(bListener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(pListener, plugin);
 		
@@ -53,8 +55,12 @@ public class Rentables {
 	public boolean onEnable() {
 		//creating config or loading
 		rentData = new RentableData(this);
+		labelConfig = new LabelConfig(this);
+		
 		reloadConfig();
 		saveConfig();
+		labelConfig.reloadConfig();
+		labelConfig.saveConfig();
 		rentData.reloadConfig();
 		rentData.saveConfig();
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
@@ -75,7 +81,11 @@ public class Rentables {
 	}
 	
 	public void reloadConfigs() {
+		rentData = new RentableData();
+		labelConfig = new LabelConfig();
+		
 		reloadConfig();
+		labelConfig.reloadConfig();
 		rentData.reloadConfig();
 		rentData.initializeRentables();
 	}

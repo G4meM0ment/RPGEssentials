@@ -74,7 +74,7 @@ public class BListener implements Listener{
 		if(b.getType() == Material.SIGN_POST || b.getType() == Material.WALL_SIGN) {
 			Rentable r = rh.getRentableBySign(b);
 			if(r != null) {
-				if((!r.getOwner().isEmpty() && Bukkit.getPlayer(r.getOwner()) == event.getPlayer()) || ph.hasRentablesAdminPerm(event.getPlayer())) {
+				if((!r.getOwner().isEmpty() && Bukkit.getPlayerExact(r.getOwner()) == event.getPlayer()) || ph.hasRentablesAdminPerm(event.getPlayer())) {
 					rh.removeRentable(r);
 				}
 

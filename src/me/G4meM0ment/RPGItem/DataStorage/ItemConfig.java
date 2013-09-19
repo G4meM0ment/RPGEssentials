@@ -95,7 +95,7 @@ public class ItemConfig {
 				e.printStackTrace();
 			}
 	    }
-		plugin.getLogger().info(logTit+configFile.getName()+" config loaded.");
+//		plugin.getLogger().info(logTit+configFile.getName()+" config loaded.");
 	}
 	public FileConfiguration getConfig(File configFile) {
 		FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);

@@ -42,6 +42,7 @@ public class ItemData {
 		startAutoSaver();
 	}
 	public ItemData() {
+		plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
 		subplugin = new RPGItem();
 		fileHandler = new FileHandler();
 	}
@@ -94,7 +95,7 @@ public class ItemData {
 				e.printStackTrace();
 			}
 	    }
-		plugin.getLogger().info(logTit+configFile.getName()+" data file loaded.");
+//		plugin.getLogger().info(logTit+configFile.getName()+" data file loaded.");
 	}
 	
 	public FileConfiguration getDataFile(File configFile) {

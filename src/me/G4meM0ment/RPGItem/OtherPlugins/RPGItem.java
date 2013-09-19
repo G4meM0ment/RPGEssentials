@@ -37,6 +37,8 @@ public class RPGItem extends ItemFlag{
 		
 		customItemHandler = new CustomItemHandler();
 		itemHandler = new ItemHandler();
+		
+		rpgID = -1;
 	}
 	
 	@Override

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import me.G4meM0ment.Rentables.Handler.RentableHandler;
 import me.G4meM0ment.Rentables.Rentable.Rentable;
@@ -18,8 +17,6 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class RentableData {
 	
@@ -81,7 +78,7 @@ public class RentableData {
 	
 	public void reloadConfig() {
 	    if (configFile == null) {
-	    	configFile = new File(dir, "/data.yml");
+	    	configFile = new File(dir, "data.yml");
 	    	subplugin.getLogger().info(logTit+"Created Config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
