@@ -65,6 +65,7 @@ public class RPGItem {
 			plugin.getServer().getPluginManager().registerEvents(hListener, plugin);
 	}
 	public RPGItem() {
+		plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
 	}
 	
 	public boolean onEnable() {
@@ -107,6 +108,9 @@ public class RPGItem {
 	}
 	
 	public void reloadConfigs() {
+		itemConfig = new ItemConfig();
+		itemData = new ItemData();
+		
 		reloadConfig();
 		itemConfig.reloadConfigs();
 		itemConfig.initializeItemConfigs();

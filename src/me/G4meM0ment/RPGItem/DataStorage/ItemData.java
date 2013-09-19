@@ -145,6 +145,5 @@ public class ItemData {
 				}
 			}
 		}
-		subplugin.getLogger().info(logTit+"Item data saved");
 	}
 }

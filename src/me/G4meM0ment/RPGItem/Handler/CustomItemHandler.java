@@ -95,6 +95,19 @@ public class CustomItemHandler {
 		if(customItem == null) return;
 		ItemMeta meta = item.getItemMeta();
 		File config = itemConfig.getFile(customItem.getDispName());
+		File data = itemData.getFile(customItem.getDispName());
+		
+		customItem.setData(itemConfig.getConfig(config).getInt("data"));
+		customItem.setSkinId(itemConfig.getConfig(config).getInt("skinId"));
+		customItem.setDmgValue(itemConfig.getConfig(config).getInt("damage"));
+		customItem.setDmgValueMax(itemConfig.getConfig(config).getInt("damageMax"));
+		customItem.setDurability(itemData.getDataFile(data).getInt(customItem.getId()+".durability"));
+		customItem.setDesc(itemConfig.getConfig(config).getString("description"));
+		customItem.setPrice(itemConfig.getConfig(config).getInt("price"));
+		customItem.setLore(itemConfig.getConfig(config).getString("lore"));
+		customItem.setQuality(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase()));
+		customItem.setType(itemConfig.getConfig(config).getString("type"));
+		customItem.setHand(itemConfig.getConfig(config).getString("hand"));
 		
 		//set the meta information & get id specific values
 		meta.setDisplayName(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase()).colour+customItem.getDispName());
@@ -109,6 +122,43 @@ public class CustomItemHandler {
 			enchantHandler.addEnchantments(item, itemConfig.getConfig(config));
 		}
 		item.setData(new MaterialData(customItem.getData()));
+	}
+	
+	public void registerItem(ItemStack item, int id) {
+		if(item == null) return;
+		if(itemConfig.getFile(ChatColor.stripColor(item.getItemMeta().getDisplayName())) == null) return;
+		if(id <= 0) id = getFreeId(ChatColor.stripColor(item.getItemMeta().getDisplayName()));
+		ItemMeta meta = item.getItemMeta();
+		CustomItem customItem = new CustomItem(item, ChatColor.stripColor(meta.getDisplayName()), id, 0, item.getType().getId(),
+				0 , 0, 0, "", 0, "", Quality.TRASH, "", "");
+		
+		FileConfiguration data = itemData.getDataFile(itemData.getFile(customItem.getDispName()));
+		FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(customItem.getDispName()));
+		List<CustomItem> list = ListHandler.getCustomItemTypeList(customItem.getDispName());
+
+		
+		//Configuring item
+		if(isColorable(item))
+			item.setItemMeta(metaHandler.getLeatherArmorMeta(customItem, null));
+		else
+			item.setItemMeta(metaHandler.getItemMeta(customItem, null));
+		enchantHandler.addEnchantments(item, config);
+		item.getItemMeta().getLore().add(ChatColor.BLACK+Integer.toString(id));
+		
+		//setting up id specific durability
+		data.set(Integer.toString(customItem.getId())+".durability", config.getInt("durability"));
+        try {
+        	data.save(itemData.getFile(customItem.getDispName()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+        //adding item to list
+        if(list == null)
+        	lh.initializeList(customItem.getDispName());
+		ListHandler.addCustomItemToList(customItem, list);
+		
+		updateItem(item, null, true);
 	}
 	
 	//get Item by its id

@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
+import net.dandielo.citizens.traders_v3.tNpcStatus;
 import net.dandielo.citizens.traders_v3.core.exceptions.InvalidItemException;
 import net.dandielo.citizens.traders_v3.core.exceptions.attributes.AttributeValueNotFoundException;
 import net.dandielo.citizens.traders_v3.utils.NBTUtils;
@@ -51,17 +52,14 @@ public class RPGItem extends ItemFlag{
 	        if ( this.item.hasFlag(Abstract.class) )
 	        {
 			if ( endItem ) 
-				itemLore.add(ChatColor.BLACK+Integer.toString(customItemHandler.getFreeId((ChatColor.stripColor(meta.getDisplayName())))));
+				customItemHandler.registerItem(item, 0);
 			else
 				itemLore.add(ChatColor.BLACK+"undefined");
 	        }
 	        //if it's not abstract use the old ID
 	        else
-		        itemLore.add(ChatColor.BLACK+Integer.toString(this.rpgID));
+				customItemHandler.registerItem(item, this.rpgID);
 		
-		//save the new lore and metadata
-		meta.setLore(itemLore);
-		item.setItemMeta(meta);
 	}
 	
 	public void onFactorize(ItemStack item) throws AttributeValueNotFoundException
@@ -111,5 +109,11 @@ public class RPGItem extends ItemFlag{
 	public boolean equalsWeak(ItemFlag that) 
 	{
 		return equalsStrong(that);
+	}
+	
+	@Override
+	public void onStatusLoreRequest(tNpcStatus status, List<String> lore)
+	{
+		lore.add(ChatColor.BLACK + "undefined");
 	}
 }

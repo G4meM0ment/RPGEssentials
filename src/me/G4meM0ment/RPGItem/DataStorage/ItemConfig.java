@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -40,6 +41,7 @@ public class ItemConfig {
 		logTit = subplugin.getLogTit();
 	}
 	public ItemConfig() {
+		plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
 		subplugin = new RPGItem();
 		fileHandler = new FileHandler();
 		lh = new ListHandler();
