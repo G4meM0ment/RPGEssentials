@@ -52,4 +52,18 @@ public class PermHandler {
 			else
 				return false;
 	}
+	
+	public boolean hasRPGItemRepairPerms(Player p) {
+		if(plugin.getConfig().getBoolean("UsePermissions")) {
+			if((p.hasPermission("rpgitem.repair") || p.hasPermission("rpgitem.admin") || p.hasPermission("rpge.admin")))
+				return true;
+			else
+				return false;				
+		}
+		else
+			if(p.isOp())
+				return true;
+			else
+				return false;
+	}
 }

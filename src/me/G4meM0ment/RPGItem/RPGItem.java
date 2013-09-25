@@ -83,17 +83,20 @@ public class RPGItem {
 		MetaHandler.setSplitter(getConfig().getInt("FormatLineSize"));
 		
 		//Run methods which needs an enabled server/plugin
+		try {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
 			public void run() {
-				if(plugin.getDtlTraders() != null)
+				if(plugin.getDtlTraders() != null) {
 					try {
 						ItemFlag.registerFlag(me.G4meM0ment.RPGItem.OtherPlugins.RPGItem.class);
 					} catch (AttributeInvalidClassException e) {
 						plugin.getLogger().info(logTit+"Could not register dtlTrader flag!");
 					}
+				}
 			}
 		});
+		} catch (NoClassDefFoundError e) {}
 		
 		isEnabled = true;
 		return true;

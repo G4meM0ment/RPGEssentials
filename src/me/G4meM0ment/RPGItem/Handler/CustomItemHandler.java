@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -130,7 +131,7 @@ public class CustomItemHandler {
 		if(id <= 0) id = getFreeId(ChatColor.stripColor(item.getItemMeta().getDisplayName()));
 		ItemMeta meta = item.getItemMeta();
 		CustomItem customItem = new CustomItem(item, ChatColor.stripColor(meta.getDisplayName()), id, 0, item.getType().getId(),
-				0 , 0, 0, "", 0, "", Quality.TRASH, "", "");
+				0 , 0, 0, "", 0, "", Quality.TRASH, "", "", 0);
 		
 		FileConfiguration data = itemData.getDataFile(itemData.getFile(customItem.getDispName()));
 		FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(customItem.getDispName()));
@@ -192,6 +193,19 @@ public class CustomItemHandler {
 		if(durability <= 0)
 			durability = 1;
 		item.setDurability((short) durability);
+	}
+	
+	public void repairCustomItem(CustomItem cItem, int amount) {
+		if(cItem == null) return;
+		int maxDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
+		if(cItem.getDurability()+amount > maxDurability)
+			cItem.setDurability(maxDurability);
+		else
+			cItem.setDurability(cItem.getDurability()+amount);
+	}
+	
+	public Material getRepairMaterial(CustomItem cItem) {
+		return Material.getMaterial(cItem.getRepairId());
 	}
 	
 	public boolean isColorable(ItemStack item) {

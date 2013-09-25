@@ -14,6 +14,7 @@ lore: '&6No information are known about that sword'
 hand: one-handed
 type: sword
 quality: COMMON
+repairId: 265
 powers:
   invisibility: 0
 enchantments:

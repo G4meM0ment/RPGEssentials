@@ -108,7 +108,7 @@ public class CommandHandler {
 			FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
 			customItemHandler.spawnCustomItem(p, new CustomItem(null, config.getString("displayName"), customItemHandler.getFreeId(name), config.getInt("data"), config.getInt("skinId"),
 					config.getInt("damage"), config.getInt("damageMax"), config.getInt("durability"), config.getString("description"), config.getInt("price"), config.getString("lore"),
-					Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand")));
+					Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), config.getInt("repairId")));
 			
 			if(sender instanceof Player)
 				player.sendMessage("Item given: "+name);

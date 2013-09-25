@@ -4,12 +4,12 @@ import org.bukkit.inventory.ItemStack;
 
 public class CustomItem{
 	
-	private int id, skinId, dmgValue, dmgValueMax, durability, price, data, defSkinId = 267, defDmgValue = 10, defDurability = 1000, defPrice = 0, defDmgValueMax, defData = 0;
+	private int id, skinId, dmgValue, dmgValueMax, durability, price, data, repairId, defSkinId = 267, defDmgValue = 10, defDurability = 1000, defPrice = 0, defDmgValueMax, defData = 0;
 	private String dispName, desc, lore, hand, type, defDesc = "An Item", defLore = "No information are known about that item", defHand = "One-handed", defType = "sword";
 	private Quality quality, defQuality = Quality.COMMON;
 	private ItemStack item;
 	
-	public CustomItem(ItemStack item, String dispName, int id, int data, int skinId, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand) {
+	public CustomItem(ItemStack item, String dispName, int id, int data, int skinId, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand, int repairId) {
 		this.item = item;
 		this.dispName = dispName;
 		this.id = id;
@@ -25,6 +25,7 @@ public class CustomItem{
 		this.quality = quality;
 		this.type = type;
 		this.hand = hand;
+		this.repairId = repairId;
 	}
 	
 	public CustomItem(ItemStack item, String dispName, int id) {
@@ -192,5 +193,13 @@ public class CustomItem{
 	}
 	public Quality getDefQuality() {
 		return defQuality;
-	}	
+	}
+	
+	//repair getter/setter
+	public int getRepairId() {
+		return repairId;
+	}
+	public void setRepairId(int id) {
+		repairId = id;
+	}
 }
