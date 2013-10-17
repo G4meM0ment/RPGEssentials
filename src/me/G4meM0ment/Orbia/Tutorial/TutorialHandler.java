@@ -61,7 +61,7 @@ public class TutorialHandler {
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "campaign forceready "+p.getName()+" --notify");
 		case FITH:
 			p.teleport(new Location(Bukkit.getWorld("OrbiA"), -2433.0, 202.0, -3659.0));
-			p.sendMessage(ChatColor.GREEN+"Waehle eine Klasse bei einem der Graubaerte (Rechtsklick auf den Graubart! Gehe dann zurück zu Gondolf und rede mit ihm!");
+			p.sendMessage(ChatColor.GREEN+"Waehle eine Klasse bei einem der Graubaerte (Rechtsklick auf den Graubart! Gehe dann zurueck zu Gondolf und rede mit ihm!");
 		default:
 			break;
 		}
