@@ -54,14 +54,14 @@ public class TutorialHandler {
 			break;
 		case THIRD:
 			p.teleport(new Location(Bukkit.getWorld("OrbiA"), -2268.0, 98.0, -3436.0));
-			p.sendMessage(ChatColor.GREEN+"Betrete das Dungeon ueber der Kaserne in Angin! (x: -2167 y: 145 z: -3529)");
+			p.sendMessage(ChatColor.GREEN+"Betrete das Dungeon über der Kaserne in Angin! (x: -2167 y: 145 z: -3529)");
 			break;
 		case FOURTH:
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "campaign forceadd "+p.getName()+" tutorial3 --notify");
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "campaign forceready "+p.getName()+" --notify");
 		case FITH:
 			p.teleport(new Location(Bukkit.getWorld("OrbiA"), -2433.0, 202.0, -3659.0));
-			p.sendMessage(ChatColor.GREEN+"Waehle eine Klasse bei einem der Graubaerte (Rechtsklick auf den Graubart! Gehe dann zurueck zu Gondolf und rede mit ihm!");
+			p.sendMessage(ChatColor.GREEN+"Wähle eine Klasse bei einem der Graubärte (Rechtsklick auf den Graubart! Gehe dann zurück zu Gondolf und rede mit ihm!");
 		default:
 			break;
 		}

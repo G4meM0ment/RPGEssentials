@@ -111,7 +111,7 @@ public class PListener implements Listener{
 		Chatter c = event.getSender();
 		if(event.getChannel() == local && !isChatterInRange(c, local))
 		{
-			event.getSender().getPlayer().sendMessage(ChatColor.YELLOW+"Niemand kann dich hoeren!");
+			event.getSender().getPlayer().sendMessage(ChatColor.YELLOW+"Niemand kann dich hören!");
 			event.setResult(Result.FAIL);
 		}
 	}
