@@ -8,6 +8,7 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 public class FileHandler {
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	
 	public FileHandler(RPGEssentials plugin) {

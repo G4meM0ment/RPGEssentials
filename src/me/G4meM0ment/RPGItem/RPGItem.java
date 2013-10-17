@@ -32,6 +32,7 @@ public class RPGItem {
 	private EListener eListener;
 	private InvListener invListener;
 	private HeroesListener hListener;
+	@SuppressWarnings("unused")
 	private PowerHandler ph;
 	
 	private static File configFile;
@@ -68,7 +69,7 @@ public class RPGItem {
 		plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
 	}
 	
-	public boolean onEnable() {
+	public boolean onEnable(){
 		isDisabling = false;
 		File exItem = new File(dir+"/items/RPGItem.yml");
 		File exData = new File(dir+"/data/RPGItem.yml");
@@ -81,22 +82,15 @@ public class RPGItem {
 		itemConfig.initializeItemConfigs();
 		itemData.initializeDataFiles();
 		MetaHandler.setSplitter(getConfig().getInt("FormatLineSize"));
+		if(plugin.getDtlTraders() != null && plugin.getDtlTraders().isEnabled())
+			registerDtlTraderFlag();
 		
 		//Run methods which needs an enabled server/plugin
-		try {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
-			public void run() {
-				if(plugin.getDtlTraders() != null) {
-					try {
-						ItemFlag.registerFlag(me.G4meM0ment.RPGItem.OtherPlugins.RPGItem.class);
-					} catch (AttributeInvalidClassException e) {
-						plugin.getLogger().info(logTit+"Could not register dtlTrader flag!");
-					}
-				}
+			public void run() {			
 			}
 		});
-		} catch (NoClassDefFoundError e) {}
 		
 		isEnabled = true;
 		return true;
@@ -169,5 +163,15 @@ public class RPGItem {
 	
 	public boolean isEnabled() {
 		return isEnabled;
+	}
+	
+	private void registerDtlTraderFlag(){
+		if(plugin.getDtlTraders() != null && plugin.getDtlTraders().isEnabled()) {
+			try {
+				ItemFlag.registerFlag(me.G4meM0ment.RPGItem.OtherPlugins.RPGItem.class);
+			} catch (AttributeInvalidClassException e) {
+				plugin.getLogger().info(logTit+"Could not register dtlTrader flag!");
+			} 
+		}
 	}
 }

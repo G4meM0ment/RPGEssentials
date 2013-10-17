@@ -9,6 +9,7 @@ import com.palmergames.bukkit.towny.object.TownyUniverse;
 
 public class ReTowny {
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private Towny towny;
 	

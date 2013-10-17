@@ -2,3 +2,4 @@ UseOnMove: true
 EnforcePortalAccess: true
 PortalCooldown: 10000
 WooshEffect: true
+DisableNetherPortals: true

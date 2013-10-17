@@ -50,34 +50,37 @@ public class InventoryHandler {
 		powerHandler = new PowerHandler();
 	}
 	
-	public void processInventory(Inventory inv, Player p, boolean fullUpdate) {
+	public void processInventory(Inventory inv, Player p) 
+	{
 		if(inv == null) return;
-		for(ItemStack item : inv.getContents()) {
-			if(itemHandler.isCustomItem(item)) {
+		for(ItemStack item : inv.getContents())
+		{
+			if(itemHandler.isCustomItem(item)) 
+			{
 				ItemMeta meta = item.getItemMeta();
 				String name = ChatColor.stripColor(meta.getDisplayName());
 				List<String> lore = meta.getLore();
 				int size = lore.size();
 				List<CustomItem> list;
 				
-				if(ListHandler.getCustomItemTypeList(name) == null) {
+				if(ListHandler.getCustomItemTypeList(name) == null) 
+				{
 					lh.initializeList(name);
 					list = ListHandler.getCustomItemTypeList(name);
-				} else {
+				} else 
+				{
 					list = ListHandler.getCustomItemTypeList(name);
 				}
-				if(!lh.containsCustomItem(list, item)) {
+				if(!lh.containsCustomItem(list, item)) 
+				{
 					FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
 					FileConfiguration data = itemData.getDataFile(itemData.getFile(name));
 					int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
 
 					ListHandler.addCustomItemToList(new CustomItem(item, name, id, config.getInt("data"), config.getInt("skinId"), config.getInt("damage"), config.getInt("damageMax"),
 						data.getInt(Integer.toString(id)+".durability"), config.getString("description"), config.getInt("price"), config.getString("lore"), 
-						Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), config.getInt("repairId")), list);
-					customItemHandler.updateItem(item, p, fullUpdate);
-				}
-				else {
-					customItemHandler.updateItem(item, p, fullUpdate);
+						Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), config.getInt("repairId"), config.getInt("durability")), list);
+					customItemHandler.updateItem(item, p);
 				}
 			}
 		}
@@ -108,7 +111,6 @@ public class InventoryHandler {
 				int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
 				CustomItem cItem = customItemHandler.getCustomItem(name, id);
 
-				customItemHandler.updateItem(item, p, false);
 				powerHandler.applyPower(p, cItem);
 			}
 		}
@@ -126,7 +128,6 @@ public class InventoryHandler {
 			int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
 			CustomItem cItem = customItemHandler.getCustomItem(name, id);
 
-			customItemHandler.updateItem(item, p, false);
 			powerHandler.applyPower(p, cItem);
 		}
 	}

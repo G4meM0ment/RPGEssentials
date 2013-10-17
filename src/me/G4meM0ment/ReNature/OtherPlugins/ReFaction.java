@@ -11,6 +11,7 @@ import com.massivecraft.mcore.ps.PS;
 
 public class ReFaction {
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private MCore mcore;
 	private Factions factions;

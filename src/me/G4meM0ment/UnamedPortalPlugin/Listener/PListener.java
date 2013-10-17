@@ -11,13 +11,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 
 public class PListener implements Listener{
 	
+	private UnnamedPortalPlugin subplugin;
 	private PortalHandler ph;
 	private PermHandler pm;
 	
 	public PListener(RPGEssentials plugin) {
+		subplugin = new UnnamedPortalPlugin();
 		ph = new PortalHandler(new UnnamedPortalPlugin());
 		pm = new PermHandler(plugin);
 	}
@@ -30,5 +33,11 @@ public class PListener implements Listener{
 		if(ph.isPortal(b) && pm.hasPortalPerm(p, ph.getPortal(b)) && !ph.hasToWait(p)) {
 			ph.accessedPortal(p, ph.getPortal(b));
 		}	
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onPlayerPortal(PlayerPortalEvent event) {
+		if(subplugin.getConfig().getBoolean("DisableNetherPortals"))
+			event.setCancelled(true);
 	}
 }

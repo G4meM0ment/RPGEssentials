@@ -85,10 +85,17 @@ public class CommandHandler {
 					return true;
 				}
 			}
-
-			if(getPlayer(args[1]) != null) {
-				p = getPlayer(args[1]);
-				name = getName(rearrangeGiveArgs(args));
+			
+			boolean next = false;
+			for(String s : args)
+			{
+				if(next)
+					p = getPlayer(s);
+				if(s.equals("p:"))
+				{
+					next = true;
+					continue;
+				}
 			}
 			
 			if(p == null) {
@@ -108,7 +115,7 @@ public class CommandHandler {
 			FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
 			customItemHandler.spawnCustomItem(p, new CustomItem(null, config.getString("displayName"), customItemHandler.getFreeId(name), config.getInt("data"), config.getInt("skinId"),
 					config.getInt("damage"), config.getInt("damageMax"), config.getInt("durability"), config.getString("description"), config.getInt("price"), config.getString("lore"),
-					Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), config.getInt("repairId")));
+					Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), config.getInt("repairId"), config.getInt("durability")));
 			
 			if(sender instanceof Player)
 				player.sendMessage("Item given: "+name);
@@ -138,13 +145,17 @@ public class CommandHandler {
 	public String getName(String[] args) {
 		String name = "";
 		boolean first = true;
-		for(String s : args) {
+		for(String s : args) 
+		{
 			if(s.equalsIgnoreCase("give")) continue;
-			if(first) {
+			if(s.contains("p:")) continue;
+			if(first) 
+			{
 				name = s;
 				first = false;
 			} else
 				name = name+" "+s;
+			
 			if(name.split(" ").length < 2 && args.length < 2)
 				name.replace(" ", "");
 		}
@@ -170,19 +181,5 @@ public class CommandHandler {
 
         }
         return found;
-    }
-    
-    private String[] rearrangeGiveArgs(String[] args) {
-		int counter = -2;
-		String[] newArgs = new String[args.length];
-		for(String s : args) {
-			if(counter < 0) {
-				counter++;
-				continue;
-			}
-			newArgs[counter] = s;
-			counter++;
-		}
-		return newArgs;
     }
 }

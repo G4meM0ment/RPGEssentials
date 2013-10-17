@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class BListener implements Listener{
 
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private CustomItemHandler customItemHandler;
 	private ItemHandler itemHandler;

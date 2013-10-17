@@ -188,16 +188,19 @@ public class RentableHandler {
 		
 		if(rent.getRenter().isEmpty())
 			privaticeRentable(rent, p);
-		if(plugin.getEconomy() != null) {
-			if(plugin.getEconomy().getBalance(p.getName()) >= rent.getPrice()) {
+		if(plugin.getEconomy() != null) 
+		{
+			if(plugin.getEconomy().getBalance(p.getName()) >= rent.getPrice()) 
+			{
 				plugin.getEconomy().withdrawPlayer(p.getName(), rent.getPrice());
 				if(!rent.getOwner().isEmpty())
 					plugin.getEconomy().depositPlayer(rent.getOwner(), rent.getPrice());
+			} else 
+			{
+				//TODO add messenger
+				p.sendMessage("Not enough money");
+				return;
 			}
-		} else {
-			//TODO add messenger
-			p.sendMessage("Not enough money");
-			return;
 		}
 		
 		rent.setRenter(p.getName());
@@ -229,6 +232,7 @@ public class RentableHandler {
 		
 		rent.setPreRenter(rent.getRenter());
 		rent.setRenter("");
+		rent.setRemaining(0);
 		if(Bukkit.getPlayerExact(rent.getPreRenter()) != null)
 			Bukkit.getPlayerExact(rent.getPreRenter()).sendMessage("Rentable expired");
 

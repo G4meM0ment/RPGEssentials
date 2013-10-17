@@ -5,15 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
-import me.G4meM0ment.RPGItem.CustomItem.Quality;
-import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
 
 public class ListHandler {
 	
+	@SuppressWarnings("unused")
 	private ItemHandler itemHandler;
 	
 	private static HashMap<String, List<CustomItem>> customItemTypes = new HashMap<String, List<CustomItem>>();
@@ -57,21 +55,9 @@ public class ListHandler {
 	public void updateItems() {
 		for(List<CustomItem> list : getCustomItemTypes().values()) {
 			for(CustomItem cItem : list) {
-				ItemConfig itemConfig = new ItemConfig();
 				CustomItemHandler customItemHandler = new CustomItemHandler();
-				FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName()));
-				cItem.setData(config.getInt("data"));
-				cItem.setDmgValue(config.getInt("damage"));
-				cItem.setDesc(config.getString("description"));
-				cItem.setDmgValueMax(config.getInt("damageMax"));
-				cItem.setHand(config.getString("hand"));
-				cItem.setLore(config.getString("lore"));
-				cItem.setPrice(config.getInt("price"));
-				cItem.setQuality(Quality.valueOf(config.getString("quality").toUpperCase()));
-				cItem.setSkinId(config.getInt("skinId"));
-				cItem.setType(config.getString("type"));
 				
-				customItemHandler.updateItem(cItem.getItem(), null, true);
+				customItemHandler.updateItem(cItem.getItem(), null);
 			}
 		}
 	}

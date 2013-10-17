@@ -17,7 +17,9 @@ import org.bukkit.potion.PotionEffectType;
 
 public class PListener implements Listener {
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
+	@SuppressWarnings("unused")
 	private Junkie junkie;
 		
 	public PListener(RPGEssentials plugin){

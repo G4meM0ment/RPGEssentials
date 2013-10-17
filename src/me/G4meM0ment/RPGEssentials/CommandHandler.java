@@ -1,5 +1,9 @@
 package me.G4meM0ment.RPGEssentials;
 
+import java.util.Arrays;
+import java.util.List;
+
+import me.G4meM0ment.Orbia.Orbia;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.Rentables.Rentables;
 import me.G4meM0ment.UnamedPortalPlugin.UnnamedPortalPlugin;
@@ -15,14 +19,16 @@ public class CommandHandler{
 	private me.G4meM0ment.RPGItem.Handler.CommandHandler rpgItemCmdHandler;
 	private me.G4meM0ment.UnamedPortalPlugin.Handler.CommandHandler uppCmdHandler;
 	private me.G4meM0ment.Rentables.Handler.CommandHandler rentCmdHandler;
+	private me.G4meM0ment.Orbia.Handler.CommandHandler orbiaCmdHandler;
 	private RPGItem rpgitem;
 	private UnnamedPortalPlugin upp;
 	private Rentables rentables;
+	private Orbia orbia;
 	
 	private String mainCmd = "ge";
 	private String reNatureCmd = "rn";
 	private String junkieCmd = "junkie";
-	private String orbiaCmd = "orbia";
+	private List<String> orbiaCmds = Arrays.asList("orbia", "l", "g");
 	private String rpgItemCmd = "rpgitem";
 	private String UPPCmd = "upp";
 	private String rentCmd = "rentables";
@@ -33,9 +39,11 @@ public class CommandHandler{
 		rpgitem = new RPGItem();
 		upp = new UnnamedPortalPlugin();
 		rentables = new Rentables();
+		orbia = new Orbia();
 		rpgItemCmdHandler = new me.G4meM0ment.RPGItem.Handler.CommandHandler(plugin);
 		uppCmdHandler = new me.G4meM0ment.UnamedPortalPlugin.Handler.CommandHandler(plugin);
 		rentCmdHandler = new me.G4meM0ment.Rentables.Handler.CommandHandler(plugin);
+		orbiaCmdHandler = new me.G4meM0ment.Orbia.Handler.CommandHandler(plugin);
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -80,19 +88,34 @@ public class CommandHandler{
 		}
 		
 		//Orbia specific plugin cmds
-		if(command.getName().equalsIgnoreCase(orbiaCmd)) {
-			return rpgItemCmdHandler.exec(sender, command, label, args);
+		if(orbiaCmds.contains(command.getName())) {
+			if(orbia.isEnabled())
+				return orbiaCmdHandler.exec(sender, command, label, args);
+			else {}
 		}
 		
 		return false;
 	}
 	
 	private boolean exec(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player) sender;
-		if(args.length > 0 && args[0].equals("reload") && sender instanceof Player && ph.hasReloadPerms(player)) {
-			plugin.reloadRPGEssentials();
-			player.sendMessage("RPGEssentials all plugins reloaded!");
-		    return true;
+		if(args.length > 0 && args[0].equals("reload") && sender instanceof Player && ph.hasReloadPerms(((Player)sender))) {
+			Player player = null;
+			if(sender instanceof Player) {
+				player = (Player) sender;
+			}
+			
+			if(player == null) 
+			{
+				plugin.reloadRPGEssentials();
+				plugin.getLogger().info("All subplugins reloaded");
+				return true;
+			} else 
+			{
+				plugin.reloadRPGEssentials();
+				plugin.getLogger().info("All subplugins reloaded");
+				player.sendMessage("RPGEssentials all subplugins reloaded!");
+				return true;
+			}
 		}
 		return false;
 	}

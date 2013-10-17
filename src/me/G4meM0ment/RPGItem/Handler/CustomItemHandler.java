@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,6 +21,7 @@ import me.G4meM0ment.RPGItem.DataStorage.ItemData;
 
 public class CustomItemHandler {
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private ItemConfig itemConfig;
 	private ItemData itemData;
@@ -85,7 +87,7 @@ public class CustomItemHandler {
 		return counter;
 	}
 
-	public void updateItem(ItemStack item, Player p, boolean fullUpdate) {
+	public void updateItem(ItemStack item, Player p) {
 		int id = 0;
 		try {
 			id = Integer.valueOf((ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
@@ -109,20 +111,20 @@ public class CustomItemHandler {
 		customItem.setQuality(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase()));
 		customItem.setType(itemConfig.getConfig(config).getString("type"));
 		customItem.setHand(itemConfig.getConfig(config).getString("hand"));
+		customItem.setMaxDurability(itemConfig.getConfig(config).getInt("durability"));
 		
 		//set the meta information & get id specific values
 		meta.setDisplayName(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase()).colour+customItem.getDispName());
 		meta.setLore(metaHandler.getLore(customItem, p));
-//		itemData.getDataFile(data).set(Integer.toString(customItem.getId())+".durability", itemConfig.getConfig(config).getInt("durability"));
 		customItem.setItem(item);
 		
 		item.setItemMeta(meta);
 		item.setTypeId(customItem.getSkinId());	
-		if(fullUpdate) {
-			enchantHandler.removeEnchantments(item);
-			enchantHandler.addEnchantments(item, itemConfig.getConfig(config));
-		}
 		item.setData(new MaterialData(customItem.getData()));
+		
+		enchantHandler.removeEnchantments(item);
+		enchantHandler.addEnchantments(item, itemConfig.getConfig(config));
+
 	}
 	
 	public void registerItem(ItemStack item, int id) {
@@ -131,13 +133,12 @@ public class CustomItemHandler {
 		if(id <= 0) id = getFreeId(ChatColor.stripColor(item.getItemMeta().getDisplayName()));
 		ItemMeta meta = item.getItemMeta();
 		CustomItem customItem = new CustomItem(item, ChatColor.stripColor(meta.getDisplayName()), id, 0, item.getType().getId(),
-				0 , 0, 0, "", 0, "", Quality.TRASH, "", "", 0);
+				0 , 0, 0, "", 0, "", Quality.TRASH, "", "", 0, 0);
 		
 		FileConfiguration data = itemData.getDataFile(itemData.getFile(customItem.getDispName()));
 		FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(customItem.getDispName()));
 		List<CustomItem> list = ListHandler.getCustomItemTypeList(customItem.getDispName());
 
-		
 		//Configuring item
 		if(isColorable(item))
 			item.setItemMeta(metaHandler.getLeatherArmorMeta(customItem, null));
@@ -159,7 +160,7 @@ public class CustomItemHandler {
         	lh.initializeList(customItem.getDispName());
 		ListHandler.addCustomItemToList(customItem, list);
 		
-		updateItem(item, null, true);
+		updateItem(item, null);
 	}
 	
 	//get Item by its id
@@ -184,17 +185,25 @@ public class CustomItemHandler {
 			item = cItem.getItem();
 		else
 			return;
-		int cDurability = cItem.getDurability();
-		int maxCDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
-		int percent = (maxCDurability-cDurability)/maxCDurability * 100;
-		int durability = (item.getType().getMaxDurability()/100)*percent;
+		double cDurability = cItem.getDurability();
+		double maxCDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
+		double percent = cDurability/maxCDurability * 100;
+		double durability = item.getType().getMaxDurability() - ((((double) (item.getType().getMaxDurability()))/100)*percent);
 		if(durability >= item.getType().getMaxDurability()-1)
 			durability = item.getType().getMaxDurability()-1;
 		if(durability <= 0)
 			durability = 1;
-		item.setDurability((short) durability);
-	}
-	
+
+		final short fDurability = (short) durability;
+		final ItemStack fItem = item;
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() {
+			@Override
+			public void run() {
+				fItem.setDurability(fDurability);
+			}
+		}, 50);
+	}	
+    
 	public void repairCustomItem(CustomItem cItem, int amount) {
 		if(cItem == null) return;
 		int maxDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");

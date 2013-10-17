@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 public class CommandHandler {
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private PermHandler permHandler;
 	private RentableHandler rh;

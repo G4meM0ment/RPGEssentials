@@ -135,15 +135,12 @@ public class ItemData {
 	}
 	public void saveDataToFiles() {
 		for(String s : ListHandler.getCustomItemTypes().keySet()) {
-			for(CustomItem item : ListHandler.getCustomItemTypeList(s)) {
+			for(CustomItem item : ListHandler.getCustomItemTypeList(s)) 
+			{
 				File data = getFile(s);
 				FileConfiguration dataFile = getDataFile(data);
 				dataFile.set(item.getId()+".durability", item.getDurability());
-				try {
-					dataFile.save(data);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				saveDataFile(data);
 			}
 		}
 	}

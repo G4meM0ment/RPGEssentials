@@ -7,6 +7,7 @@ import me.G4meM0ment.ReNature.ReNature;
 import me.G4meM0ment.ReNature.CustomTypes.NBlock;
 import me.G4meM0ment.ReNature.Handler.ReplaceHandler;
 import me.G4meM0ment.ReNature.OtherPlugins.ReFaction;
+import me.G4meM0ment.ReNature.OtherPlugins.ReTowny;
 
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -23,16 +24,19 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 
 public class BListener implements Listener{
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private ReplaceHandler rh;
 	private ReNature subplugin;
 	private ReFaction reFaction;
+	private ReTowny reTowny;
 	
 	public BListener(RPGEssentials plugin) {
 		this.plugin = plugin;
 		rh = new ReplaceHandler();
 		subplugin = new ReNature();
 		reFaction = new ReFaction(plugin);
+		reTowny = new ReTowny(plugin);
 	}
 	
 	//TODO ##### CLEANUP CODE ####### SPLIT UP LISTENERS
@@ -44,6 +48,8 @@ public class BListener implements Listener{
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
 		if(reFaction.isFaction(event.getBlock().getLocation()))
+			return;
+		if(reTowny.isTown(event.getBlock().getLocation()))
 			return;
 		
 		if(rh.contains(event.getBlock().getLocation())) return;
@@ -59,6 +65,8 @@ public class BListener implements Listener{
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
 		if(reFaction.isFaction(event.getBlock().getLocation()))
+			return;
+		if(reTowny.isTown(event.getBlock().getLocation()))
 			return;
 
 		final Block b = event.getBlock();
@@ -90,6 +98,8 @@ public class BListener implements Listener{
 			return;
 		if(reFaction.isFaction(event.getBlock().getLocation()))
 			return;
+		if(reTowny.isTown(event.getBlock().getLocation()))
+			return;
 		
 		int i = 106;
 		if(event.getBlock().getTypeId() != i)
@@ -111,6 +121,8 @@ public class BListener implements Listener{
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getEntity().getWorld().getName())))
 			return;
 		if(reFaction.isFaction(event.getEntity().getLocation()))
+			return;
+		if(reTowny.isTown(event.getEntity().getLocation()))
 			return;
 		
 		if(subplugin.getConfig().getIntegerList("deniedIDs").contains(event.getEntity().getType().getTypeId()))

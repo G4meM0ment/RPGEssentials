@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class EnchantmentHandler {
 	
+	@SuppressWarnings("unused")
 	private ListHandler lh;
 	
 	public EnchantmentHandler() {
@@ -18,10 +19,10 @@ public class EnchantmentHandler {
 
 	protected void addEnchantments(ItemStack item, FileConfiguration config) {
 		for(Enchantment e : Enchantment.values()) {
-			if(config.getInt("enchantments."+e.toString()) >= 1) {
-				Enchantment enchant = getEnchantment(e.toString());
+			if(config.getInt("enchantments."+e.getName().toLowerCase()) >= 1) {
+				Enchantment enchant = getEnchantment(e.getName().toLowerCase());
 				if(enchant != null)
-					item.addUnsafeEnchantment(enchant, config.getInt("enchantments."+e.toString()));
+					item.addUnsafeEnchantment(enchant, config.getInt("enchantments."+e.getName().toLowerCase()));
 			}
 		}
 	}

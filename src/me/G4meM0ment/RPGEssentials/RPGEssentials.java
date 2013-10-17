@@ -16,6 +16,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.dthielke.herochat.Herochat;
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.lwc.LWCPlugin;
 import com.herocraftonline.heroes.Heroes;
@@ -44,11 +45,13 @@ public class RPGEssentials extends JavaPlugin{
 	private Factions factions;
 	private Towny towny;
 	private Heroes heroes;
+	private Herochat herochat;
+	@SuppressWarnings("unused")
 	private LWCPlugin lwcp;
 	private LWC lwc;
 	private DtlTraders dtlTraders;
 	
-	private String dir = "plugins/RPGEssentials";
+	private static String dir = "plugins/RPGEssentials";
 	
 	@Override
 	public void onEnable() {
@@ -63,13 +66,31 @@ public class RPGEssentials extends JavaPlugin{
 		} catch(Exception e) {
 			getLogger().info("Could not load config.");
 		}
+
+//################ Init APIs ###################
+	    if (!setupEconomy() ) {
+	        getLogger().info("Disabled due to no Vault dependency found!");
+	        getServer().getPluginManager().disablePlugin(this);
+	        return;
+	    }
+		we = initWorldEdit();
+		wg = initWorldGuard();
+		mcore = initMCore();
+		factions = initFactions();
+		towny = initTowny();
+		heroes = initHeroes();
+		lwc = initLWC();
+		dtlTraders = initDtlTraders();
+		herochat = initHerochat();
+		
 		//Initialize messages
 		getLogger().info("Initializing sub-plugins:");
 		
 //################ Initializing RPGItem and debugging ################
 		if(getConfig().getBoolean("RPGItemEnabled")) {
 			rpgItem = new RPGItem(this);
-			boolean rpgItemEnabled = rpgItem.onEnable();
+			boolean rpgItemEnabled;
+			rpgItemEnabled = rpgItem.onEnable();
 
 			if(rpgItemEnabled)
 				getLogger().info("RPGItem enabled!");
@@ -128,7 +149,7 @@ public class RPGEssentials extends JavaPlugin{
 			getLogger().info("Rentables found, but disabled in config!");
 		
 //################ Initializing Orbia and debugging ################
-		if(getConfig().getBoolean("OrbiaEnabled")) {
+		if(getConfig().getKeys(false).contains("OrbiaEnabled") && getConfig().getBoolean("OrbiaEnabled")) {
 			orbia = new Orbia(this);
 			boolean orbiaEnabled = orbia.onEnable();
 			
@@ -141,27 +162,6 @@ public class RPGEssentials extends JavaPlugin{
 		
 		//Finished initializing plugin enabled
 		getLogger().info("Initialization done!");
-		
-//################ Init APIs ###################
-	    if (!setupEconomy() ) {
-	        getLogger().info("Disabled due to no Vault dependency found!");
-	        getServer().getPluginManager().disablePlugin(this);
-	        return;
-	    }
-		we = initWorldEdit();
-		wg = initWorldGuard();
-		mcore = initMCore();
-		factions = initFactions();
-		towny = initTowny();
-		heroes = initHeroes();
-		lwc = initLWC();
-		dtlTraders = initDtlTraders();
-		
-//############### Startsing scheduler #################
-//		schedule = new Schedule(this);
-//		Thread time = new Thread(schedule);
-//		time.start();
-//		getLogger().info("Setup schedule");
 		
 		//Plguin enabled
 		getLogger().info("Enabled version "+pdf.getVersion());
@@ -176,28 +176,28 @@ public class RPGEssentials extends JavaPlugin{
 		//Disable sub-plugins
 		getLogger().info("Disabling sub-plugins:");
 		
-		if(rpgItem.isEnabled())
-			if(rpgItem.onDisable())
+		if(rpgItem != null)
+			if(rpgItem.onDisable() && rpgItem.isEnabled())
 				getLogger().info("RPGItem disabled!");
 		
-		if(reNature.isEnabled())
-			if(reNature.onDisable())
+		if(reNature != null)
+			if(reNature.isEnabled() && reNature.onDisable())
 				getLogger().info("ReNature disabled!");
 		
-		if(junkie.isEnabled())
-			if(junkie.onDisable())
+		if(junkie != null)
+			if(junkie.onDisable() && junkie.isEnabled())
 				getLogger().info("Junkie disabled!");
 		
-		if(upp.isEnabled())
-			if(upp.onDisable())
+		if(upp != null)
+			if(upp.onDisable() && upp.isEnabled())
 				getLogger().info("UnnamedPortalPlugin disabled!");
 		
-		if(rent.isEnabled())
-			if(rent.onDisable())
+		if(rent != null)
+			if(rent.onDisable() && rent.isEnabled())
 				getLogger().info("Rentables disabled!");
 		
-		if(orbia.isEnabled())
-			if(orbia.onDisable())
+		if(orbia != null)
+			if(orbia.onDisable() && orbia.isEnabled())
 				getLogger().info("Orbia disabled!");
 	}
 	
@@ -328,6 +328,19 @@ public class RPGEssentials extends JavaPlugin{
 		return dtlTraders;
 	}
 	
+	private Herochat initHerochat() {
+	    Plugin plugin = getServer().getPluginManager().getPlugin("Herochat");
+	 
+	    if (plugin == null || !(plugin instanceof Herochat)) {
+	        return null; // Maybe you want throw an exception instead
+	    }
+		getLogger().info("Herochat found enabled features");
+	    return (Herochat) plugin;
+	}
+	public Herochat getHerochat() {
+		return herochat;
+	}
+	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(ch.onCommand(sender, command, label, args))
 			return true;
@@ -337,17 +350,17 @@ public class RPGEssentials extends JavaPlugin{
 	
 	public void reloadRPGEssentials() {
 		reloadConfig();
-		if(getConfig().getBoolean("ReNatureEnabled"))
+		if(getConfig().getBoolean("ReNatureEnabled") && reNature != null && reNature.isEnabled())
 			reNature.reloadConfig();
-		if(getConfig().getBoolean("JunkieEnabled"))
+		if(getConfig().getBoolean("JunkieEnabled") && junkie != null && junkie.isEnabled())
 			junkie.reloadConfig();
-		if(getConfig().getBoolean("OrbiaEnabled"))
-			orbia.reloadConfig();
-		if(getConfig().getBoolean("RPGItemEnabled"))
+		if(getConfig().getBoolean("OrbiaEnabled") && orbia != null && orbia.isEnabled())
+			orbia.reloadConfigs();
+		if(getConfig().getBoolean("RPGItemEnabled") && rpgItem != null && rpgItem.isEnabled())
 			rpgItem.reloadConfigs();
-		if(getConfig().getBoolean("RentablesEnabled"))
+		if(getConfig().getBoolean("RentablesEnabled") && rent != null && rent.isEnabled())
 			rent.reloadConfigs();
-		if(getConfig().getBoolean("UnnamedPortalPluginEnabled"))
+		if(getConfig().getBoolean("UnnamedPortalPluginEnabled") && upp != null && upp.isEnabled())
 			upp.reloadConfigs();
 	}
 	

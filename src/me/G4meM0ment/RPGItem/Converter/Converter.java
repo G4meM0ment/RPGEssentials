@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class Converter {
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private ItemHandler itemHandler;
 	private CustomItemHandler customItemHandler;
@@ -56,7 +57,7 @@ public class Converter {
 						cItem.setType(cloned.getType());
 						
 						item.setItemMeta(metaHandler.getItemMeta(cItem, null));						
-						customItemHandler.updateItem(item, null, true);
+						customItemHandler.updateItem(item, null);
 					}
 				}
 			}

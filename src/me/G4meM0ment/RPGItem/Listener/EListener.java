@@ -1,6 +1,7 @@
 package me.G4meM0ment.RPGItem.Listener;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.DamageHandler;
@@ -29,6 +30,7 @@ public class EListener implements Listener{
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+		if(plugin.getHeroes() != null) return;
 		Player p = null, e = null;
 		if(event.getDamager() instanceof Player)
 			p = (Player) event.getDamager();
@@ -39,11 +41,19 @@ public class EListener implements Listener{
 		if(event.getEntity() instanceof Player)
 			e = (Player) event.getEntity();
 		
+		CustomItem cItem = customItemHandler.getCustomItem(ChatColor.stripColor(p.getItemInHand().getItemMeta().getDisplayName()),
+				Integer.valueOf(ChatColor.stripColor(p.getItemInHand().getItemMeta().getLore().get(p.getItemInHand().getItemMeta().getLore().size()-1))));
+		
+		if(cItem.getDurability() <= 0 || cItem.getItem().getDurability() >= cItem.getItem().getType().getMaxDurability()-1)
+		{
+			event.setCancelled(true);
+			return;
+		}
+
 		if(p != null) {
 			double newDmg = dmgHandler.handleDamageEvent(p);
 			if(itemHandler.isCustomItem(p.getItemInHand()))
-				customItemHandler.itemUsed(customItemHandler.getCustomItem(ChatColor.stripColor(p.getItemInHand().getItemMeta().getDisplayName()),
-						Integer.valueOf(ChatColor.stripColor(p.getItemInHand().getItemMeta().getLore().get(p.getItemInHand().getItemMeta().getLore().size()-1)))));
+				customItemHandler.itemUsed(cItem);
 			if(newDmg >= 0)
 				event.setDamage(newDmg);
 		}

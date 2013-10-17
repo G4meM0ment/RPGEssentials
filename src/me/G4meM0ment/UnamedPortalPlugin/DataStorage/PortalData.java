@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import me.G4meM0ment.UnamedPortalPlugin.UnnamedPortalPlugin;
 import me.G4meM0ment.UnamedPortalPlugin.Handler.PortalHandler;
@@ -18,7 +17,6 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class PortalData {
 	

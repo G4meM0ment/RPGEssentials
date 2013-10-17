@@ -4,19 +4,18 @@ import org.bukkit.inventory.ItemStack;
 
 public class CustomItem{
 	
-	private int id, skinId, dmgValue, dmgValueMax, durability, price, data, repairId, defSkinId = 267, defDmgValue = 10, defDurability = 1000, defPrice = 0, defDmgValueMax, defData = 0;
-	private String dispName, desc, lore, hand, type, defDesc = "An Item", defLore = "No information are known about that item", defHand = "One-handed", defType = "sword";
-	private Quality quality, defQuality = Quality.COMMON;
+	private int id, skinId, dmgValue, dmgValueMax, durability, price, data, repairId, maxDurability;
+	private String dispName, desc, lore, hand, type;
+	private Quality quality;
 	private ItemStack item;
 	
-	public CustomItem(ItemStack item, String dispName, int id, int data, int skinId, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand, int repairId) {
+	public CustomItem(ItemStack item, String dispName, int id, int data, int skinId, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand, int repairId, int maxDurability) {
 		this.item = item;
 		this.dispName = dispName;
 		this.id = id;
 		this.data = data;
 		this.skinId = skinId;
 		this.dmgValue = dmgValue;
-		defDmgValueMax = dmgValue;
 		this.dmgValueMax = dmgValueMax;
 		this.durability = durability;
 		this.desc = desc;
@@ -26,23 +25,7 @@ public class CustomItem{
 		this.type = type;
 		this.hand = hand;
 		this.repairId = repairId;
-	}
-	
-	public CustomItem(ItemStack item, String dispName, int id) {
-		this.item = item;
-		this.dispName = dispName;
-		this.id = id;
-		data = defData;
-		skinId = defSkinId;
-		dmgValue = defDmgValue;
-		defDmgValueMax = dmgValue;
-		dmgValueMax = defDmgValueMax;
-		desc = defDesc;
-		price = defPrice;
-		lore = defLore;
-		quality = defQuality;
-		type = defType;
-		hand = defHand;
+		this.maxDurability = maxDurability;
 	}
 
 	//Item getter/setter
@@ -77,13 +60,6 @@ public class CustomItem{
 		skinId = id;
 	}
 	
-	public int getDefSkinId() {
-		return defSkinId;
-	}
-	public void setDefSkinId(int id) {
-		defSkinId = id;
-	}
-	
 	//Damage getter/setter
 	public int getDmgValue() {
 		return dmgValue;
@@ -92,22 +68,12 @@ public class CustomItem{
 		dmgValue = i;
 	}
 	
-	public int getDefDmgValue() {
-		return defDmgValue;
-	}
-	public void setDefDmgValue(int i) {
-		defDmgValue = i;
-	}
-	
 	//Max damage getter/setter
 	public int getDmgValueMax() {
 		return dmgValueMax;
 	}
 	public void setDmgValueMax(int dmgValueMax) {
 		this.dmgValueMax = dmgValueMax;
-	}
-	public int getDefDmgValueMax() {
-		return defDmgValueMax;
 	}
 	
 	//Displayname getter/setter
@@ -125,9 +91,6 @@ public class CustomItem{
 	public void setDesc(String description) {
 		this.desc = description;
 	}
-	public String getDefDesc() {
-		return defDesc;
-	}
 	
 	//Price getter/setter
 	public int getPrice() {
@@ -135,9 +98,6 @@ public class CustomItem{
 	}
 	public void setPrice(int price) {
 		this.price = price;
-	}
-	public int getDefPrice() {
-		return defPrice;
 	}
 	
 	//Lore getter/setter
@@ -147,9 +107,6 @@ public class CustomItem{
 	public void setLore(String lore) {
 		this.lore = lore;
 	}
-	public String getDefLore() {
-		return defLore;
-	}
 	
 	//Durability getter/setter
 	public int getDurability() {
@@ -158,19 +115,12 @@ public class CustomItem{
 	public void setDurability(int durability) {
 		this.durability = durability;
 	}
-	public int getDefDurability() {
-		return defDurability;
-	}
-
 	//Handed getter/setter
 	public String getHand() {
 		return hand;
 	}
 	public void setHand(String hand) {
 		this.hand = hand;
-	}
-	public String getDefHand() {
-		return defHand;
 	}
 
 	//Type getter/setter
@@ -180,9 +130,6 @@ public class CustomItem{
 	public void setType(String type) {
 		this.type = type;
 	}
-	public String getDefType() {
-		return defType;
-	}
 	
 	//Quality getter/setter
 	public Quality getQuality() {
@@ -191,9 +138,6 @@ public class CustomItem{
 	public void setQuality(Quality quality) {
 		this.quality = quality;
 	}
-	public Quality getDefQuality() {
-		return defQuality;
-	}
 	
 	//repair getter/setter
 	public int getRepairId() {
@@ -201,5 +145,13 @@ public class CustomItem{
 	}
 	public void setRepairId(int id) {
 		repairId = id;
+	}
+	
+	//maxDurability getter/setter
+	public int getMaxDurability() {
+		return maxDurability;
+	}
+	public void setMaxDurability(int maxDurability) {
+		this.maxDurability = maxDurability;
 	}
 }

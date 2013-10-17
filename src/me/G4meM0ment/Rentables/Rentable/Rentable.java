@@ -3,7 +3,6 @@ package me.G4meM0ment.Rentables.Rentable;
 import java.util.List;
 
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 
 public class Rentable {
 	

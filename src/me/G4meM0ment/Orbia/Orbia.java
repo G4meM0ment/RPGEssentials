@@ -6,9 +6,11 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.G4meM0ment.Junkie.Listener.PListener;
+import me.G4meM0ment.Orbia.Listener.PListener;
+import me.G4meM0ment.Orbia.Tutorial.TutorialData;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,72 +18,102 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Orbia {
 	private RPGEssentials plugin;
 	private PListener plistener;
+	private TutorialData tutData;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
 	
 	private static String logTit = "Orbia: ";
 	private static String dir;
+	private static Logger logger;
 	private static boolean isEnabled = false;
 
-	public Orbia(RPGEssentials plugin) {
+	public Orbia(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
-		plistener = new PListener(plugin);
 		
+		plistener = new PListener(plugin);
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
 		
 		dir = plugin.getDir()+"/Orbia";
-		
+		logger = plugin.getLogger();
 		configFile = new File(dir+"/config.yml");
+		
+		tutData = new TutorialData(this);
 	}
-	public Orbia() {
+	public Orbia()
+	{
 
 	}
 
-	public boolean onEnable() {
+	public boolean onEnable() 
+	{
 		if(!plugin.getConfig().getBoolean("OrbiaEnabled"))
-			return true;
+			return false;
 		
 		//creating config or loading
 		reloadConfig();
 		saveConfig();
+		tutData.reloadConfig();
+		tutData.saveConfig();
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+			@Override
+			public void run() {
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "dmarker deleteset id:markers");
+			}
+		});
 		
 		isEnabled = true;
 		return true;
 	}
 
-	public boolean onDisable() {
+	public boolean onDisable()
+	{
 		isEnabled = false;
 		return true;
 	}
 	
-	public void reloadConfig() {
-	    if (configFile == null) {
-	    	configFile = new File(plugin.getDataFolder()+dir, "/config.yml");
+	public void reloadConfigs() 
+	{
+		reloadConfig();
+		tutData.reloadConfig();
+	}
+	public void reloadConfig() 
+	{
+	    if (configFile == null) 
+	    {
+	    	configFile = new File(dir, "config.yml");
 			plugin.getLogger().info(logTit+"Created Config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
 	    InputStream defConfigStream = plugin.getResource("defOrbiaConf.yml");
-	    if (defConfigStream != null) {
+	    if (defConfigStream != null) 
+	    {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
 	    }
 		plugin.getLogger().info(logTit+"Config Loaded.");
 	}
-	public FileConfiguration getConfig() {
-	    if (config == null) {
+	public FileConfiguration getConfig() 
+	{
+	    if (config == null) 
+	    {
 	        reloadConfig();
 	    }
 	    return config;
 	}
-	public void saveConfig() {
-	    if (config == null || configFile == null) {
+	public void saveConfig() 
+	{
+	    if (config == null || configFile == null) 
+	    {
 	    	return;
 	    }
-	    try {
+	    try 
+	    {
 	        config.save(configFile);
 	        plugin.getLogger().info(logTit+"Config saved");
 	    } catch (IOException ex) {
@@ -89,7 +121,21 @@ public class Orbia {
 	    }
 	}
 	
-	public boolean isEnabled() {
+	public String getLogTit() 
+	{
+		return logTit;
+	}
+	public String getDir() 
+	{
+		return dir;
+	}
+	public Logger getLogger() 
+	{
+		return logger;
+	}
+	
+	public boolean isEnabled() 
+	{
 		return isEnabled;
 	}
 }

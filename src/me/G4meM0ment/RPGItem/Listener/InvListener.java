@@ -10,6 +10,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class InvListener implements Listener{
+	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private InventoryHandler invHandler;
 	
@@ -54,7 +56,7 @@ public class InvListener implements Listener{
 		Player p = (Player) event.getInventory().getHolder();
 		if(p == null) return;
 		
-		invHandler.processInventory(p.getInventory(), p, false);
+		invHandler.processInventory(p.getInventory(), p);
 		//invHandler.processArmor(p);
 		//invHandler.processItem(p);
 	}

@@ -29,7 +29,7 @@ public class MetaHandler {
 	private static int splitter = 39;
 	
 	public MetaHandler(RPGEssentials plugin) {
-		this.plugin = plugin;
+		MetaHandler.plugin = plugin;
 		subplugin = new RPGItem();
 		itemConfig = new ItemConfig();
 	}

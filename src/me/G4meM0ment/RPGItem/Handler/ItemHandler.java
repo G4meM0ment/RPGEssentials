@@ -9,8 +9,11 @@ import me.G4meM0ment.RPGItem.DataStorage.ItemData;
 
 public class ItemHandler {
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
+	@SuppressWarnings("unused")
 	private RPGItem subplugin;
+	@SuppressWarnings("unused")
 	private ItemData itemData;
 	
 	public ItemHandler(RPGEssentials plugin) {

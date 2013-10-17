@@ -21,3 +21,15 @@ commands:
         aliases: [rentables]
         description: Main command for Rentables
         usage: /rentables help
+    l:
+        aliases: [l]
+        description: Chat in lokal channel
+        usage: /l (<message>)
+    g:
+        aliases: [g]
+        description: Chat in global channel
+        usage: /g (<message>)
+    orbia:
+        aliases: [orbia]
+        description: main cmd for orbia
+        usage: /orbia <arg>

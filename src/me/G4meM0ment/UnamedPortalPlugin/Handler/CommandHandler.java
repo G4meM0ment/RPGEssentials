@@ -19,6 +19,7 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 
 public class CommandHandler {
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private PortalHandler ph;
 	private WorldEditHandler weHandler;
