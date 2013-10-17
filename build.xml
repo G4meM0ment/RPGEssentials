@@ -26,7 +26,7 @@
     <mkdir dir="${dist}/lib"/>
 
     <!-- Put everything in ${build} into the MyProject-${DSTAMP}.jar file -->
-    <jar jarfile="${dist}/lib/RPGEssentials-${DSTAMP}.jar" basedir="${build}"/>
+    <jar jarfile="${dist}/lib/RPGEssentials-0.0.1.jar" basedir="${build}"/>
   </target>
 
   <target name="clean"
