@@ -12,6 +12,6 @@
 	<classpathentry kind="lib" path="../APIs/Vault.jar"/>
 	<classpathentry kind="lib" path="../APIs/LWC.jar"/>
 	<classpathentry kind="lib" path="../APIs/dtlTraders.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/HeroChat.jar"/>
+	<classpathentry kind="lib" path="../APIs/HeroChat.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
