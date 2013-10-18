@@ -140,7 +140,11 @@ public class ItemData {
 				File data = getFile(s);
 				FileConfiguration dataFile = getDataFile(data);
 				dataFile.set(item.getId()+".durability", item.getDurability());
-				saveDataFile(data);
+				try {
+					dataFile.save(data);
+				} catch (IOException e) {
+					subplugin.getLogger().info(subplugin.getLogTit()+"Could not save "+data.getName());
+				}
 			}
 		}
 	}
