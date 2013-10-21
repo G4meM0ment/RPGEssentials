@@ -28,7 +28,7 @@ public class CommandHandler{
 	private String mainCmd = "ge";
 	private String reNatureCmd = "rn";
 	private String junkieCmd = "junkie";
-	private List<String> orbiaCmds = Arrays.asList("orbia", "l", "g");
+	private List<String> orbiaCmds = Arrays.asList("orbia", "l", "g", "c");
 	private String rpgItemCmd = "rpgitem";
 	private String UPPCmd = "upp";
 	private String rentCmd = "rentables";

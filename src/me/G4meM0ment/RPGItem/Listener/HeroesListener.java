@@ -44,10 +44,10 @@ public class HeroesListener implements Listener{
 		if(p != null) 
 		{	
 			ItemStack item = p.getItemInHand();
-			if(!item.hasItemMeta()) return;
+			if(!item.hasItemMeta() || !itemHandler.isCustomItem(p.getItemInHand())) return;
 			CustomItem cItem = customItemHandler.getCustomItem(ChatColor.stripColor(item.getItemMeta().getDisplayName()),
 				Integer.valueOf(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
-		
+			
 			if(cItem.getDurability() <= 0 || cItem.getItem().getDurability() >= cItem.getItem().getType().getMaxDurability()-1)
 			{
 				event.setCancelled(true);

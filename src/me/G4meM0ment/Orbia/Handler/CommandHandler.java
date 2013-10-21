@@ -17,10 +17,12 @@ public class CommandHandler {
 	
 	private RPGEssentials plugin;
 	private TutorialHandler tutHandler;
+	private CMHandler cmh;
 	
 	public CommandHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 		tutHandler = new TutorialHandler();
+		cmh = new CMHandler();
 	}
 	
 	public boolean exec(CommandSender sender, Command command, String label, String[] args) 
@@ -68,6 +70,17 @@ public class CommandHandler {
 				p.chat("/&2g "+getMessage(args));
 				return true;
 			}
+		}
+		
+		if(sender instanceof Player && command.getName().equalsIgnoreCase("c")) {
+			Player p = (Player) sender;
+			cmh.toggleCombatMode(p);
+			if(cmh.isInCombatMode(p))
+				p.sendMessage(ChatColor.GRAY+"Du bist jetzt im Kampfmodus!");
+			else
+				p.sendMessage(ChatColor.GRAY+"Du hast den Kampfmodus verlassen!");
+			//TODO add messenger
+			return true;
 		}
 		
 		if(args.length == 3 && args[0].equalsIgnoreCase("setStage"))

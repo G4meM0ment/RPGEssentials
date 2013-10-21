@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import me.G4meM0ment.Orbia.Handler.GolemHandler;
 import me.G4meM0ment.Orbia.Listener.PListener;
 import me.G4meM0ment.Orbia.Tutorial.TutorialData;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
@@ -19,6 +20,8 @@ public class Orbia {
 	private RPGEssentials plugin;
 	private PListener plistener;
 	private TutorialData tutData;
+	@SuppressWarnings("unused")
+	private GolemHandler golemHandler;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -40,6 +43,7 @@ public class Orbia {
 		configFile = new File(dir+"/config.yml");
 		
 		tutData = new TutorialData(this);
+		golemHandler = new GolemHandler(plugin);
 	}
 	public Orbia()
 	{

@@ -29,6 +29,10 @@ commands:
         aliases: [g]
         description: Chat in global channel
         usage: /g (<message>)
+    c:
+        aliases: [c]
+        description: Toggle combat mode
+        usage: /c
     orbia:
         aliases: [orbia]
         description: main cmd for orbia

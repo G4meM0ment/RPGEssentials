@@ -1,21 +1,25 @@
 package me.G4meM0ment.Orbia.Listener;
 
 import me.G4meM0ment.Orbia.Orbia;
+import me.G4meM0ment.Orbia.Handler.CMHandler;
 import me.G4meM0ment.Orbia.Handler.SIHandler;
 import me.G4meM0ment.Orbia.Tutorial.TutorialHandler;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
@@ -29,12 +33,14 @@ public class PListener implements Listener{
 	private Orbia subplugin;
 	private TutorialHandler tutHandler;
 	private SIHandler sih;
+	private CMHandler cmh;
 		
 	public PListener(RPGEssentials plugin){
 		this.plugin = plugin;
 		subplugin = new Orbia();
 		tutHandler = new TutorialHandler();
 		sih = new SIHandler(subplugin);
+		cmh = new CMHandler();
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -90,6 +96,17 @@ public class PListener implements Listener{
 		final Player p = event.getPlayer();
 		if(p == null) return;
 		event.setQuitMessage(ChatColor.DARK_GRAY+"["+ChatColor.DARK_RED+"-"+ChatColor.DARK_GRAY+"] "+p.getName());
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onPlayerDropItem(PlayerDropItemEvent event) 
+	{
+		Player p = event.getPlayer();
+		ItemStack i = event.getItemDrop().getItemStack();
+		
+		if(p == null || i == null || i.getType() == Material.AIR) return;
+		if(cmh.isInCombatMode(p) && cmh.isItemInHotbar(p, i))
+			event.setCancelled(true);
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
