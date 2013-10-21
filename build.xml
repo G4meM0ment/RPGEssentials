@@ -1,4 +1,4 @@
-<project name="RPGEssentials" default="dist" basedir=".">
+<project name="RPGEssentials" default="dist" basedir="/var/lib/jenkins/workspace/RPGEssentials">
     <description>
         simple example build file
     </description>
