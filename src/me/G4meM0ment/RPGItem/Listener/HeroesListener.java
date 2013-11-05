@@ -27,7 +27,7 @@ public class HeroesListener implements Listener{
 		dmgHandler = new DamageHandler();
 	}
 	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void onWeaponDamage(WeaponDamageEvent event) {
 		Player p = null, e = null;
 		if(event.getAttackerEntity() instanceof Player)
@@ -36,7 +36,7 @@ public class HeroesListener implements Listener{
 		if(event.isProjectile())
 			if(event.getAttackerEntity() instanceof Projectile)
 				if(((Projectile) event.getAttackerEntity()).getShooter() instanceof Player)
-					p = (Player) ((Projectile)event.getDamager()).getShooter();
+					p = (Player) ((Projectile)event.getAttackerEntity()).getShooter();
 
 		if(event.getEntity() instanceof Player)
 			e = (Player) event.getEntity();
@@ -48,7 +48,7 @@ public class HeroesListener implements Listener{
 			CustomItem cItem = customItemHandler.getCustomItem(ChatColor.stripColor(item.getItemMeta().getDisplayName()),
 				Integer.valueOf(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
 			
-			if(cItem.getDurability() <= 0 || cItem.getItem().getDurability() >= cItem.getItem().getType().getMaxDurability()-1)
+			if(cItem.getDurability() == 0)
 			{
 				event.setCancelled(true);
 				return;
@@ -58,11 +58,13 @@ public class HeroesListener implements Listener{
 				customItemHandler.itemUsed(cItem);
 			if(newDmg >= 0)
 				event.setDamage(newDmg);
+			customItemHandler.repairCustomItems(p);
 		}
 		if(e != null) {
 			double newDmg = dmgHandler.handleDamagedEvent(e, event.getDamage(), null);
 			if(newDmg >= 0)
 				event.setDamage(newDmg);
+			customItemHandler.repairCustomItems(e);
 		}
 	}
 

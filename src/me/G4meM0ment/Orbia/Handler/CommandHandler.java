@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.Herochat;
 
+import me.G4meM0ment.Orbia.Handler.Duell.DuellHandler;
+import me.G4meM0ment.Orbia.Handler.Duell.DuellState;
 import me.G4meM0ment.Orbia.Tutorial.Stage;
 import me.G4meM0ment.Orbia.Tutorial.TutorialHandler;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
@@ -18,11 +20,13 @@ public class CommandHandler {
 	private RPGEssentials plugin;
 	private TutorialHandler tutHandler;
 	private CMHandler cmh;
+	private DuellHandler dh;
 	
 	public CommandHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
 		tutHandler = new TutorialHandler();
 		cmh = new CMHandler();
+		dh = new DuellHandler(plugin);
 	}
 	
 	public boolean exec(CommandSender sender, Command command, String label, String[] args) 
@@ -83,7 +87,49 @@ public class CommandHandler {
 			return true;
 		}
 		
-		if(args.length == 3 && args[0].equalsIgnoreCase("setStage"))
+		if(sender instanceof Player && command.getName().equalsIgnoreCase("duell") && args.length > 0) {
+			Player p = (Player) sender;
+			Player r = null;
+			
+			if(args[0].equalsIgnoreCase("accept") && args.length >= 2)
+			{
+				r = Bukkit.getPlayer(args[1]);
+				if(r == null)
+				{
+					//TODO add messenger
+					p.sendMessage(ChatColor.GRAY+"Spieler nicht gefunden!");
+					return true;
+				}
+				
+				if(!dh.isInDuell(p, true) && !dh.isInDuell(r, true) && dh.getDuellState(p) == DuellState.REQUEST && dh.getDuellState(r) == DuellState.REQUEST)
+				{
+					dh.initDuell(p.getName(), true);
+					p.sendMessage(ChatColor.DARK_RED+"Duell gestartet mit "+r.getName());
+					r.sendMessage(ChatColor.DARK_RED+"Duell gestartet mit "+p.getName());
+					return true;
+				}
+			}
+			else
+			{
+				r = Bukkit.getPlayer(args[0]);
+				if(r == null)
+				{
+					//TODO add messenger
+					p.sendMessage(ChatColor.GRAY+"Spieler nicht gefunden!");
+					return true;
+				}
+				
+				if(!dh.isInDuell(p, true) && !dh.isInDuell(r, true))
+				{
+					dh.initDuellRequest(p, r, true);
+					p.sendMessage(ChatColor.GRAY+"Anfrage versendet");
+					r.sendMessage(ChatColor.GRAY+"Duell Anfrage von "+p.getName()+" Tippe /duell accept "+p.getName()+" um zu aktzeptieren");
+					return true;
+				}
+			}
+		}
+		
+		if(args.length == 3 && args[0].equalsIgnoreCase("setStage") && command.getName().equalsIgnoreCase("orbia"))
 		{
 			tutHandler.setStage(getPlayer(args[1]), Stage.valueOf(args[2]));
 			return true;

@@ -57,7 +57,7 @@ public class Converter {
 						cItem.setType(cloned.getType());
 						
 						item.setItemMeta(metaHandler.getItemMeta(cItem, null));						
-						customItemHandler.updateItem(item, null);
+						customItemHandler.updateItem(item, null, false);
 					}
 				}
 			}

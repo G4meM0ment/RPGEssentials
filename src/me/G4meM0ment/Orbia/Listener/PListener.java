@@ -3,21 +3,28 @@ package me.G4meM0ment.Orbia.Listener;
 import me.G4meM0ment.Orbia.Orbia;
 import me.G4meM0ment.Orbia.Handler.CMHandler;
 import me.G4meM0ment.Orbia.Handler.SIHandler;
+import me.G4meM0ment.Orbia.Handler.Duell.DuellHandler;
 import me.G4meM0ment.Orbia.Tutorial.TutorialHandler;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.ReNature.OtherPlugins.ReTowny;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -34,6 +41,7 @@ public class PListener implements Listener{
 	private TutorialHandler tutHandler;
 	private SIHandler sih;
 	private CMHandler cmh;
+	private DuellHandler dh;
 		
 	public PListener(RPGEssentials plugin){
 		this.plugin = plugin;
@@ -41,6 +49,7 @@ public class PListener implements Listener{
 		tutHandler = new TutorialHandler();
 		sih = new SIHandler(subplugin);
 		cmh = new CMHandler();
+		dh = new DuellHandler();
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -80,6 +89,7 @@ public class PListener implements Listener{
 						plugin.getHerochat();
 						Herochat.getChatterManager().getChatter(p).addChannel(Herochat.getChannelManager().getChannel("Lokal"), false, false);
 						Herochat.getChatterManager().getChatter(p).addChannel(Herochat.getChannelManager().getChannel("Global"), false, false);
+						Herochat.getChatterManager().getChatter(p).setActiveChannel(Herochat.getChannelManager().getChannel("Global"), false, false);
 					}
 					catch(NullPointerException e) {}
 				}
@@ -96,6 +106,14 @@ public class PListener implements Listener{
 		final Player p = event.getPlayer();
 		if(p == null) return;
 		event.setQuitMessage(ChatColor.DARK_GRAY+"["+ChatColor.DARK_RED+"-"+ChatColor.DARK_GRAY+"] "+p.getName());
+		
+		if(!dh.isInDuell(p, true)) return;
+		Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
+		
+		if(p2 != null)
+			p2.sendMessage(ChatColor.DARK_RED+"Du hast das Duell gewonnen!");
+			
+		dh.removeDuell(p.getName());
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -113,12 +131,77 @@ public class PListener implements Listener{
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
 		if(event.getAction() != Action.RIGHT_CLICK_BLOCK || !event.getPlayer().getItemInHand().hasItemMeta()) return;
-		if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Bauhammer"))
+		ReTowny reTowny = new ReTowny(plugin);
+		if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Bauhammer") && (reTowny.isTown(event.getClickedBlock().getLocation()) || event.getPlayer().getGameMode() == GameMode.CREATIVE))
 		{
-			sih.changeSubId(event.getClickedBlock());
+			sih.changeSubId(event.getClickedBlock(), event.getPlayer().hasPermission("orbia.admin"));
 		}
 	}
 	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onPlayerDamage(EntityDamageEvent event)
+	{
+		if(!(event.getEntity() instanceof Player)) return;
+		final Player p = (Player) event.getEntity();
+		if(dh.getGracers().contains(p))
+			event.setCancelled(true);
+		Damageable d = p;
+
+		if(!dh.isInDuell(p, true)) return;	
+		final Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
+		
+		if(d.getHealth() - event.getDamage() <= 0)
+		{
+			dh.getGracers().add(p);
+			event.setDamage(0.0);
+			p.setHealth(6.0);
+			
+			p.sendMessage(ChatColor.DARK_RED+"Du hast das Duell verloren!");
+			if(p2 != null)
+			{
+				p2.setHealth(6.0);
+				p2.sendMessage(ChatColor.DARK_RED+"Du hast das Duell gewonnen!");
+				dh.getGracers().add(p2);
+			}
+			dh.removeDuell(p.getName());
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
+			{
+				@Override
+				public void run()
+				{
+					dh.getGracers().remove(p);
+					dh.getGracers().remove(p2);
+				}
+			}, 200);
+		}
+	}
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onPlayerMove(PlayerMoveEvent event)
+	{
+		Player p = event.getPlayer();
+		if(!dh.isInDuell(p, true)) return;
+		Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
+		if(p2 == null)
+		{
+			p.sendMessage(ChatColor.DARK_RED+"Auﬂerhalb der Duell Reichweite... Duell beendet!");
+			dh.removeDuell(p.getName());
+			return;
+		}
+		
+		if(p.getLocation().distance(p2.getLocation()) >= 300)
+		{
+			p.sendMessage(ChatColor.DARK_RED+"Auﬂerhalb der Duell Reichweite... Duell beendet!");
+			p2.sendMessage(ChatColor.DARK_RED+"Auﬂerhalb der Duell Reichweite... Duell beendet!");
+			dh.removeDuell(p.getName());
+		}
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
+	{
+		if(event.getMessage().contains("hero choose"))
+			event.setCancelled(true);
+	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onChannelChat(ChannelChatEvent event) 

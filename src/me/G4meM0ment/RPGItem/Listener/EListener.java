@@ -13,23 +13,26 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 
-public class EListener implements Listener{
+public class EListener implements Listener {
 
 	private RPGEssentials plugin;
 	private ItemHandler itemHandler;
 	private DamageHandler dmgHandler;
 	private CustomItemHandler customItemHandler;
 	
-	public EListener(RPGEssentials plugin) {
+	public EListener(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
 		itemHandler = new ItemHandler();
 		dmgHandler = new DamageHandler();
 		customItemHandler = new CustomItemHandler();
 	}
 	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+	public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) 
+	{
 		if(plugin.getHeroes() != null) return;
 		Player p = null, e = null;
 		if(event.getDamager() instanceof Player)
@@ -44,23 +47,34 @@ public class EListener implements Listener{
 		CustomItem cItem = customItemHandler.getCustomItem(ChatColor.stripColor(p.getItemInHand().getItemMeta().getDisplayName()),
 				Integer.valueOf(ChatColor.stripColor(p.getItemInHand().getItemMeta().getLore().get(p.getItemInHand().getItemMeta().getLore().size()-1))));
 		
-		if(cItem.getDurability() <= 0 || cItem.getItem().getDurability() >= cItem.getItem().getType().getMaxDurability()-1)
+		if(cItem.getDurability() == 0)
 		{
 			event.setCancelled(true);
 			return;
 		}
-
-		if(p != null) {
+		
+		if(p != null) 
+		{
 			double newDmg = dmgHandler.handleDamageEvent(p);
 			if(itemHandler.isCustomItem(p.getItemInHand()))
 				customItemHandler.itemUsed(cItem);
 			if(newDmg >= 0)
 				event.setDamage(newDmg);
+			customItemHandler.repairCustomItems(p);
 		}
-		if(e != null) {
+		if(e != null)
+		{
 			double newDmg = dmgHandler.handleDamagedEvent(e, event.getDamage(), null);
 			if(newDmg >= 0)
 				event.setDamage(newDmg);
+			customItemHandler.repairCustomItems(e);
 		}
-	}	
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+	public void onEntityDamageEvent(EntityDamageEvent event) 
+	{
+		if(!(event.getEntity() instanceof Player)) return;
+		customItemHandler.repairCustomItems((Player) event.getEntity());
+	}
 }

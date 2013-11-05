@@ -84,7 +84,7 @@ public class ItemData {
 	 
 	    // Look for defaults in the jar
 	    InputStream defConfigStream = plugin.getResource(defConfig);
-	    if(defConfigStream != null) {
+	    if(defConfigStream != null && configFile.getName().equalsIgnoreCase("rpgitem.yml")) {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);

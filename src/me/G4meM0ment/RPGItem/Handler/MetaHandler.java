@@ -64,6 +64,8 @@ public class MetaHandler {
 			dmg = (int) (baseDamage+(hClass.getItemDamageLevel(customItem.getItem().getType())*h.getLevel()));
 		}
 		
+		if(customItem.getDurability() >= 0)
+			preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipGeneralDurabilityFormat").replace("%actual", Integer.toString(customItem.getDurability())).replace("%max", Integer.toString(customItem.getMaxDurability()))));
 		preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipGeneralInfoFormat").replace("%hand", customItem.getHand()).replace("%type", customItem.getType())));
 		preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipDamageFormat").replace("%dmgValue", Integer.toString(customItem.getDmgValue()+dmg)).replace("%maxDmgValue", Integer.toString(customItem.getDmgValueMax()+dmg))));
 		preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipPriceFormat").replace("%priceValue", Integer.toString(customItem.getPrice()))));

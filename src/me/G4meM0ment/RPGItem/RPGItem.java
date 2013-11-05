@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
 import me.G4meM0ment.RPGItem.DataStorage.ItemData;
+import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.MetaHandler;
 import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 import me.G4meM0ment.RPGItem.Listener.BListener;
@@ -16,7 +17,6 @@ import me.G4meM0ment.RPGItem.Listener.EListener;
 import me.G4meM0ment.RPGItem.Listener.HeroesListener;
 import me.G4meM0ment.RPGItem.Listener.InvListener;
 import me.G4meM0ment.RPGItem.Listener.PListener;
-import net.dandielo.citizens.traders_v3.core.exceptions.attributes.AttributeInvalidClassException;
 import net.dandielo.citizens.traders_v3.utils.items.ItemFlag;
 
 import org.bukkit.Bukkit;
@@ -34,6 +34,7 @@ public class RPGItem {
 	private HeroesListener hListener;
 	@SuppressWarnings("unused")
 	private PowerHandler ph;
+	private CustomItemHandler customItemHandler;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -55,6 +56,7 @@ public class RPGItem {
 		invListener = new InvListener(plugin);
 		hListener = new HeroesListener();
 		ph = new PowerHandler(plugin);
+		customItemHandler = new CustomItemHandler(plugin);
 		
 		logger = plugin.getLogger();
 		dir = plugin.getDir()+"/RPGItem";
@@ -88,7 +90,9 @@ public class RPGItem {
 		//Run methods which needs an enabled server/plugin
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
-			public void run() {			
+			public void run() 
+			{			
+				customItemHandler.initializeAutoRepair();
 			}
 		});
 		
@@ -169,7 +173,7 @@ public class RPGItem {
 		if(plugin.getDtlTraders() != null && plugin.getDtlTraders().isEnabled()) {
 			try {
 				ItemFlag.registerFlag(me.G4meM0ment.RPGItem.OtherPlugins.RPGItem.class);
-			} catch (AttributeInvalidClassException e) {
+			} catch (Exception e) {
 				plugin.getLogger().info(logTit+"Could not register dtlTrader flag!");
 			} 
 		}

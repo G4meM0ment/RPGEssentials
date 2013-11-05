@@ -80,8 +80,10 @@ public class InventoryHandler {
 					ListHandler.addCustomItemToList(new CustomItem(item, name, id, config.getInt("data"), config.getInt("skinId"), config.getInt("damage"), config.getInt("damageMax"),
 						data.getInt(Integer.toString(id)+".durability"), config.getString("description"), config.getInt("price"), config.getString("lore"), 
 						Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), config.getInt("repairId"), config.getInt("durability")), list);
-					customItemHandler.updateItem(item, p);
+					customItemHandler.updateItem(item, p, false);
+					return;
 				}
+			  customItemHandler.updateItem(item, p, false);
 			}
 		}
 	}

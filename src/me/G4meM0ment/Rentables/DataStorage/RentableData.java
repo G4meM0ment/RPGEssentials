@@ -51,8 +51,17 @@ public class RentableData {
 	public void initializeRentables() {
 		Iterator<String> rentData = getConfig().getKeys(false).iterator();
 		while(rentData.hasNext()) {
-			String path = rentData.next();			
-			Iterator<String> iterCounter = getConfig().getConfigurationSection(path+".location").getKeys(false).iterator();
+			String path = rentData.next();
+			Iterator<String> iterCounter = null;
+			try
+			{
+				iterCounter = getConfig().getConfigurationSection(path+".location").getKeys(false).iterator();
+			} catch(NullPointerException e)
+			{
+				subplugin.getLogger().warning(logTit+"Save corrupted for rentable "+path);
+				continue;
+			}
+
 			List<Block> blocks = new ArrayList<Block>();
 				
 			Location sign = new Location(Bukkit.getWorld(getConfig().getString(path+".sign.world")),

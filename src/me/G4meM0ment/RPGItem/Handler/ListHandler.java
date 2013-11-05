@@ -57,7 +57,7 @@ public class ListHandler {
 			for(CustomItem cItem : list) {
 				CustomItemHandler customItemHandler = new CustomItemHandler();
 				
-				customItemHandler.updateItem(cItem.getItem(), null);
+				customItemHandler.updateItem(cItem.getItem(), null, false);
 			}
 		}
 	}

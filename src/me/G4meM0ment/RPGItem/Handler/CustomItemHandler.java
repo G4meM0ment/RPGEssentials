@@ -21,13 +21,13 @@ import me.G4meM0ment.RPGItem.DataStorage.ItemData;
 
 public class CustomItemHandler {
 	
-	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private ItemConfig itemConfig;
 	private ItemData itemData;
 	private ListHandler lh;
 	private EnchantmentHandler enchantHandler;
 	private MetaHandler metaHandler;
+	private ItemHandler itemHandler;
 	
 	public CustomItemHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -36,6 +36,7 @@ public class CustomItemHandler {
 		lh = new ListHandler();
 		enchantHandler = new EnchantmentHandler();
 		metaHandler = new MetaHandler(plugin);
+		itemHandler = new ItemHandler();
 	}
 	public CustomItemHandler() {
 		lh = new ListHandler();	
@@ -43,9 +44,26 @@ public class CustomItemHandler {
 		itemData = new ItemData();
 		enchantHandler = new EnchantmentHandler();
 		metaHandler = new MetaHandler();
+		itemHandler = new ItemHandler();
 	}
 	
-	public void spawnCustomItem(Player p, CustomItem customItem) {
+	public void initializeAutoRepair()
+	{
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() 
+		{
+			@Override
+			public void run() 
+			{			
+				for(Player p : Bukkit.getOnlinePlayers())
+				{
+					repairCustomItems(p);
+				}
+			}
+		}, 0 , 400);
+	}
+	
+	public void spawnCustomItem(Player p, CustomItem customItem) 
+	{
 		//Variable decleration
 		ItemStack item = new ItemStack(customItem.getSkinId(), 1);
 		customItem.setItem(item);
@@ -63,12 +81,11 @@ public class CustomItemHandler {
 		
 		//setting up id specific durability
 		data.set(Integer.toString(customItem.getId())+".durability", config.getInt("durability"));
-        try {
-        	data.save(itemData.getFile(customItem.getDispName()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+		try 
+		{
+			data.save(itemData.getFile(customItem.getDispName()));
+		} catch (IOException e) {}
+		
         //adding item to list
         if(list == null)
         	lh.initializeList(customItem.getDispName());
@@ -87,7 +104,7 @@ public class CustomItemHandler {
 		return counter;
 	}
 
-	public void updateItem(ItemStack item, Player p) {
+	public void updateItem(ItemStack item, Player p, boolean full) {
 		int id = 0;
 		try {
 			id = Integer.valueOf((ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
@@ -104,7 +121,8 @@ public class CustomItemHandler {
 		customItem.setSkinId(itemConfig.getConfig(config).getInt("skinId"));
 		customItem.setDmgValue(itemConfig.getConfig(config).getInt("damage"));
 		customItem.setDmgValueMax(itemConfig.getConfig(config).getInt("damageMax"));
-		customItem.setDurability(itemData.getDataFile(data).getInt(customItem.getId()+".durability"));
+		if(full)
+			customItem.setDurability(itemData.getDataFile(data).getInt(customItem.getId()+".durability"));
 		customItem.setDesc(itemConfig.getConfig(config).getString("description"));
 		customItem.setPrice(itemConfig.getConfig(config).getInt("price"));
 		customItem.setLore(itemConfig.getConfig(config).getString("lore"));
@@ -112,6 +130,16 @@ public class CustomItemHandler {
 		customItem.setType(itemConfig.getConfig(config).getString("type"));
 		customItem.setHand(itemConfig.getConfig(config).getString("hand"));
 		customItem.setMaxDurability(itemConfig.getConfig(config).getInt("durability"));
+		
+		if(customItem.getMaxDurability() < 0)
+		{
+			customItem.setDurability(-1);
+			itemData.getDataFile(data).set(Integer.toString(customItem.getId())+".durability", -1);
+			try 
+			{
+				itemData.getDataFile(data).save(data);
+			} catch (IOException e) {}
+		}
 		
 		//set the meta information & get id specific values
 		meta.setDisplayName(Quality.valueOf(itemConfig.getConfig(config).getString("quality").toUpperCase()).colour+customItem.getDispName());
@@ -124,7 +152,6 @@ public class CustomItemHandler {
 		
 		enchantHandler.removeEnchantments(item);
 		enchantHandler.addEnchantments(item, itemConfig.getConfig(config));
-
 	}
 	
 	public void registerItem(ItemStack item, int id) {
@@ -149,9 +176,11 @@ public class CustomItemHandler {
 		
 		//setting up id specific durability
 		data.set(Integer.toString(customItem.getId())+".durability", config.getInt("durability"));
-        try {
+        try 
+        {
         	data.save(itemData.getFile(customItem.getDispName()));
-		} catch (IOException e) {
+		} catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 
@@ -160,52 +189,86 @@ public class CustomItemHandler {
         	lh.initializeList(customItem.getDispName());
 		ListHandler.addCustomItemToList(customItem, list);
 		
-		updateItem(item, null);
+		updateItem(item, null, true);
 	}
 	
 	//get Item by its id
-	public CustomItem getCustomItem(String displayName, int specificItemId) {
+	public CustomItem getCustomItem(String displayName, int specificItemId) 
+	{
 		if(ListHandler.getCustomItemTypeList(displayName) == null) return null;
-		for(CustomItem cItem : ListHandler.getCustomItemTypeList(displayName)) {
+		for(CustomItem cItem : ListHandler.getCustomItemTypeList(displayName)) 
+		{
 			if(cItem.getId() == specificItemId)
+				return cItem;
+		}
+		return null;
+	}
+	public CustomItem getCustomItem(ItemStack i)
+	{
+		List<String> lore = i.getItemMeta().getLore();
+		String name = ChatColor.stripColor(i.getItemMeta().getDisplayName());
+		int id = Integer.parseInt(ChatColor.stripColor(lore.get(lore.size()-1)));
+		if(ListHandler.getCustomItemTypeList(name) == null) return null;
+		
+		for(CustomItem cItem : ListHandler.getCustomItemTypeList(name)) 
+		{
+			if(cItem.getId() == id)
 				return cItem;
 		}
 		return null;
 	}
 	
 	public void itemUsed(CustomItem item) {
-		if(item.getDurability() > 0)
+		if(item.getDurability() > 0 && item.getMaxDurability() > 0)
 			item.setDurability(item.getDurability()-1);
 		repairCustomItem(item);
 	}
 	
-	public void repairCustomItem(CustomItem cItem) {
+	public void repairCustomItems(Player p)
+	{
+		for(ItemStack i : p.getInventory().getContents())
+		{
+			if(i == null) continue;
+			if(!i.hasItemMeta()) continue;
+			if(itemHandler.isCustomItem(i))
+			{
+				repairCustomItem(getCustomItem(i));
+			}
+		}
+		for(ItemStack i : p.getInventory().getArmorContents())
+		{
+			if(i == null) continue;
+			if(!i.hasItemMeta()) continue;
+			if(itemHandler.isCustomItem(i))
+			{
+				repairCustomItem(getCustomItem(i));
+			}
+		}
+	}
+	public void repairCustomItem(CustomItem cItem)
+	{
 		ItemStack item;
 		if(cItem != null && cItem.getItem() != null)
 			item = cItem.getItem();
 		else
 			return;
-		double cDurability = cItem.getDurability();
+		
+		/*double cDurability = cItem.getDurability();
 		double maxCDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
 		double percent = cDurability/maxCDurability * 100;
 		double durability = item.getType().getMaxDurability() - ((((double) (item.getType().getMaxDurability()))/100)*percent);
 		if(durability >= item.getType().getMaxDurability()-1)
 			durability = item.getType().getMaxDurability()-1;
 		if(durability <= 0)
-			durability = 1;
+			durability = 1; */
 
-		final short fDurability = (short) durability;
-		final ItemStack fItem = item;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() {
-			@Override
-			public void run() {
-				fItem.setDurability(fDurability);
-			}
-		}, 50);
+		item.setDurability((short) 0);
 	}	
     
-	public void repairCustomItem(CustomItem cItem, int amount) {
+	public void repairCustomItem(CustomItem cItem, int amount)
+	{
 		if(cItem == null) return;
+		if(cItem.getDurability() < 0) return;
 		int maxDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
 		if(cItem.getDurability()+amount > maxDurability)
 			cItem.setDurability(maxDurability);

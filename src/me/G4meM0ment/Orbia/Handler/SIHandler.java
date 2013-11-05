@@ -9,21 +9,30 @@ import org.bukkit.block.Block;
 
 public class SIHandler {
 
+	private Orbia subplugin;
+	
 	private static List<Integer> items; 
 	
-	public SIHandler(final Orbia subplugin)
+	public SIHandler(Orbia subplugin)
 	{
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() {
+		final Orbia orbia = subplugin;
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() 
+		{
 			@Override
-			public void run() {
-				items = subplugin.getConfig().getIntegerList("ChangeableSubId");
+			public void run() 
+			{
+				items = orbia.getConfig().getIntegerList("ChangeableSubId");
 			}
 		});
 	}
 	
-	public void changeSubId(Block b)
+	public void reloadList()
 	{
-		if(items.contains(b.getType().getId()))
+		items = subplugin.getConfig().getIntegerList("ChangeableSubId");
+	}
+	public void changeSubId(Block b, boolean force)
+	{
+		if(items.contains(b.getType().getId()) || force)
 		{
 			b.setData((byte) (b.getData()+1));
 		}

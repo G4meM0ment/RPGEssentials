@@ -13,6 +13,10 @@ commands:
         aliases: [rpgitem]
         description: Main command for RPGItem
         usage: /rpgitem help
+    ri:
+        aliases: [ri]
+        description: Main command for RPGItem
+        usage: /ri help
     upp:
         aliases: [upp]
         description: Main command for UnnamedPortalPlugin
@@ -37,3 +41,7 @@ commands:
         aliases: [orbia]
         description: main cmd for orbia
         usage: /orbia <arg>
+    duell:
+        aliases: [duell]
+        description: requesting & accepting duells
+        usage: /duell accept <name> | /duell <name>

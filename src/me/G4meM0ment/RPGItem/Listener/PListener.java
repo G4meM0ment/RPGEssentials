@@ -64,7 +64,6 @@ public class PListener implements Listener{
 		Inventory i = p.getInventory();
 		if(p == null || i == null) return;
 		
-		invHandler.processInventory(i, p);
 		itemData.saveDataToFiles();
 	}
 	

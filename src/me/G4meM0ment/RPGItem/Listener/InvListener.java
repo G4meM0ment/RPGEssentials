@@ -1,6 +1,7 @@
 package me.G4meM0ment.RPGItem.Listener;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.InventoryHandler;
 
 import org.bukkit.entity.Player;
@@ -14,10 +15,13 @@ public class InvListener implements Listener{
 	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private InventoryHandler invHandler;
+	private CustomItemHandler customItemHandler;
 	
-	public InvListener(RPGEssentials plugin) {
+	public InvListener(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
 		invHandler = new InventoryHandler();
+		customItemHandler = new CustomItemHandler();
 	}
 	
 	/*
@@ -50,13 +54,14 @@ public class InvListener implements Listener{
 		invHandler.processItem(p);
 	}
 	
-*/	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+*/	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onInventoryClick(InventoryClickEvent event) {
 		if(!(event.getInventory().getHolder() instanceof Player)) return;
 		Player p = (Player) event.getInventory().getHolder();
 		if(p == null) return;
 		
 		invHandler.processInventory(p.getInventory(), p);
+		customItemHandler.repairCustomItems(p);
 		//invHandler.processArmor(p);
 		//invHandler.processItem(p);
 	}

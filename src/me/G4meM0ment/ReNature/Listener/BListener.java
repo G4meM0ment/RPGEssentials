@@ -86,7 +86,8 @@ public class BListener implements Listener{
 		//TODO read percent from config
 		int p = 1;
 		int rand = (int) (Math.random()*100);
-		if(rand > p) {
+		if(rand > p) 
+		{
 			event.setCancelled(true);
 			b.setType(Material.AIR);
 		}

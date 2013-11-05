@@ -1,4 +1,5 @@
 FormatLineSize: 39
+ItemTooltipGeneralDurabilityFormat: '&fDurability: %actual/%max'
 ItemTooltipGeneralInfoFormat: '&f%hand        %type'
 ItemTooltipDamageFormat: '&fDamage: %dmgValue - %maxDmgValue'
 ItemTooltipPriceFormat: '&fPrice: %priceValue Aurei'
