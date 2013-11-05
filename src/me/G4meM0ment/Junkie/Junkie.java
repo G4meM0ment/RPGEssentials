@@ -10,6 +10,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.G4meM0ment.Junkie.DataStorage.DrugData;
+import me.G4meM0ment.Junkie.Handler.DrugHandler;
 import me.G4meM0ment.Junkie.Listener.PListener;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
@@ -17,25 +19,33 @@ public class Junkie {
 
 	private RPGEssentials plugin;
 	private PListener plistener;
+	private DrugData dd;
+	private DrugHandler dh;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
 	
 	private static String logTit = "Junkie: ";
 	private static String dir;
+	private static Logger logger;
 	private static boolean isEnabled = false;
 
-	public Junkie(RPGEssentials plugin) {
+	public Junkie(RPGEssentials plugin)
+	{
 		this.plugin = plugin;
 		plistener = new PListener(plugin);
+		dd = new DrugData(this);
+		dh = new DrugHandler(this);
 		
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
 		
 		dir = plugin.getDir()+"/Junkie";
+		logger = plugin.getLogger();
 		
 		configFile = new File(dir+"/config.yml");
 	}
-	public Junkie() {
+	public Junkie()
+	{
 
 	}
 
@@ -46,6 +56,8 @@ public class Junkie {
 		//creating config or loading
 		reloadConfig();
 		saveConfig();
+		dd.reloadConfig();
+		dd.saveConfig();
 		
 		isEnabled = true;
 		return true;
@@ -92,5 +104,20 @@ public class Junkie {
 	
 	public boolean isEnabled() {
 		return isEnabled;
+	}
+	
+	public String getDir()
+	{
+		return dir;
+	}
+	
+	public String getLogTit()
+	{
+		return logTit;
+	}
+	
+	public Logger getLogger()
+	{
+		return logger;
 	}
 }
