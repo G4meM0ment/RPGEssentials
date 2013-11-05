@@ -1,5 +1,7 @@
 package me.G4meM0ment.Junkie.Handler;
 
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -38,11 +40,21 @@ public class DrugHandler {
 			{
 				for(Player p : Bukkit.getOnlinePlayers())
 				{
-					for(String s : dd.getConfig().getConfigurationSection(p.getName()).getKeys(false))
+					Set<String> keys = null;
+					try
+					{
+						keys = dd.getConfig().getConfigurationSection(p.getName()).getKeys(false);
+					} catch(NullPointerException e)
+					{
+						continue;
+					}
+					
+					for(String s : keys)
 					{
 						int drug = Integer.parseInt(s);
 						dd.getConfig().set(p.getName()+"."+drug+".addicted", dd.getConfig().getInt(p.getName()+"."+drug+".addicted")-5);
 						dd.getConfig().set(p.getName()+"."+drug+".overdose", dd.getConfig().getInt(p.getName()+"."+drug+".overdose")-20);
+						dd.saveConfig();
 						
 						int addicted = dd.getConfig().getInt(p.getName()+"."+drug+".addicted");
 						if(addicted > 0 && !dd.getConfig().getBoolean(p.getName()+"."+drug+".clean"))
@@ -53,6 +65,7 @@ public class DrugHandler {
 						{
 							dd.getConfig().set(p.getName()+"."+drug+".clean", true);
 						}
+						dd.saveConfig();
 					}
 
 				}
@@ -64,10 +77,10 @@ public class DrugHandler {
 	{
 		switch(drug)
 		{
-		case 353:
-			System.out.println("Debug: Found");
+		case 353: 
 			p.getWorld().playSound(p.getLocation(), Sound.BREATH, 1, 0);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 3600, 1));
+			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
 			
 			int addicted = dd.getConfig().getInt(p.getName()+"."+drug+".addicted");
 			if(addicted+20 <= 100)
@@ -81,13 +94,16 @@ public class DrugHandler {
 			else
 				tookOverdose(p, drug);
 			
+			dd.saveConfig();
 			break;
 		case 357:
-			System.out.println("Debug: Found 2");
 			p.getWorld().playSound(p.getLocation(), Sound.EAT, 1, 0);
 			p.setFoodLevel(1);
 			//TODO add spout feature: change sky color
 			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
+			dd.saveConfig();
+			break;
+		default:
 			break;
 		}
 	}
@@ -98,10 +114,13 @@ public class DrugHandler {
 		{
 		case 353:
 			dd.getConfig().set(p.getName()+"."+drug+".overdose", 0);
+			dd.saveConfig();
+			p.removePotionEffect(PotionEffectType.SPEED);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10000, 2));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 10000, 2));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 3600, 2));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 3600, 2));
+
 			break;
 		}
 	}

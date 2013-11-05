@@ -34,7 +34,6 @@ public class Junkie {
 	{
 		this.plugin = plugin;
 		plistener = new PListener(plugin);
-		dd = new DrugData(this);
 		dh = new DrugHandler(this);
 		
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
@@ -43,10 +42,12 @@ public class Junkie {
 		logger = plugin.getLogger();
 		
 		configFile = new File(dir+"/config.yml");
+		
+		dd = new DrugData(this);
 	}
 	public Junkie()
 	{
-
+		
 	}
 
 	public boolean onEnable() {
@@ -63,7 +64,7 @@ public class Junkie {
 		return true;
 	}
 
-	public boolean onDisable() {		
+	public boolean onDisable() {	
 		isEnabled = false;
 		return true;
 	}

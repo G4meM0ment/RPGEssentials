@@ -19,7 +19,6 @@ public class PListener implements Listener {
 	
 	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
-	@SuppressWarnings("unused")
 	private Junkie junkie;
 	private DrugHandler dh;
 		
@@ -39,14 +38,17 @@ public class PListener implements Listener {
 		Player p = event.getPlayer();
 		ItemStack item = p.getItemInHand();
 		List<Integer> drugs = new ArrayList<Integer>();
-		//drugs = junkie.getConfig().getIntegerList("drugIds");
-		drugs.add(353);
-		drugs.add(357);
+		drugs = junkie.getConfig().getIntegerList("drugIds");
 		
-		if(drugs.contains(item.getType().getId())) 
+		int id = item.getTypeId();
+		int amnt = item.getAmount();
+		if(drugs.contains(id)) 
 		{	
-			item.setAmount(p.getItemInHand().getAmount()-1);
-			dh.consum(p, item.getType().getId());
+			if(item.getAmount() == 1)
+				p.getInventory().remove(item);
+			else
+				item.setAmount(--amnt);
+			dh.consum(p, id);
 		}
 	}
 }
