@@ -55,7 +55,7 @@ public class BListener implements Listener{
 		if(rh.contains(event.getBlock().getLocation())) return;
 		
 		final BlockState bs = event.getBlockReplacedState();
-		rh.addBlock(new NBlock(event.getBlock(), bs.getTypeId(), bs.getBlock().getData()));
+		rh.addBlock(new NBlock(event.getBlock(), bs.getType(), bs.getBlock().getData()));
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -74,7 +74,7 @@ public class BListener implements Listener{
 		if(subplugin.getConfig().getIntegerList("deniedIDs").contains(b.getTypeId()))
 			event.setCancelled(true);
 		
-		NBlock nb = new NBlock(b, b.getTypeId(), b.getData());
+		NBlock nb = new NBlock(b, b.getType(), b.getData());
 		if(!checkRelatives(nb)) {
 			event.setCancelled(true);
 			return;
@@ -109,7 +109,7 @@ public class BListener implements Listener{
 		List<NBlock> blocks = rh.getBlockList();
 		for(NBlock b : blocks) {
 			if(b.getBlock().getLocation() == event.getBlock().getLocation()) {
-				if(b.getMaterial() == i) {
+				if(b.getMaterial().getId() == i) {
 					event.setCancelled(true);
 					return;
 				}
@@ -163,22 +163,22 @@ public class BListener implements Listener{
 		}
 		
 		if(rIDs.contains(r.getTypeId())) {
-			rh.addBlock(new NBlock(r, r.getTypeId(), r.getData()));
+			rh.addBlock(new NBlock(r, r.getType(), r.getData()));
 		}
 		if(rIDs.contains(b.getTypeId())) {
-			rh.addBlock(new NBlock(b, b.getTypeId(), b.getData()));
+			rh.addBlock(new NBlock(b, b.getType(), b.getData()));
 		}
 		if(rIDs.contains(l.getTypeId())) {
-			rh.addBlock(new NBlock(l, l.getTypeId(), l.getData()));
+			rh.addBlock(new NBlock(l, l.getType(), l.getData()));
 		}
 		if(rIDs.contains(f.getTypeId())) {
-			rh.addBlock(new NBlock(f, f.getTypeId(), f.getData()));
+			rh.addBlock(new NBlock(f, f.getType(), f.getData()));
 		}
 		if(rIDs.contains(d.getTypeId())) {
-			rh.addBlock(new NBlock(d, d.getTypeId(), d.getData()));
+			rh.addBlock(new NBlock(d, d.getType(), d.getData()));
 		}
 		if(rIDs.contains(a.getTypeId())) {
-			rh.addBlock(new NBlock(a, a.getTypeId(), a.getData()));
+			rh.addBlock(new NBlock(a, a.getType(), a.getData()));
 		}
 		return true;
 	}

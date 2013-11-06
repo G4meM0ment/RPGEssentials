@@ -20,6 +20,7 @@ public class Junkie {
 	private RPGEssentials plugin;
 	private PListener plistener;
 	private DrugData dd;
+	@SuppressWarnings("unused")
 	private DrugHandler dh;
 	
 	private static File configFile;

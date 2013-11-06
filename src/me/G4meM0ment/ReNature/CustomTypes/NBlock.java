@@ -1,15 +1,16 @@
 package me.G4meM0ment.ReNature.CustomTypes;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class NBlock{
 
 	private long millis;
 	private Block block;
-	private int material;
+	private Material material;
 	private Byte data;
 	
-	public NBlock(Block b, int m, Byte d) {
+	public NBlock(Block b, Material m, Byte d) {
 		block = b;
 		millis = System.currentTimeMillis();
 		material = m;
@@ -30,10 +31,10 @@ public class NBlock{
 		block = b;
 	}
 	
-	public int getMaterial() {
+	public Material getMaterial() {
 		return material;
 	}
-	public void setMaterial(int m) {
+	public void setMaterial(Material m) {
 		material = m;
 	}
 	

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import me.G4meM0ment.Orbia.Handler.GolemHandler;
 import me.G4meM0ment.Orbia.Handler.SIHandler;
+import me.G4meM0ment.Orbia.Handler.Job.JobListener;
 import me.G4meM0ment.Orbia.Listener.PListener;
 import me.G4meM0ment.Orbia.Tutorial.TutorialData;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
@@ -24,6 +25,7 @@ public class Orbia {
 	@SuppressWarnings("unused")
 	private GolemHandler golemHandler;
 	private SIHandler sih;
+	private JobListener jl;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -36,9 +38,11 @@ public class Orbia {
 	public Orbia(RPGEssentials plugin) 
 	{
 		this.plugin = plugin;
-		
 		plistener = new PListener(plugin);
+		jl = new JobListener();
+		
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(jl, plugin);
 		
 		dir = plugin.getDir()+"/Orbia";
 		logger = plugin.getLogger();

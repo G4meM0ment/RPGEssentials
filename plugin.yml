@@ -45,3 +45,7 @@ commands:
         aliases: [duell]
         description: requesting & accepting duells
         usage: /duell accept <name> | /duell <name>
+    job:
+        aliases: [job]
+        description: Display your job
+        usage: /job

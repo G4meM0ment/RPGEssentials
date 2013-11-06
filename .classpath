@@ -7,11 +7,11 @@
 	<classpathentry kind="lib" path="../APIs/mcore.jar"/>
 	<classpathentry kind="lib" path="../APIs/worldguard.jar"/>
 	<classpathentry kind="lib" path="../APIs/Towny.jar"/>
-	<classpathentry kind="lib" path="../APIs/craftbukkit.jar"/>
 	<classpathentry kind="lib" path="../APIs/worldedit.jar"/>
 	<classpathentry kind="lib" path="../APIs/Vault.jar"/>
 	<classpathentry kind="lib" path="../APIs/LWC.jar"/>
 	<classpathentry kind="lib" path="../APIs/dtlTraders.jar"/>
 	<classpathentry kind="lib" path="../APIs/HeroChat.jar"/>
+	<classpathentry kind="lib" path="../APIs/bukkit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

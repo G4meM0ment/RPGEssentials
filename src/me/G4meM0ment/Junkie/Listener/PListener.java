@@ -7,6 +7,7 @@ import me.G4meM0ment.Junkie.Junkie;
 import me.G4meM0ment.Junkie.Handler.DrugHandler;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

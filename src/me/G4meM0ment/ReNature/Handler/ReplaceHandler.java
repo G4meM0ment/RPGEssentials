@@ -76,10 +76,10 @@ public class ReplaceHandler {
 				
 			}
 			
-			griefed.setTypeId(b.getMaterial());
+			griefed.setType(b.getMaterial());
 			griefed.setData(b.getData(), false);
 			
-			if(griefed.getTypeId() != b.getMaterial() ||griefed.getData() != b.getData())
+			if(griefed.getType() != b.getMaterial() ||griefed.getData() != b.getData())
 				addBlock(b);
 			removeBlock(b);
 		} else {
@@ -93,11 +93,11 @@ public class ReplaceHandler {
 		Block block = b.getBlock();			
 		Block griefed = block.getLocation().getBlock();	
 			
-		griefed.setTypeId(b.getMaterial());
+		griefed.setType(b.getMaterial());
 		griefed.setData(b.getData(), false);
 			
 		removeBlock(b);
-		if(griefed.getTypeId() != b.getMaterial() || griefed.getData() != b.getData()) {
+		if(!griefed.getType().equals(b.getMaterial()) || griefed.getData() != b.getData()) {
 			addBlock(b);
 		}
 	}

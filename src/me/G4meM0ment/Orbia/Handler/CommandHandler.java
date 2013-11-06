@@ -129,11 +129,40 @@ public class CommandHandler {
 			}
 		}
 		
-		if(args.length == 3 && args[0].equalsIgnoreCase("setStage") && command.getName().equalsIgnoreCase("orbia"))
+		if(args.length == 3 && args[0].equalsIgnoreCase("setStage") && command.getName().equalsIgnoreCase("orbia") && sender.hasPermission("orbia.admin"))
 		{
 			tutHandler.setStage(getPlayer(args[1]), Stage.valueOf(args[2]));
 			return true;
+		}	
+		
+		if(command.getName().equalsIgnoreCase("job") && sender instanceof Player)
+		{
+			Player p = (Player) sender;
+			
+			String job = "";
+			if(p.hasPermission("orbia.job.miner"))
+			{
+				job = "Minenarbeiter";
+			}
+			else if(p.hasPermission("orbia.job.alchemist"))
+			{
+				job = "Alchemist";
+			}
+			else if(p.hasPermission("orbia.job.farmer"))
+			{
+				job = "Bauer";
+			}
+			else
+			{
+				p.sendMessage(ChatColor.RED+"Du hast keinen Beruf!");
+				return true;
+			}
+			
+			p.sendMessage(ChatColor.AQUA+"+-------------:| Beruf |:-------------+");
+			p.sendMessage(ChatColor.AQUA+"Du hast den Beruf des "+job);
+			return true;
 		}
+		
 		return false;
 	}
 	
