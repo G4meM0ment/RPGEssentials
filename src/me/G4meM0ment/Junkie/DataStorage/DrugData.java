@@ -69,7 +69,6 @@ public class DrugData {
 	    }
 	    try {
 	        config.save(configFile);
-	        subplugin.getLogger().info(logTit+"Config saved");
 	    } catch (IOException ex) {
 	    	subplugin.getLogger().log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }

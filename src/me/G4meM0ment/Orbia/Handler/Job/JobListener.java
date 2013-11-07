@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Animals;
+import org.bukkit.entity.Cow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,8 +35,7 @@ public class JobListener implements Listener {
 		farmer.add(Material.WHEAT);
 		farmer.add(Material.APPLE);
 		farmer.add(Material.CARROT_ITEM);
-		farmer.add(Material.CARROT_STICK);
-		farmer.add(Material.SUGAR);
+		farmer.add(Material.SUGAR_CANE);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -64,7 +64,7 @@ public class JobListener implements Listener {
 			else
 			{
 				event.setCancelled(true);
-				p.sendMessage(ChatColor.GRAY+"Du bist nicht trainiert eine "+ChatColor.WHITE+p.getItemInHand().getType().toString()+ChatColor.GRAY+" zu verwenden!");
+				p.sendMessage(ChatColor.GRAY+"Du bist nicht trainiert eine "+ChatColor.WHITE+p.getItemInHand().getType().toString().replace("_", " ").toLowerCase()+ChatColor.GRAY+" zu verwenden!");
 			}
 		}
 		if(isFarmerTool(p.getItemInHand()))
@@ -74,7 +74,7 @@ public class JobListener implements Listener {
 			else
 			{
 				event.setCancelled(true);
-				p.sendMessage(ChatColor.GRAY+"Du bist nicht trainiert eine "+ChatColor.WHITE+p.getItemInHand().getType().toString()+ChatColor.GRAY+" zu verwenden!");
+				p.sendMessage(ChatColor.GRAY+"Du bist nicht trainiert eine "+ChatColor.WHITE+p.getItemInHand().getType().toString().replace("_", " ").toLowerCase()+ChatColor.GRAY+" zu verwenden!");
 			}
 
 		}
@@ -88,14 +88,14 @@ public class JobListener implements Listener {
 		Player p = event.getPlayer();
 		if(p == null) return;
 		
-		if(isFarmerTool(p.getItemInHand()))
+		if(isFarmerTool(p.getItemInHand()) || (event.getRightClicked() instanceof Cow && p.getItemInHand().getType() == Material.BUCKET))
 		{
 			if(p.hasPermission("orbia.job.farmer"))
 				return;
 			else
 			{
 				event.setCancelled(true);
-				p.sendMessage(ChatColor.GRAY+"Du bist nicht trainiert eine "+ChatColor.WHITE+p.getItemInHand().getType().toString()+ChatColor.GRAY+" zu verwenden!");
+				p.sendMessage(ChatColor.GRAY+"Du bist nicht trainiert eine "+ChatColor.WHITE+p.getItemInHand().getType().toString().replace("_", " ").toLowerCase()+ChatColor.GRAY+" zu verwenden!");
 			}
 		}
 	}

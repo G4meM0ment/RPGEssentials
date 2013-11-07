@@ -1,5 +1,8 @@
 package me.G4meM0ment.Orbia.Listener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.G4meM0ment.Orbia.Orbia;
 import me.G4meM0ment.Orbia.Handler.CMHandler;
 import me.G4meM0ment.Orbia.Handler.SIHandler;
@@ -12,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +23,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -26,7 +31,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
@@ -42,6 +50,8 @@ public class PListener implements Listener{
 	private SIHandler sih;
 	private CMHandler cmh;
 	private DuellHandler dh;
+	
+	private static List<Player> hiden = new ArrayList<Player>();
 		
 	public PListener(RPGEssentials plugin){
 		this.plugin = plugin;
@@ -145,6 +155,15 @@ public class PListener implements Listener{
 		final Player p = (Player) event.getEntity();
 		if(dh.getGracers().contains(p))
 			event.setCancelled(true);
+		
+		
+		if(event.getCause() == DamageCause.FALL || event.getCause() == DamageCause.FALLING_BLOCK)
+		{
+			Block b = p.getLocation().getBlock().getRelative(0, -1, 0);
+			if(b.getType() == Material.WOOL || b.getType() == Material.HAY_BLOCK)
+				event.setDamage(0.0);
+		}
+		
 		Damageable d = p;
 
 		if(!dh.isInDuell(p, true)) return;	
@@ -175,10 +194,33 @@ public class PListener implements Listener{
 			}, 200);
 		}
 	}
+	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		Player p = event.getPlayer();
+		
+		if(!p.isSneaking() && hiden.contains(p) && p.getLocation().getBlock().getRelative(0, -1, 0).getType() != Material.HAY_BLOCK)
+		{
+			for(Player player : Bukkit.getOnlinePlayers())
+			{
+				//TODO add ghost support
+				player.showPlayer(p);
+			}
+			hiden.remove(p);
+			return;
+		}
+		if(p.isSneaking() && p.getLocation().getBlock().getRelative(0, -1, 0).getType() == Material.HAY_BLOCK && !hiden.contains(p))
+		{
+			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 2));
+			p.hidePlayer(p);
+			for(Player player : Bukkit.getOnlinePlayers())
+			{
+				player.hidePlayer(p);
+			}
+			hiden.add(p);
+		}
+		
 		if(!dh.isInDuell(p, true)) return;
 		Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
 		if(p2 == null)

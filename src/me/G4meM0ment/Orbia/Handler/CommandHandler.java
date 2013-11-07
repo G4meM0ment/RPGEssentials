@@ -139,27 +139,27 @@ public class CommandHandler {
 		{
 			Player p = (Player) sender;
 			
-			String job = "";
+			p.sendMessage(ChatColor.AQUA+"oOo---------------| Beruf |---------------oOo");
 			if(p.hasPermission("orbia.job.miner"))
 			{
-				job = "Minenarbeiter";
+				p.sendMessage(ChatColor.AQUA+"Du hast den Beruf des Minenarbeiters:");
+				p.sendMessage(ChatColor.AQUA+"Du kannst Diamant und Eisenspitzhacken verwenden");
 			}
 			else if(p.hasPermission("orbia.job.alchemist"))
 			{
-				job = "Alchemist";
+				p.sendMessage(ChatColor.AQUA+"Du hast den Beruf des Alchemisten");
+				p.sendMessage(ChatColor.AQUA+"Du kannst den Braustand verwenden und Tränke brauen");
 			}
 			else if(p.hasPermission("orbia.job.farmer"))
 			{
-				job = "Bauer";
+				p.sendMessage(ChatColor.AQUA+"Du hast den Beruf des Bauern:");
+				p.sendMessage(ChatColor.AQUA+"Du kannst Tiere vermehren, melken, Samen sähen und die Harken verwenden");
 			}
 			else
 			{
 				p.sendMessage(ChatColor.RED+"Du hast keinen Beruf!");
 				return true;
 			}
-			
-			p.sendMessage(ChatColor.AQUA+"+-------------:| Beruf |:-------------+");
-			p.sendMessage(ChatColor.AQUA+"Du hast den Beruf des "+job);
 			return true;
 		}
 		

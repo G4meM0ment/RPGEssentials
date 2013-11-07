@@ -40,6 +40,7 @@ public class DrugHandler {
 			{
 				for(Player p : Bukkit.getOnlinePlayers())
 				{
+					if(p.isDead()) return;
 					Set<String> keys = null;
 					try
 					{
@@ -94,7 +95,7 @@ public class DrugHandler {
 		}, 0, 12000);
 	}
 	
-	public void consum(Player p, int drug)
+	public void consum(final Player p, int drug)
 	{
 		switch(drug)
 		{
@@ -122,7 +123,22 @@ public class DrugHandler {
 			break;
 		case 357:
 			p.getWorld().playSound(p.getLocation(), Sound.EAT, 1, 0);
-			p.setFoodLevel(1);
+			
+			while(p.getFoodLevel() > 1)
+			{
+				Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						p.setFoodLevel(p.getFoodLevel()-1);
+
+					}
+				}, 40);
+				if(p.getFoodLevel() <= 1)
+					break;
+			}
+			
 			//TODO add spout feature: change sky color
 			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
 			dd.saveConfig();
