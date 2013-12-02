@@ -54,7 +54,7 @@ public class RPGItem {
 		bListener = new BListener(plugin);
 		eListener = new EListener(plugin);
 		invListener = new InvListener(plugin);
-		hListener = new HeroesListener();
+		hListener = new HeroesListener(plugin);
 		ph = new PowerHandler(plugin);
 		customItemHandler = new CustomItemHandler(plugin);
 		

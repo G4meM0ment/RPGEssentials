@@ -4,7 +4,6 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -32,7 +31,6 @@ public class BListener implements Listener{
 		if(p == null || meta == null) return;
 		
 		if(itemHandler.isCustomItem(p.getItemInHand()))
-			customItemHandler.itemUsed(customItemHandler.getCustomItem(ChatColor.stripColor(meta.getDisplayName()),
-					Integer.valueOf(ChatColor.stripColor(meta.getLore().get(meta.getLore().size()-1)))));
+			customItemHandler.itemUsed(customItemHandler.getCustomItem(p.getItemInHand()).getItem());
 	}
 }

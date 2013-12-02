@@ -53,7 +53,7 @@ public class Converter {
 						cItem.setLore(cloned.getLore());
 						cItem.setPrice(cloned.getPrice());
 						cItem.setQuality(cloned.getQuality());
-						cItem.setSkinId(cloned.getSkinId());
+						cItem.setSkin(cloned.getSkin());
 						cItem.setType(cloned.getType());
 						
 						item.setItemMeta(metaHandler.getItemMeta(cItem, null));						

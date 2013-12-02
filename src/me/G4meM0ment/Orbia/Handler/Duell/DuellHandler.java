@@ -16,6 +16,7 @@ public class DuellHandler {
 
 	private static RPGEssentials plugin;
 	private static HashMap<String, HashMap<String, DuellState>> duells = new HashMap<String, HashMap<String, DuellState>>();
+	private static HashMap<String, List<String>> parties = new HashMap<String, List<String>>();
 	private static List<Player> gracers = new ArrayList<Player>();
 	
 	public DuellHandler(RPGEssentials plugin) 
@@ -35,13 +36,32 @@ public class DuellHandler {
        	HashMap<String, DuellState> duell = new HashMap<String, DuellState>();
        	if(h == null || h2 == null) return;
 
-       	{
-       		duell.put(h2.getName(), DuellState.REQUEST);
-       		duells.put(h.getName(), duell);
-       	}	
+       	duell.put(h2.getName(), DuellState.REQUEST);
+       	duells.put(h.getName(), duell);
+       		
    		if(request)
    			initDuellRequest(r, p, false);
 	}
+	public void initPartyDuellRequest(Player p, Player r, boolean request)
+	{
+		if(p == null || r == null) return;
+		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
+       	Hero h2 = plugin.getHeroes().getCharacterManager().getHero(r);
+       	HashMap<String, DuellState> duell = new HashMap<String, DuellState>();
+       	if(h == null || h2 == null) return;
+       	
+       	List<String> members = new ArrayList<String>();
+       	for(Hero i : h.getParty().getMembers())
+       		members.add(i.getName());
+       	
+       	parties.put(h.getName(), members);
+       	duell.put(h2.getName(), DuellState.PARTY_REQUEST);
+       	duells.put(h.getName(), duell);
+	
+   		if(request)
+   			initPartyDuellRequest(r, p, false);
+	}
+
 
 	public void initDuell(String p, boolean first)
    	{
@@ -60,6 +80,23 @@ public class DuellHandler {
 		if(first)
 			initDuell(key, false);
    	}
+	public void initPartyDuell(String p, boolean first)
+	{
+		if(p == null) return;
+		if(!duells.containsKey(p)) return;
+		HashMap<String, DuellState> duell = duells.get(p);
+		String key = getDuellPartner(p);
+		if(key == null) return;
+		
+		duell.put(key, DuellState.PARTY_STARTED);
+		
+		Player player = Bukkit.getPlayer(p);
+		if(player != null)
+			player.setCustomName(ChatColor.DARK_PURPLE+p);
+		
+		if(first)
+			initPartyDuell(key, false);
+	}
 	
 	public void removeDuell(String p)
 	{
@@ -75,6 +112,10 @@ public class DuellHandler {
 		if(player2 != null)
 			player.setCustomName(key);
 		
+		if(parties.containsKey(p))
+			parties.remove(p);
+		if(parties.containsKey(key))
+			parties.remove(key);
 		duells.remove(p);
 		duells.remove(key);
 	}
@@ -134,5 +175,10 @@ public class DuellHandler {
 	public List<Player> getGracers()
 	{
 		return gracers;
+	}
+	
+	public HashMap<String, List<String>> getParties()
+	{
+		return parties;
 	}
 }

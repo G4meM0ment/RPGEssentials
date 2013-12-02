@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.Herochat;
+import com.herocraftonline.heroes.characters.Hero;
 
 import me.G4meM0ment.Orbia.Handler.Duell.DuellHandler;
 import me.G4meM0ment.Orbia.Handler.Duell.DuellState;
@@ -90,14 +91,28 @@ public class CommandHandler {
 		if(sender instanceof Player && command.getName().equalsIgnoreCase("duell") && args.length > 0) {
 			Player p = (Player) sender;
 			Player r = null;
+			Hero pH = plugin.getHeroes().getCharacterManager().getHero(p);
+			Hero rH = null;
 			
 			if(args[0].equalsIgnoreCase("accept") && args.length >= 2)
 			{
+				if(pH.getParty() != null && pH.getParty().getLeader() != pH)
+				{
+					p.sendMessage(ChatColor.GRAY+"Du bist nicht der Gruppenleiter!");
+					return true;
+				}
+				
 				r = Bukkit.getPlayer(args[1]);
 				if(r == null)
 				{
 					//TODO add messenger
 					p.sendMessage(ChatColor.GRAY+"Spieler nicht gefunden!");
+					return true;
+				}
+				rH = plugin.getHeroes().getCharacterManager().getHero(r);
+				if(rH.getParty() != null && rH.getParty().getLeader() != rH)
+				{
+					p.sendMessage(ChatColor.GRAY+"Spieler ist nicht Gruppenleiter!");
 					return true;
 				}
 				
@@ -111,11 +126,23 @@ public class CommandHandler {
 			}
 			else
 			{
+				if(pH.getParty() != null && pH.getParty().getLeader() != pH)
+				{
+					p.sendMessage(ChatColor.GRAY+"Du bist nicht der Gruppenleiter!");
+					return true;
+				}
+				
 				r = Bukkit.getPlayer(args[0]);
 				if(r == null)
 				{
 					//TODO add messenger
 					p.sendMessage(ChatColor.GRAY+"Spieler nicht gefunden!");
+					return true;
+				}
+				rH = plugin.getHeroes().getCharacterManager().getHero(r);
+				if(rH.getParty() != null && rH.getParty().getLeader() != rH)
+				{
+					p.sendMessage(ChatColor.GRAY+"Spieler ist nicht Gruppenleiter!");
 					return true;
 				}
 				

@@ -3,4 +3,5 @@ JunkieEnabled: false
 RPGItemEnabled: false
 UnnamedPortalPluginEnabled: false
 RentablesEnabled: false
+AmbienceEnabled: false
 UsePermissions: true

@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 import me.G4meM0ment.RPGItem.CustomItem.Quality;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
@@ -22,6 +23,7 @@ import me.G4meM0ment.RPGItem.DataStorage.ItemData;
 public class CustomItemHandler {
 	
 	private RPGEssentials plugin;
+	private RPGItem subplugin;
 	private ItemConfig itemConfig;
 	private ItemData itemData;
 	private ListHandler lh;
@@ -29,8 +31,23 @@ public class CustomItemHandler {
 	private MetaHandler metaHandler;
 	private ItemHandler itemHandler;
 	
+	private static Material[] repairable = {
+		Material.WOOD_SWORD, Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLD_SWORD, Material.DIAMOND_SWORD,
+		Material.WOOD_PICKAXE, Material.STONE_PICKAXE, Material.IRON_PICKAXE, Material.GOLD_PICKAXE, Material.DIAMOND_PICKAXE,
+		Material.WOOD_AXE, Material.STONE_AXE, Material.IRON_AXE, Material.GOLD_AXE, Material.DIAMOND_AXE,
+		Material.WOOD_SPADE, Material.STONE_SPADE, Material.IRON_SPADE, Material.GOLD_SPADE, Material.DIAMOND_SPADE,
+		Material.WOOD_HOE, Material.STONE_HOE, Material.IRON_HOE, Material.GOLD_HOE, Material.DIAMOND_HOE,
+		Material.LEATHER_HELMET, Material.CHAINMAIL_HELMET, Material.IRON_HELMET, Material.GOLD_HELMET, Material.DIAMOND_HELMET,
+		Material.LEATHER_CHESTPLATE, Material.CHAINMAIL_CHESTPLATE, Material.IRON_CHESTPLATE, Material.GOLD_CHESTPLATE, Material.DIAMOND_CHESTPLATE,
+		Material.LEATHER_LEGGINGS, Material.CHAINMAIL_LEGGINGS, Material.IRON_LEGGINGS, Material.GOLD_LEGGINGS, Material.DIAMOND_LEGGINGS,
+		Material.LEATHER_BOOTS, Material.CHAINMAIL_BOOTS, Material.IRON_BOOTS, Material.GOLD_BOOTS, Material.DIAMOND_BOOTS,
+		Material.IRON_BARDING, Material.GOLD_BARDING, Material.DIAMOND_BARDING,
+		Material.FLINT_AND_STEEL, Material.SHEARS, Material.FISHING_ROD, Material.BOW,
+	};
+	
 	public CustomItemHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
+		subplugin = new RPGItem();
 		itemConfig = new ItemConfig();
 		itemData = new ItemData();
 		lh = new ListHandler();
@@ -39,6 +56,7 @@ public class CustomItemHandler {
 		itemHandler = new ItemHandler();
 	}
 	public CustomItemHandler() {
+		subplugin = new RPGItem();
 		lh = new ListHandler();	
 		itemConfig = new ItemConfig();
 		itemData = new ItemData();
@@ -56,7 +74,7 @@ public class CustomItemHandler {
 			{			
 				for(Player p : Bukkit.getOnlinePlayers())
 				{
-					repairCustomItems(p);
+					repairItems(p);
 				}
 			}
 		}, 0 , 400);
@@ -65,7 +83,7 @@ public class CustomItemHandler {
 	public void spawnCustomItem(Player p, CustomItem customItem) 
 	{
 		//Variable decleration
-		ItemStack item = new ItemStack(customItem.getSkinId(), 1);
+		ItemStack item = new ItemStack(customItem.getSkin(), 1);
 		customItem.setItem(item);
 		FileConfiguration data = itemData.getDataFile(itemData.getFile(customItem.getDispName()));
 		FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(customItem.getDispName()));
@@ -118,7 +136,7 @@ public class CustomItemHandler {
 		File data = itemData.getFile(customItem.getDispName());
 		
 		customItem.setData(itemConfig.getConfig(config).getInt("data"));
-		customItem.setSkinId(itemConfig.getConfig(config).getInt("skinId"));
+		customItem.setSkin(Material.valueOf(itemConfig.getConfig(config).getString("skin").toUpperCase()));
 		customItem.setDmgValue(itemConfig.getConfig(config).getInt("damage"));
 		customItem.setDmgValueMax(itemConfig.getConfig(config).getInt("damageMax"));
 		if(full)
@@ -147,7 +165,7 @@ public class CustomItemHandler {
 		customItem.setItem(item);
 		
 		item.setItemMeta(meta);
-		item.setTypeId(customItem.getSkinId());	
+		item.setType(customItem.getSkin());	
 		item.setData(new MaterialData(customItem.getData()));
 		
 		enchantHandler.removeEnchantments(item);
@@ -159,8 +177,8 @@ public class CustomItemHandler {
 		if(itemConfig.getFile(ChatColor.stripColor(item.getItemMeta().getDisplayName())) == null) return;
 		if(id <= 0) id = getFreeId(ChatColor.stripColor(item.getItemMeta().getDisplayName()));
 		ItemMeta meta = item.getItemMeta();
-		CustomItem customItem = new CustomItem(item, ChatColor.stripColor(meta.getDisplayName()), id, 0, item.getType().getId(),
-				0 , 0, 0, "", 0, "", Quality.TRASH, "", "", 0, 0);
+		CustomItem customItem = new CustomItem(item, ChatColor.stripColor(meta.getDisplayName()), id, 0, item.getType(),
+				0 , 0, 0, "", 0, "", Quality.TRASH, "", "", Material.AIR, 0);
 		
 		FileConfiguration data = itemData.getDataFile(itemData.getFile(customItem.getDispName()));
 		FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(customItem.getDispName()));
@@ -218,40 +236,46 @@ public class CustomItemHandler {
 		return null;
 	}
 	
-	public void itemUsed(CustomItem item) {
-		if(item.getDurability() > 0 && item.getMaxDurability() > 0)
-			item.setDurability(item.getDurability()-1);
-		repairCustomItem(item);
+	public void itemUsed(ItemStack item) 
+	{
+
+		if(itemHandler.isCustomItem(item))
+		{
+			CustomItem cItem = getCustomItem(item);
+			if(cItem.getDurability() > 0 && cItem.getMaxDurability() > 0)
+				cItem.setDurability(item.getDurability()-1);
+		} 				
+		repairItem(item);
 	}
 	
-	public void repairCustomItems(Player p)
+	public void repairItems(Player p)
 	{
 		for(ItemStack i : p.getInventory().getContents())
 		{
 			if(i == null) continue;
-			if(!i.hasItemMeta()) continue;
-			if(itemHandler.isCustomItem(i))
+			if(!subplugin.getConfig().getBoolean("DisableVanillaItemDurability"))
 			{
-				repairCustomItem(getCustomItem(i));
-			}
+				if(!i.hasItemMeta()) continue;
+				if(itemHandler.isCustomItem(i))
+					repairItem(i);
+			} else
+				repairItem(i);
 		}
 		for(ItemStack i : p.getInventory().getArmorContents())
 		{
 			if(i == null) continue;
-			if(!i.hasItemMeta()) continue;
-			if(itemHandler.isCustomItem(i))
+			if(!subplugin.getConfig().getBoolean("DisableVanillaItemDurability"))
 			{
-				repairCustomItem(getCustomItem(i));
-			}
+				if(!i.hasItemMeta()) continue;
+				if(itemHandler.isCustomItem(i))
+					repairItem(i);
+			} else
+				repairItem(i);
 		}
 	}
-	public void repairCustomItem(CustomItem cItem)
+	public void repairItem(ItemStack item)
 	{
-		ItemStack item;
-		if(cItem != null && cItem.getItem() != null)
-			item = cItem.getItem();
-		else
-			return;
+		if(item == null || !isRepairable(item)) return;
 		
 		/*double cDurability = cItem.getDurability();
 		double maxCDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
@@ -276,14 +300,20 @@ public class CustomItemHandler {
 			cItem.setDurability(cItem.getDurability()+amount);
 	}
 	
-	public Material getRepairMaterial(CustomItem cItem) {
-		return Material.getMaterial(cItem.getRepairId());
-	}
-	
 	public boolean isColorable(ItemStack item) {
-		if(item.getTypeId() == 298 || item.getTypeId() == 299 || item.getTypeId() == 300 || item.getTypeId() == 301)
+		if(item.getType() == Material.LEATHER_HELMET || item.getType() == Material.LEATHER_CHESTPLATE || item.getType() == Material.LEATHER_LEGGINGS || item.getType() == Material.LEATHER_BOOTS)
 			return true;
 		else
 			return false;
+	}
+	
+	private boolean isRepairable(ItemStack item)
+	{
+		if(item == null) return false;
+		Material iM = item.getType();
+		for(Material m : repairable)
+			if(m == iM)
+				return true;
+		return false;
 	}
 }

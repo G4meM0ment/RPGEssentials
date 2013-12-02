@@ -7,4 +7,5 @@ ItemTooltipDescriptionFormat: '&f%description'
 ItemTooltipLoreFormat: '&o%lore'
 DurabilityLoss: true
 DurabilityAffectingUtility: 25
+DisableVanillaItemDurability: true
 RepairAmountPerRepair: 100

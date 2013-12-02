@@ -6,7 +6,6 @@ import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.DamageHandler;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -44,8 +43,7 @@ public class EListener implements Listener {
 		if(event.getEntity() instanceof Player)
 			e = (Player) event.getEntity();
 		
-		CustomItem cItem = customItemHandler.getCustomItem(ChatColor.stripColor(p.getItemInHand().getItemMeta().getDisplayName()),
-				Integer.valueOf(ChatColor.stripColor(p.getItemInHand().getItemMeta().getLore().get(p.getItemInHand().getItemMeta().getLore().size()-1))));
+		CustomItem cItem = customItemHandler.getCustomItem(p.getItemInHand());
 		
 		if(cItem.getDurability() == 0)
 		{
@@ -57,17 +55,17 @@ public class EListener implements Listener {
 		{
 			double newDmg = dmgHandler.handleDamageEvent(p);
 			if(itemHandler.isCustomItem(p.getItemInHand()))
-				customItemHandler.itemUsed(cItem);
+				customItemHandler.itemUsed(cItem.getItem());
 			if(newDmg >= 0)
 				event.setDamage(newDmg);
-			customItemHandler.repairCustomItems(p);
+			customItemHandler.repairItems(p);
 		}
 		if(e != null)
 		{
 			double newDmg = dmgHandler.handleDamagedEvent(e, event.getDamage(), null);
 			if(newDmg >= 0)
 				event.setDamage(newDmg);
-			customItemHandler.repairCustomItems(e);
+			customItemHandler.repairItems(e);
 		}
 	}
 	
@@ -75,6 +73,6 @@ public class EListener implements Listener {
 	public void onEntityDamageEvent(EntityDamageEvent event) 
 	{
 		if(!(event.getEntity() instanceof Player)) return;
-		customItemHandler.repairCustomItems((Player) event.getEntity());
+		customItemHandler.repairItems((Player) event.getEntity());
 	}
 }

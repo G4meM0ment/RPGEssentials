@@ -61,7 +61,7 @@ public class InvListener implements Listener{
 		if(p == null) return;
 		
 		invHandler.processInventory(p.getInventory(), p);
-		customItemHandler.repairCustomItems(p);
+		customItemHandler.repairItems(p);
 		//invHandler.processArmor(p);
 		//invHandler.processItem(p);
 	}

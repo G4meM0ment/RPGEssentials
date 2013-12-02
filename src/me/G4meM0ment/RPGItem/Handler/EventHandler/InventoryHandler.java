@@ -14,6 +14,7 @@ import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -77,9 +78,9 @@ public class InventoryHandler {
 					FileConfiguration data = itemData.getDataFile(itemData.getFile(name));
 					int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
 
-					ListHandler.addCustomItemToList(new CustomItem(item, name, id, config.getInt("data"), config.getInt("skinId"), config.getInt("damage"), config.getInt("damageMax"),
+					ListHandler.addCustomItemToList(new CustomItem(item, name, id, config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()), config.getInt("damage"), config.getInt("damageMax"),
 						data.getInt(Integer.toString(id)+".durability"), config.getString("description"), config.getInt("price"), config.getString("lore"), 
-						Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), config.getInt("repairId"), config.getInt("durability")), list);
+						Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), Material.valueOf(config.getString("repair").toUpperCase()), config.getInt("durability")), list);
 					customItemHandler.updateItem(item, p, false);
 					return;
 				}

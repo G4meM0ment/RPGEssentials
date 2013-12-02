@@ -1,5 +1,6 @@
 package me.G4meM0ment.RPGEssentials;
 
+import me.G4meM0ment.Ambience.Ambience;
 import me.G4meM0ment.Junkie.Junkie;
 import me.G4meM0ment.Orbia.Orbia;
 import me.G4meM0ment.RPGItem.RPGItem;
@@ -34,7 +35,7 @@ public class RPGEssentials extends JavaPlugin{
 	private RPGItem rpgItem;
 	private UnnamedPortalPlugin upp;
 	private Rentables rent;
-//	private Schedule schedule;
+	private Ambience ambience;
 	
 	private CommandHandler ch;
 	
@@ -147,6 +148,18 @@ public class RPGEssentials extends JavaPlugin{
 				getLogger().info("Rentables couldn't be enabled!");
 		} else
 			getLogger().info("Rentables found, but disabled in config!");
+
+//################ Initializing Ambience and debugging ################
+		if(getConfig().getBoolean("AmbienceEnabled")) {
+			ambience = new Ambience(this);
+			boolean rentEnabled = ambience.onEnable();
+			
+			if(rentEnabled)
+				getLogger().info("Ambience enabled!");
+			else
+				getLogger().info("Ambience couldn't be enabled!");
+		} else
+			getLogger().info("Ambience found, but disabled in config!");
 		
 //################ Initializing Orbia and debugging ################
 		if(getConfig().getKeys(false).contains("OrbiaEnabled") && getConfig().getBoolean("OrbiaEnabled")) {

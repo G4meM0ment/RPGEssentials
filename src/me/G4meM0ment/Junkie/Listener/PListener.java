@@ -7,7 +7,7 @@ import me.G4meM0ment.Junkie.Junkie;
 import me.G4meM0ment.Junkie.Handler.DrugHandler;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
-import org.bukkit.Material;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -34,6 +34,8 @@ public class PListener implements Listener {
 	public void onPlayerInteractEvent(PlayerInteractEvent event) 
 	{
 		if(event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR)
+			return;
+		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
 		
 		Player p = event.getPlayer();

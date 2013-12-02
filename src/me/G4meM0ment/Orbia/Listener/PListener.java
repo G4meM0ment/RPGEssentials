@@ -31,7 +31,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -41,6 +40,7 @@ import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Chatter.Result;
 import com.dthielke.herochat.Herochat;
+import com.herocraftonline.heroes.characters.Hero;
 
 public class PListener implements Listener{
 	
@@ -116,7 +116,25 @@ public class PListener implements Listener{
 		final Player p = event.getPlayer();
 		if(p == null) return;
 		event.setQuitMessage(ChatColor.DARK_GRAY+"["+ChatColor.DARK_RED+"-"+ChatColor.DARK_GRAY+"] "+p.getName());
+		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
 		
+		if(h.getParty() != null)
+		{
+			Player l = h.getParty().getLeader().getPlayer();
+			if(!dh.isInDuell(l, true)) return;	
+				
+			List<String> party = dh.getParties().get(dh.getRegisteredPartyMember(p).getName());
+			party.remove(p);
+			if(party.isEmpty())
+			{
+				for(Hero i : h.getParty().getMembers())
+					i.getPlayer().sendMessage(ChatColor.DARK_RED+"Deine Gruppe hat das Duell verloren!");
+				for(Hero i : plugin.getHeroes().getCharacterManager().getHero(Bukkit.getPlayer(dh.getDuellPartner(dh.getRegisteredPartyMember(p).getName()))).getParty().getMembers())
+					i.getPlayer().sendMessage(ChatColor.DARK_RED+"Deine Gruppe hat das Duell gewonnen!");
+				dh.removeDuell(dh.getRegisteredPartyMember(p).getName());
+			}
+		}
+
 		if(!dh.isInDuell(p, true)) return;
 		Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
 		
@@ -156,19 +174,53 @@ public class PListener implements Listener{
 		if(dh.getGracers().contains(p))
 			event.setCancelled(true);
 		
-		
 		if(event.getCause() == DamageCause.FALL || event.getCause() == DamageCause.FALLING_BLOCK)
 		{
 			Block b = p.getLocation().getBlock().getRelative(0, -1, 0);
-			if(b.getType() == Material.WOOL || b.getType() == Material.HAY_BLOCK)
+			if(b.getType() == Material.WOOL || b.getType() == Material.HAY_BLOCK || b.getType() == Material.LEAVES)
 				event.setDamage(0.0);
 		}
 		
 		Damageable d = p;
-
-		if(!dh.isInDuell(p, true)) return;	
-		final Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
+		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
 		
+		if(!dh.isInDuell(p, true)) return;	
+
+		
+		if(h.getParty() != null)
+		{
+			Player l = h.getParty().getLeader().getPlayer();
+			if(!dh.isInDuell(l, true)) return;	
+			
+			if(d.getHealth() - event.getDamage() <= 0)
+			{
+				dh.getGracers().add(p);
+				event.setDamage(0.0);
+				p.setHealth(6.0);
+				
+				p.sendMessage(ChatColor.DARK_RED+"Du bist gestorben und wurdest aus der Duellgruppe entfernt!");
+				List<String> party = dh.getParties().get(dh.getRegisteredPartyMember(p).getName());
+				party.remove(p);
+				if(party.isEmpty())
+				{
+					for(Hero i : h.getParty().getMembers())
+						i.getPlayer().sendMessage(ChatColor.DARK_RED+"Deine Gruppe hat das Duell verloren!");
+					for(Hero i : plugin.getHeroes().getCharacterManager().getHero(Bukkit.getPlayer(dh.getDuellPartner(dh.getRegisteredPartyMember(p).getName()))).getParty().getMembers())
+						i.getPlayer().sendMessage(ChatColor.DARK_RED+"Deine Gruppe hat das Duell gewonnen!");
+					dh.removeDuell(dh.getRegisteredPartyMember(p).getName());
+				}
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
+				{
+					@Override
+					public void run()
+					{
+						dh.getGracers().remove(p);
+					}
+				}, 200);
+			}
+		}
+		
+		final Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
 		if(d.getHealth() - event.getDamage() <= 0)
 		{
 			dh.getGracers().add(p);
@@ -199,8 +251,10 @@ public class PListener implements Listener{
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		Player p = event.getPlayer();
-		
-		if(!p.isSneaking() && hiden.contains(p) && p.getLocation().getBlock().getRelative(0, -1, 0).getType() != Material.HAY_BLOCK)
+		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
+		Block b = p.getLocation().getBlock().getRelative(0, -1, 0);
+
+		if(!p.isSneaking() && hiden.contains(p) && b.getType() != Material.HAY_BLOCK && b.getType() != Material.LEAVES)
 		{
 			for(Player player : Bukkit.getOnlinePlayers())
 			{
@@ -210,7 +264,7 @@ public class PListener implements Listener{
 			hiden.remove(p);
 			return;
 		}
-		if(p.isSneaking() && p.getLocation().getBlock().getRelative(0, -1, 0).getType() == Material.HAY_BLOCK && !hiden.contains(p))
+		if(p.isSneaking() && (b.getType() == Material.HAY_BLOCK || b.getType() == Material.LEAVES) && !hiden.contains(p))
 		{
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 2));
 			p.hidePlayer(p);
@@ -221,7 +275,9 @@ public class PListener implements Listener{
 			hiden.add(p);
 		}
 		
+		if(h.getParty() != null) return;
 		if(!dh.isInDuell(p, true)) return;
+		
 		Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
 		if(p2 == null)
 		{
@@ -242,6 +298,9 @@ public class PListener implements Listener{
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{
 		if(event.getMessage().contains("hero choose"))
+			event.setCancelled(true);
+		
+		if(event.getMessage().contains("mana"))
 			event.setCancelled(true);
 	}
 	

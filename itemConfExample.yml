@@ -1,6 +1,6 @@
 displayName: RPGItem
 durability: 1000
-skinId: 267
+skin: IRON_SWORD
 dataValue: 0
 color:
   r: 0
@@ -14,7 +14,7 @@ lore: '&6No information are known about that sword'
 hand: one-handed
 type: sword
 quality: COMMON
-repairId: 265
+repair: IRON_INGOT
 powers:
   invisibility: 0
 enchantments:

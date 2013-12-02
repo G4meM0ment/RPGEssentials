@@ -55,13 +55,10 @@ public class PortalData {
 			Iterator<String> iterCounter = getConfig().getConfigurationSection(path+".location").getKeys(false).iterator();
 			List<Block> blocks = new ArrayList<Block>();
 			
-			/*
-			 * 
-			 * DEBUG
-			 * 
-			 */
-			System.out.println("Debug: "+getConfig()+getConfig().getString(path+".destination.world"));
-			Location dest = new Location(Bukkit.getWorld(getConfig().getString(path+".destination.world")),
+
+			Location dest = null;
+			if(getConfig().getConfigurationSection(path+".destination") != null)
+				dest = new Location(Bukkit.getWorld(getConfig().getString(path+".destination.world")),
 					getConfig().getInt(path+".destination.x"), getConfig().getInt(path+".destination.y"), getConfig().getInt(path+".destination.z"));
 			
 			while(iterCounter.hasNext()) {

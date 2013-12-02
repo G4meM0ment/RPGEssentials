@@ -1,20 +1,22 @@
 package me.G4meM0ment.RPGItem.CustomItem;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class CustomItem{
 	
-	private int id, skinId, dmgValue, dmgValueMax, durability, price, data, repairId, maxDurability;
+	private int id, dmgValue, dmgValueMax, durability, price, data, maxDurability;
 	private String dispName, desc, lore, hand, type;
+	private Material repair, skin;
 	private Quality quality;
 	private ItemStack item;
 	
-	public CustomItem(ItemStack item, String dispName, int id, int data, int skinId, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand, int repairId, int maxDurability) {
+	public CustomItem(ItemStack item, String dispName, int id, int data, Material skin, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand, Material repair, int maxDurability) {
 		this.item = item;
 		this.dispName = dispName;
 		this.id = id;
 		this.data = data;
-		this.skinId = skinId;
+		this.skin = skin;
 		this.dmgValue = dmgValue;
 		this.dmgValueMax = dmgValueMax;
 		this.durability = durability;
@@ -24,7 +26,7 @@ public class CustomItem{
 		this.quality = quality;
 		this.type = type;
 		this.hand = hand;
-		this.repairId = repairId;
+		this.repair = repair;
 		this.maxDurability = maxDurability;
 	}
 
@@ -53,11 +55,11 @@ public class CustomItem{
 	}
 	
 	//Skin getter/setter
-	public int getSkinId() {
-		return skinId;
+	public Material getSkin() {
+		return skin;
 	}
-	public void setSkinId(int id) {
-		skinId = id;
+	public void setSkin(Material mat) {
+		skin = mat;
 	}
 	
 	//Damage getter/setter
@@ -140,11 +142,11 @@ public class CustomItem{
 	}
 	
 	//repair getter/setter
-	public int getRepairId() {
-		return repairId;
+	public Material getRepairMaterial() {
+		return repair;
 	}
-	public void setRepairId(int id) {
-		repairId = id;
+	public void setRepairId(Material mat) {
+		repair = mat;
 	}
 	
 	//maxDurability getter/setter

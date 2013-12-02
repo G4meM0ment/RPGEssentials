@@ -49,7 +49,7 @@ public class GolemHandler {
 					}
 				}
 			}
-		}, 0, 250);
+		}, 0, 40);
 	}
 
 }
