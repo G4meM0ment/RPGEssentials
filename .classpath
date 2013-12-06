@@ -13,6 +13,6 @@
 	<classpathentry kind="lib" path="../APIs/dtlTraders.jar"/>
 	<classpathentry kind="lib" path="../APIs/HeroChat.jar"/>
 	<classpathentry kind="lib" path="../APIs/bukkit.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/spoutcraftplugin.jar"/>
+	<classpathentry kind="lib" path="../APIs/spoutcraftplugin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

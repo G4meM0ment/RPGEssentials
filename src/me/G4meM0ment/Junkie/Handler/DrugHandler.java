@@ -3,6 +3,7 @@ package me.G4meM0ment.Junkie.Handler;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -165,6 +166,21 @@ public class DrugHandler {
 			
 			dd.saveConfig();
 			break;
+		case 282:
+			p.getWorld().playSound(p.getLocation(), Sound.BURP, 1, 0);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 2500, 1));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 1100, 1));
+			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
+			
+			overdose = dd.getConfig().getInt(p.getName()+"."+drug+".overdose");
+			if(overdose+20 <= 100)
+				dd.getConfig().set(p.getName()+"."+drug+".overdose", overdose+20);
+			else
+				tookOverdose(p, drug);
+			
+			dd.saveConfig();
+			break;
+		
 		default:
 			break;
 		}
@@ -192,6 +208,14 @@ public class DrugHandler {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 6000, 2));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 12000, 2));
 			break;
+			
+		case 282:
+			dd.getConfig().set(p.getName()+"."+drug+".overdose", 0);
+			dd.saveConfig();
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 140, 2));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 140, 2));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2400, 2));
+			p.teleport(new Location(Bukkit.getServer().getWorld("OrbiA"), 1771.0, 72, 902));
 		}
 	}
 	private void addWithdrawalSymptom(Player p, int drug) 
