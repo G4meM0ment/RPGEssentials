@@ -120,10 +120,10 @@ public class DuellHandler {
 		duells.remove(key);
 	}
 
-	public boolean isInDuell(Player p, boolean isParentRequest)
+	public boolean isInDuell(Player p, boolean isParentRequest, boolean isRegistered)
 	{
 		if(p == null) return false;
-		if(plugin.getHeroes().getCharacterManager().getHero(p).getParty() != null)
+		if(plugin.getHeroes().getCharacterManager().getHero(p).getParty() != null && !isRegistered)
 			p = getRegisteredPartyMember(p);
 			
 		if(!duells.containsKey(p.getName())) return false;
@@ -166,7 +166,7 @@ public class DuellHandler {
 		
 		for(Hero m : h.getParty().getMembers())
 		{
-			if(isInDuell(m.getPlayer(), false))
+			if(isInDuell(m.getPlayer(), false, true))
 				return m.getPlayer();
 		}
 		return null;

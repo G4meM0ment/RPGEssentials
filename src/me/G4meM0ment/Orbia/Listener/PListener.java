@@ -121,7 +121,7 @@ public class PListener implements Listener{
 		if(h.getParty() != null)
 		{
 			Player l = h.getParty().getLeader().getPlayer();
-			if(!dh.isInDuell(l, true)) return;	
+			if(!dh.isInDuell(l, true, false)) return;	
 				
 			List<String> party = dh.getParties().get(dh.getRegisteredPartyMember(p).getName());
 			party.remove(p);
@@ -135,7 +135,7 @@ public class PListener implements Listener{
 			}
 		}
 
-		if(!dh.isInDuell(p, true)) return;
+		if(!dh.isInDuell(p, true, false)) return;
 		Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
 		
 		if(p2 != null)
@@ -184,13 +184,13 @@ public class PListener implements Listener{
 		Damageable d = p;
 		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
 		
-		if(!dh.isInDuell(p, true)) return;	
+		if(!dh.isInDuell(p, true, false)) return;	
 
 		
 		if(h.getParty() != null)
 		{
 			Player l = h.getParty().getLeader().getPlayer();
-			if(!dh.isInDuell(l, true)) return;	
+			if(!dh.isInDuell(l, true, false)) return;	
 			
 			if(d.getHealth() - event.getDamage() <= 0)
 			{
@@ -276,7 +276,7 @@ public class PListener implements Listener{
 		}
 		
 		if(h.getParty() != null) return;
-		if(!dh.isInDuell(p, true)) return;
+		if(!dh.isInDuell(p, true, false)) return;
 		
 		Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
 		if(p2 == null)

@@ -116,7 +116,7 @@ public class CommandHandler {
 					return true;
 				}
 				
-				if(!dh.isInDuell(p, true) && !dh.isInDuell(r, true) && dh.getDuellState(p) == DuellState.REQUEST && dh.getDuellState(r) == DuellState.REQUEST)
+				if(!dh.isInDuell(p, true, false) && !dh.isInDuell(r, true, false) && dh.getDuellState(p) == DuellState.REQUEST && dh.getDuellState(r) == DuellState.REQUEST)
 				{
 					dh.initDuell(p.getName(), true);
 					p.sendMessage(ChatColor.DARK_RED+"Duell gestartet mit "+r.getName());
@@ -146,7 +146,7 @@ public class CommandHandler {
 					return true;
 				}
 				
-				if(!dh.isInDuell(p, true) && !dh.isInDuell(r, true))
+				if(!dh.isInDuell(p, true, false) && !dh.isInDuell(r, true, false))
 				{
 					dh.initDuellRequest(p, r, true);
 					p.sendMessage(ChatColor.GRAY+"Anfrage versendet");

@@ -77,6 +77,8 @@ public class InventoryHandler {
 					FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
 					FileConfiguration data = itemData.getDataFile(itemData.getFile(name));
 					int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
+					
+					if(config == null) return;
 
 					ListHandler.addCustomItemToList(new CustomItem(item, name, id, config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()), config.getInt("damage"), config.getInt("damageMax"),
 						data.getInt(Integer.toString(id)+".durability"), config.getString("description"), config.getInt("price"), config.getString("lore"), 

@@ -41,7 +41,6 @@ public class MetaHandler {
 	public static int getSplitter() {
 		return splitter;
 	}
-
 	public static void setSplitter(int splitter) {
 		MetaHandler.splitter = splitter;
 	}
@@ -51,6 +50,8 @@ public class MetaHandler {
 		List<String> lore = new ArrayList<String>();
 		List<String> preLore = new ArrayList<String>();
 		int dmg = 0;
+		
+		if(customItem == null) return lore;
 		if(plugin.getHeroes() != null && p != null) {
 			Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
 			HeroClass hClass = h.getHeroClass();
