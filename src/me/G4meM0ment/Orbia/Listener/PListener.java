@@ -34,6 +34,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.event.input.KeyPressedEvent;
 
 import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
@@ -52,6 +54,7 @@ public class PListener implements Listener{
 	private DuellHandler dh;
 	
 	private static List<Player> hiden = new ArrayList<Player>();
+	private static List<Player> dropping = new ArrayList<Player>();
 		
 	public PListener(RPGEssentials plugin){
 		this.plugin = plugin;
@@ -62,10 +65,10 @@ public class PListener implements Listener{
 		dh = new DuellHandler();
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	/*@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onPlayerDeath(PlayerDeathEvent event) {		
 		return;
-		/*if(!(event.getEntity() instanceof Player)) return;
+		if(!(event.getEntity() instanceof Player)) return;
 		Player p = event.getEntity();
 		if(p.getKiller() == null || !(p.getKiller() instanceof Player)) return;
 		Player k = p.getKiller();
@@ -77,8 +80,8 @@ public class PListener implements Listener{
 		if(faction.getRelationTo(faction2).isAtLeast(Rel.ENEMY)) {
 			up.setPower(up.getPower() - subplugin.getConfig().getDouble("factionsPowerLossOnEnemyKill"));
 			up.sendMessage("You lost "+subplugin.getConfig().getDouble("factionsPowerLossOnEnemyKill")+" power!");
-		} */
-	}
+		} 
+	}*/
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onPlayerJoin(PlayerJoinEvent event)
@@ -105,6 +108,16 @@ public class PListener implements Listener{
 				}
 			}
 		}, 20);
+		
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
+		{
+			@Override
+			public void run() 
+			{
+				if(!SpoutManager.getPlayer(p).isSpoutCraftEnabled())
+					p.kickPlayer("Du benötigst Spoutcraft: http://spoutcraft.org/downloads/");
+			}
+		}, 80);
 		
 		if(!tutHandler.finishedTutorial(p))
 			tutHandler.startStage(p,tutHandler.getStage(p));
@@ -151,7 +164,9 @@ public class PListener implements Listener{
 		ItemStack i = event.getItemDrop().getItemStack();
 		
 		if(p == null || i == null || i.getType() == Material.AIR) return;
-		if(cmh.isInCombatMode(p) && cmh.isItemInHotbar(p, i))
+		/*if(cmh.isInCombatMode(p) && cmh.isItemInHotbar(p, i))
+			event.setCancelled(true); */
+		if(dropping.contains(p))
 			event.setCancelled(true);
 	}
 	
@@ -329,5 +344,22 @@ public class PListener implements Listener{
 		}
 		return false;
 		
+	}
+	
+	public void onKeyPressed(KeyPressedEvent event)
+	{
+		final Player p = event.getPlayer().getPlayer();
+		if(event.getPlayer().getDropItemKey() == event.getKey() && cmh.isInCombatMode(p))
+		{
+			dropping.add(p);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
+			{
+				@Override
+				public void run()
+				{
+					dropping.remove(p);
+				}
+			}, 20);
+		}
 	}
 }

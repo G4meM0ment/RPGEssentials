@@ -190,6 +190,25 @@ public class CommandHandler {
 			return true;
 		}
 		
+		if((command.getName().equalsIgnoreCase("help") || command.getName().equalsIgnoreCase("hilfe")) && sender instanceof Player)
+		{
+			Player p = (Player) sender;
+			p.sendMessage(ChatColor.DARK_PURPLE+"oOo---------------| Hilfe |---------------oOo");
+			p.sendMessage(ChatColor.DARK_PURPLE+"Kommandos:");
+			p.sendMessage(ChatColor.DARK_PURPLE+"/g, /l, /p "+ChatColor.DARK_PURPLE+"Wechsel in den globalen, lokalen oder Gruppenchat");
+			p.sendMessage(ChatColor.GREEN+"/c "+ChatColor.DARK_PURPLE+"Schalte den Kampfmodus ein/aus, du wirst nicht mehr ausversehen Gegenstände fallen lassen");
+			p.sendMessage(ChatColor.GREEN+"/hero help "+ChatColor.DARK_PURPLE+"Zeigt dir die Kommandos für deine Klasse");
+			p.sendMessage(ChatColor.GREEN+"/hero tools "+ChatColor.DARK_PURPLE+"Gegenstände die du verwenden kannst");
+			p.sendMessage(ChatColor.GREEN+"/hero armor "+ChatColor.DARK_PURPLE+"Rüstungen die du tragen kannst");
+			p.sendMessage(ChatColor.GREEN+"/lvl "+ChatColor.DARK_PURPLE+"Deine EP und Level");
+			p.sendMessage(ChatColor.GREEN+"/skills "+ChatColor.DARK_PURPLE+"Deine Fähigkeiten");
+			p.sendMessage(ChatColor.GREEN+"/cprivate "+ChatColor.DARK_PURPLE+"Eine Kiste/Tür abschließen");
+			p.sendMessage(ChatColor.GREEN+"/cpublic "+ChatColor.DARK_PURPLE+"Kiste/Tür für alle Zugänglich machen");
+			p.sendMessage(ChatColor.GREEN+"/cpassword "+ChatColor.DARK_PURPLE+"Kiste/Tür mit Passwort abschließen");
+			p.sendMessage(ChatColor.GREEN+"/cremove "+ChatColor.DARK_PURPLE+"Ein Schloss entfernen");
+			p.sendMessage(ChatColor.GREEN+"/mount "+ChatColor.DARK_PURPLE+"Du steigst auf dein Pferd (wenn du eines hast)");
+		}
+		
 		return false;
 	}
 	

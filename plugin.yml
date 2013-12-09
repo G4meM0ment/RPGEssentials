@@ -49,3 +49,11 @@ commands:
         aliases: [job]
         description: Display your job
         usage: /job
+    hilfe:
+        aliases: [hilfe]
+        description: Display help
+        usage: /hilfe
+    help:
+        aliases: [help]
+        description: Display help
+        usage: /help
