@@ -207,6 +207,7 @@ public class CommandHandler {
 			p.sendMessage(ChatColor.GREEN+"/cpassword "+ChatColor.DARK_PURPLE+"Kiste/Tür mit Passwort abschließen");
 			p.sendMessage(ChatColor.GREEN+"/cremove "+ChatColor.DARK_PURPLE+"Ein Schloss entfernen");
 			p.sendMessage(ChatColor.GREEN+"/mount "+ChatColor.DARK_PURPLE+"Du steigst auf dein Pferd (wenn du eines hast)");
+			return true;
 		}
 		
 		return false;

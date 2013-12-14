@@ -15,6 +15,7 @@ public class SIHandler {
 	
 	public SIHandler(Orbia subplugin)
 	{
+		this.subplugin = subplugin;
 		final Orbia orbia = subplugin;
 		Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() 
 		{

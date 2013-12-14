@@ -8,6 +8,7 @@ import me.G4meM0ment.Junkie.Handler.DrugHandler;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,7 +31,7 @@ public class PListener implements Listener {
 	}
 		
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onPlayerInteractEvent(PlayerInteractEvent event) 
 	{
 		if(event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR)
@@ -47,11 +48,15 @@ public class PListener implements Listener {
 		int amnt = item.getAmount();
 		if(drugs.contains(id)) 
 		{	
-			if(item.getAmount() == 1)
+			event.setCancelled(true);
+			if(item.getAmount() <= 1)
 				p.getInventory().remove(item);
 			else
 				item.setAmount(--amnt);
 			dh.consum(p, id);
+			
+			if(item.getType() == Material.MUSHROOM_SOUP)
+				p.getInventory().addItem(new ItemStack(Material.BOWL, 1));
 		}
 	}
 }

@@ -157,7 +157,7 @@ public class PListener implements Listener{
 		dh.removeDuell(p.getName());
 	}
 	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onPlayerDropItem(PlayerDropItemEvent event) 
 	{
 		Player p = event.getPlayer();
@@ -359,7 +359,7 @@ public class PListener implements Listener{
 				{
 					dropping.remove(p);
 				}
-			}, 20);
+			}, 60);
 		}
 	}
 }

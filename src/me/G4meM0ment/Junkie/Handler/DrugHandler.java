@@ -212,9 +212,12 @@ public class DrugHandler {
 		case 282:
 			dd.getConfig().set(p.getName()+"."+drug+".overdose", 0);
 			dd.saveConfig();
+			p.removePotionEffect(PotionEffectType.CONFUSION);
+			p.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 140, 2));
-			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 140, 2));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 140, 5));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 2400, 2));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 1500, 2));
 			p.teleport(new Location(Bukkit.getServer().getWorld("OrbiA"), 1771.0, 72, 902));
 		}
 	}
