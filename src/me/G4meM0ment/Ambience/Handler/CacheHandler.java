@@ -30,6 +30,12 @@ public class CacheHandler {
 		sh = new SoundHandler();
 	}
 	
+	/*
+	 * 
+	 * WORKAROUND need to cache files untemp after login 
+	 * 
+	 * 
+	 */
 	public void cacheFiles() 
 	{	
 		FileManager fm = SpoutManager.getFileManager();
@@ -39,15 +45,11 @@ public class CacheHandler {
 		for(String s : sd.getConfig().getKeys(false))
 		{
 			if(!urls.contains(sd.getConfig().getString(s+".url")) && !urls.contains(sd.getConfig().getString(s+".url_night")))
-/*				if(sd.getConfig().getBoolean(s+".preLogin"))
+				if(sd.getConfig().getBoolean(s+".preLogin"))
 					fm.addToPreLoginCache(plugin, sd.getConfig().getString(s+".url"));
-				else */
-					fm.addToCache(plugin, sd.getConfig().getString(s+".url"));
 				urls.add(sd.getConfig().getString(s+".url"));
 				if(sd.getConfig().getConfigurationSection(s).getKeys(false).contains("url_night"))
-			/*		if(sd.getConfig().getBoolean(s+".preLogin"))
-						fm.addToPreLoginCache(plugin, sd.getConfig().getString(s+".url_night"));
-					else */
+					if(sd.getConfig().getBoolean(s+".preLogin"))
 						fm.addToCache(plugin, sd.getConfig().getString(s+".url_night"));
 		}
 	}

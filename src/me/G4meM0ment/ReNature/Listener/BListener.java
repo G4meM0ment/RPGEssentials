@@ -41,7 +41,7 @@ public class BListener implements Listener{
 	
 	//TODO ##### CLEANUP CODE ####### SPLIT UP LISTENERS
 	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
 			return;
@@ -58,7 +58,7 @@ public class BListener implements Listener{
 		rh.addBlock(new NBlock(event.getBlock(), bs.getType(), bs.getBlock().getData()));
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
 			return;
@@ -93,7 +93,7 @@ public class BListener implements Listener{
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onBlockSpread(BlockSpreadEvent event) {
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
 			return;
@@ -117,7 +117,7 @@ public class BListener implements Listener{
 		}
 	}
 	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onPaintingBreak(HangingBreakEvent event) {
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getEntity().getWorld().getName())))
 			return;

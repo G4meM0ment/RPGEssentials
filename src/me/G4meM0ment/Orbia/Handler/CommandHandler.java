@@ -197,7 +197,7 @@ public class CommandHandler {
 			p.sendMessage(ChatColor.DARK_PURPLE+"Kommandos:");
 			p.sendMessage(ChatColor.DARK_PURPLE+"/g, /l, /p "+ChatColor.DARK_PURPLE+"Wechsel in den globalen, lokalen oder Gruppenchat");
 			p.sendMessage(ChatColor.GREEN+"/c "+ChatColor.DARK_PURPLE+"Schalte den Kampfmodus ein/aus, du wirst nicht mehr ausversehen Gegenstände fallen lassen");
-			p.sendMessage(ChatColor.GREEN+"/hero help "+ChatColor.DARK_PURPLE+"Zeigt dir die Kommandos für deine Klasse");
+			p.sendMessage(ChatColor.GREEN+"/hero help "+ChatColor.DARK_PURPLE+"Zeigt dir die Kommandos für deine Klasse & Gruppen");
 			p.sendMessage(ChatColor.GREEN+"/hero tools "+ChatColor.DARK_PURPLE+"Gegenstände die du verwenden kannst");
 			p.sendMessage(ChatColor.GREEN+"/hero armor "+ChatColor.DARK_PURPLE+"Rüstungen die du tragen kannst");
 			p.sendMessage(ChatColor.GREEN+"/lvl "+ChatColor.DARK_PURPLE+"Deine EP und Level");
@@ -207,6 +207,8 @@ public class CommandHandler {
 			p.sendMessage(ChatColor.GREEN+"/cpassword "+ChatColor.DARK_PURPLE+"Kiste/Tür mit Passwort abschließen");
 			p.sendMessage(ChatColor.GREEN+"/cremove "+ChatColor.DARK_PURPLE+"Ein Schloss entfernen");
 			p.sendMessage(ChatColor.GREEN+"/mount "+ChatColor.DARK_PURPLE+"Du steigst auf dein Pferd (wenn du eines hast)");
+			p.sendMessage(ChatColor.GREEN+"/party invite <Spieler> "+ChatColor.DARK_PURPLE+"Lädt einen Spieler in deine Gruppe ein");
+			p.sendMessage(ChatColor.GREEN+"/duell <Spieler> "+ChatColor.DARK_PURPLE+"Lädt einen Spieler zu einem Duell ein");
 			return true;
 		}
 		

@@ -24,7 +24,8 @@ public class CommandHandler {
 	private Converter converter;
 	private RPGItem subplugin;
 	
-	public CommandHandler(RPGEssentials plugin) {
+	public CommandHandler(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
 		subplugin = new RPGItem();
 		ph = new PermHandler(plugin);
@@ -33,55 +34,71 @@ public class CommandHandler {
 		converter = new Converter(plugin);
 	}
 	
-	public boolean exec(CommandSender sender, Command command, String label, String[] args) {
-		Player player = (Player) sender;
+	public boolean exec(CommandSender sender, Command command, String label, String[] args) 
+	{
+		Player player = null;
+		if(sender instanceof Player)
+			player = (Player) sender;
 		
-		if(args.length > 0 && args[0].equals("help")) {
-			if(sender instanceof Player) {
+		if(args.length > 0 && args[0].equals("help")) 
+		{
+			if(sender instanceof Player)
+			{
 				//TODO add messenger
 				return true;
-			} else {
+			} else 
+			{
 				//TODO add messenger
 				return true;
 			}
 		}
 		
-		if(args.length > 0 && args[0].equals("reload")) {
-			if(sender instanceof Player) {
-				if(!ph.hasRPGItemReloadPerms(player)) {
+		if(args.length > 0 && args[0].equals("reload")) 
+		{
+			if(sender instanceof Player) 
+			{
+				if(!ph.hasRPGItemReloadPerms(player)) 
+				{
 					//TODO add messenger
 					return true;
 				}
 				subplugin.reloadConfigs();
 				player.sendMessage("RPGItem reloaded!");
 				return true;
-			} else {
+			} else 
+			{
 				subplugin.reloadConfigs();
 				plugin.getLogger().info(subplugin.getLogTit()+"Configs reloaded!");
 				return true;
 			}
 		}
 		
-		if(args.length > 0 && args[0].equals("list")) {
-			if(sender instanceof Player) {
-				if(!ph.hasRPGItemGivePerms(player)) {
+		if(args.length > 0 && args[0].equals("list")) 
+		{
+			if(sender instanceof Player) 
+			{
+				if(!ph.hasRPGItemGivePerms(player)) 
+				{
 					//TODO add messenger
 					return true;
 				}
 				player.sendMessage("Available items: "+ListHandler.getCustomItemTypes().keySet());
 				return true;
-			} else {
+			} else 
+			{
 				plugin.getLogger().info(subplugin.getLogTit()+"Available items: "+ListHandler.getCustomItemTypes().keySet());
 				return true;
 			}
 		}
 		
-		if(args.length > 0 && args[0].equals("give") && !args[1].isEmpty()) {
+		if(args.length > 0 && args[0].equals("give") && !args[1].isEmpty()) 
+		{
 			Player p = null;
 			String name = getName(args);
 			if(sender instanceof Player) {
 				p = player;
-				if(!ph.hasRPGItemGivePerms(p)) {
+				if(!ph.hasRPGItemGivePerms(p)) 
+				{
 					//TODO add messenger
 					return true;
 				}
@@ -99,7 +116,8 @@ public class CommandHandler {
 				}
 			}
 			
-			if(p == null) {
+			if(p == null) 
+			{
 				if(sender instanceof Player)
 					player.sendMessage("Cannot find player");
 				else
@@ -107,8 +125,12 @@ public class CommandHandler {
 				//TODO add messenger
 				return true;
 			}
-			if(itemConfig.getFile(name) == null) {
-				p.sendMessage("No such item, or config wasn't loaded properly");
+			if(itemConfig.getFile(name) == null) 
+			{
+				if(sender instanceof Player)
+					player.sendMessage("No such item, or config wasn't loaded properly");
+				else
+					plugin.getLogger().info("No such item, or config wasn't loaded properly");
 				//TODO add messenger
 				return true;
 			}
@@ -143,7 +165,8 @@ public class CommandHandler {
 		return false;
 	}
 	
-	public String getName(String[] args) {
+	public String getName(String[] args)
+	{
 		String name = "";
 		boolean first = true;
 		for(String s : args) 
@@ -163,16 +186,20 @@ public class CommandHandler {
 		return name;
 	}
 	
-    public Player getPlayer(final String name) {
+    public Player getPlayer(final String name) 
+    {
         Player[] players = Bukkit.getOnlinePlayers();
  
         Player found = null;
         String lowerName = name.toLowerCase();
         int delta = Integer.MAX_VALUE;
-        for (Player player : players) {
-            if (player.getName().toLowerCase().startsWith(lowerName)) {
+        for (Player player : players)
+        {
+            if (player.getName().toLowerCase().startsWith(lowerName))
+            {
                 int curDelta = player.getName().length() - lowerName.length();
-                if (curDelta < delta) {
+                if (curDelta < delta)
+                {
                     found = player;
                     delta = curDelta;
                     break;

@@ -88,7 +88,8 @@ public class PListener implements Listener{
 	{
 		final Player p = event.getPlayer();
 		if(p == null) return;
-		Bukkit.getServer().dispatchCommand(p, "vs disable");
+		if(p.hasPermission("voxelsniper.litesniper") || p.hasPermission("voxelsniper.sniper"))
+			Bukkit.getServer().dispatchCommand(p, "vs disable");
 		event.setJoinMessage(ChatColor.DARK_GRAY+"["+ChatColor.DARK_GREEN+"+"+ChatColor.DARK_GRAY+"] "+p.getName());
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
 		{
