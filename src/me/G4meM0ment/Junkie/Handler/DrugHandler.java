@@ -96,7 +96,7 @@ public class DrugHandler {
 		}, 0, 12000);
 	}
 	
-	public void consum(final Player p, int drug)
+	public void consum(final Player p, int drug)			//DROGEN-Effekte
 	{
 		switch(drug)
 		{
@@ -144,6 +144,28 @@ public class DrugHandler {
 			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
 			dd.saveConfig();
 			break;
+		case 377: 
+			p.getWorld().playSound(p.getLocation(), Sound.BREATH, 1, 0);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 3600, 3));
+			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
+			
+			int addicted = dd.getConfig().getInt(p.getName()+"."+drug+".addicted");
+			if(addicted+20 <= 100)
+				dd.getConfig().set(p.getName()+"."+drug+".addicted", addicted+20);
+			else
+			{
+				dd.getConfig().set(p.getName()+"."+drug+".clean", false);
+				dd.getConfig().set(p.getName()+"."+drug+".addicted", 100);
+			}
+			
+			int overdose = dd.getConfig().getInt(p.getName()+"."+drug+".overdose");
+			if(overdose+20 <= 100)
+				dd.getConfig().set(p.getName()+"."+drug+".overdose", overdose+20);
+			else
+				tookOverdose(p, drug);
+			
+			dd.saveConfig();
+			break;
 		case 348: 
 			p.getWorld().playSound(p.getLocation(), Sound.GHAST_SCREAM, 1, 0);
 			p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 12000, 1));
@@ -186,7 +208,7 @@ public class DrugHandler {
 		}
 	}
 
-	private void tookOverdose(Player p, int drug) 
+	private void tookOverdose(Player p, int drug) 							//DROGEN-Überdosis
 	{
 		switch(drug)
 		{
@@ -197,6 +219,16 @@ public class DrugHandler {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 10000, 2));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 10000, 2));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 3600, 2));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 3600, 2));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 12000, 2));
+
+			break;
+		case 377:
+			dd.getConfig().set(p.getName()+"."+drug+".overdose", 0);
+			dd.saveConfig();
+			p.removePotionEffect(PotionEffectType.INCREASE_DAMAGE);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 10000, 2));
+			p.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 12000, 3));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.POISON, 3600, 2));
 			p.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 12000, 2));
 
@@ -265,6 +297,35 @@ public class DrugHandler {
 				}
 			}, random);
 			break;
+		case 377:
+			random = (int) (Math.random()*1200);
+			
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					fP.addPotionEffect(new PotionEffect(PotionEffectType.HUNGER, 12000, 1));
+				}
+			}, random);
+			random = (int) (Math.random()*1200);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					fP.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 3600, 1));
+				}
+			}, random);
+			random = (int) (Math.random()*1200);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
+			{
+				@Override
+				public void run()
+				{
+					fP.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 3600, 1));
+				}
+			}, random);
 		case 348:
 			random = (int) (Math.random()*1200);
 			
