@@ -26,7 +26,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class PListener implements Listener{
+public class PListener implements Listener {
 	
 	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
@@ -37,7 +37,8 @@ public class PListener implements Listener{
 	private CustomItemHandler customItemHandler;
 	private RPGItem subplugin;
 	
-	public PListener(RPGEssentials plugin) {
+	public PListener(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
 		subplugin = new RPGItem();
 		invHandler = new InventoryHandler();
@@ -48,18 +49,18 @@ public class PListener implements Listener{
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerJoin(PlayerJoinEvent event) {
+	public void onPlayerJoin(PlayerJoinEvent event)
+	{
 		Player p = event.getPlayer();
 		Inventory i = p.getInventory();
 		if(p == null || i == null) return;
 		
 		invHandler.processInventory(i, p);
-		invHandler.processArmor(p);
-		invHandler.processItem(p);
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerQuit(PlayerQuitEvent event) {
+	public void onPlayerQuit(PlayerQuitEvent event) 
+	{
 		Player p = event.getPlayer();
 		Inventory i = p.getInventory();
 		if(p == null || i == null) return;
@@ -68,7 +69,8 @@ public class PListener implements Listener{
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerInteract(PlayerInteractEvent event) {
+	public void onPlayerInteract(PlayerInteractEvent event) 
+	{
 		Player p = event.getPlayer();
 		if(!(event.getClickedBlock() instanceof Block)) return;
 		if(p == null || !itemHandler.isCustomItem(p.getItemInHand())) return;
@@ -92,11 +94,14 @@ public class PListener implements Listener{
 		}
 	}
 	
-	public boolean hasItemInInv(Player p, Material m, int amount) {
+	public boolean hasItemInInv(Player p, Material m, int amount) 
+	{
 		int counted = 0;
-		for(ItemStack i : p.getInventory()) {
+		for(ItemStack i : p.getInventory()) 
+		{
 			if(i == null) continue;
-			if(i.getType() == m) {
+			if(i.getType() == m) 
+			{
 				if(i.getAmount() >= amount)
 					return true;
 				else

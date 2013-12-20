@@ -15,7 +15,7 @@ public class ListHandler {
 	private ItemHandler itemHandler;
 	
 	private static HashMap<String, List<CustomItem>> customItemTypes = new HashMap<String, List<CustomItem>>();
-	private static String powers[] = new String[] {"speed","scuba","jump","nightvision","invisibility"};
+	private static String powers[] = new String[] {"speed","scuba","nightvision","invisibility", "poison"};
 	
 	public ListHandler() {
 		itemHandler = new ItemHandler();

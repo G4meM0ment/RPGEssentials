@@ -10,9 +10,7 @@ import me.G4meM0ment.RPGItem.DataStorage.ItemData;
 import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ListHandler;
-import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,13 +21,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class InventoryHandler {
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private ItemHandler itemHandler;
 	private ItemConfig itemConfig;
 	private ItemData itemData;
 	private ListHandler lh;
 	private CustomItemHandler customItemHandler;
-	private PowerHandler powerHandler;
 	
 	public InventoryHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -38,9 +36,6 @@ public class InventoryHandler {
 		itemData = new ItemData();
 		lh = new ListHandler();
 		customItemHandler = new CustomItemHandler();
-		powerHandler = new PowerHandler();
-		
-		startInventoryChecker();
 	}
 	public InventoryHandler() {
 		itemHandler = new ItemHandler();
@@ -48,7 +43,6 @@ public class InventoryHandler {
 		itemData = new ItemData();
 		lh = new ListHandler();
 		customItemHandler = new CustomItemHandler();
-		powerHandler = new PowerHandler();
 	}
 	
 	public void processInventory(Inventory inv, Player p) 
@@ -88,52 +82,6 @@ public class InventoryHandler {
 				}
 			  customItemHandler.updateItem(item, p, false);
 			}
-		}
-	}
-	
-	private void startInventoryChecker() {
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-			@Override
-			public void run() {
-				for(Player p : Bukkit.getServer().getOnlinePlayers()) {
-					processArmor(p);
-					processItem(p);
-				}
-			}
-		}, 0, 60);
-	}
-	
-	public void processArmor(Player p) {
-		if(p == null) return;
-		powerHandler.clearPowers(p);
-		for(ItemStack item : p.getInventory().getArmorContents()) {
-			if(itemHandler.isCustomItem(item)) {
-				ItemMeta meta = item.getItemMeta();
-				String name = ChatColor.stripColor(meta.getDisplayName());
-				List<String> lore = meta.getLore();
-				int size = lore.size();
-
-				int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
-				CustomItem cItem = customItemHandler.getCustomItem(name, id);
-
-				powerHandler.applyPower(p, cItem);
-			}
-		}
-	}
-	
-	public void processItem(Player p) {
-		if(p == null) return;
-		ItemStack item = p.getItemInHand();
-		if(itemHandler.isCustomItem(item)) {
-			ItemMeta meta = item.getItemMeta();
-			String name = ChatColor.stripColor(meta.getDisplayName());
-			List<String> lore = meta.getLore();
-			int size = lore.size();
-
-			int id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
-			CustomItem cItem = customItemHandler.getCustomItem(name, id);
-
-			powerHandler.applyPower(p, cItem);
 		}
 	}
 }

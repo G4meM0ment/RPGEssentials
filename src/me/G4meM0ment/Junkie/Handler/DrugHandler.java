@@ -127,7 +127,7 @@ public class DrugHandler {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 7200, 2));
 			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
 			
-			int addicted = dd.getConfig().getInt(p.getName()+"."+drug+".addicted");
+			addicted = dd.getConfig().getInt(p.getName()+"."+drug+".addicted");
 			if(addicted+33 <= 100)
 				dd.getConfig().set(p.getName()+"."+drug+".addicted", addicted+33);
 			else
@@ -136,7 +136,7 @@ public class DrugHandler {
 				dd.getConfig().set(p.getName()+"."+drug+".addicted", 100);
 			}
 			
-			int overdose = dd.getConfig().getInt(p.getName()+"."+drug+".overdose");
+			overdose = dd.getConfig().getInt(p.getName()+"."+drug+".overdose");
 			if(overdose+20 <= 100)
 				dd.getConfig().set(p.getName()+"."+drug+".overdose", overdose+20);
 			else
@@ -149,7 +149,7 @@ public class DrugHandler {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 3600, 1));
 			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
 			
-			int addicted = dd.getConfig().getInt(p.getName()+"."+drug+".addicted");
+			addicted = dd.getConfig().getInt(p.getName()+"."+drug+".addicted");
 			if(addicted+20 <= 100)
 				dd.getConfig().set(p.getName()+"."+drug+".addicted", addicted+20);
 			else
@@ -158,7 +158,7 @@ public class DrugHandler {
 				dd.getConfig().set(p.getName()+"."+drug+".addicted", 100);
 			}
 			
-			int overdose = dd.getConfig().getInt(p.getName()+"."+drug+".overdose");
+			overdose = dd.getConfig().getInt(p.getName()+"."+drug+".overdose");
 			if(overdose+20 <= 100)
 				dd.getConfig().set(p.getName()+"."+drug+".overdose", overdose+20);
 			else
@@ -193,7 +193,7 @@ public class DrugHandler {
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 3600, 3));
 			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
 			
-			int addicted = dd.getConfig().getInt(p.getName()+"."+drug+".addicted");
+			addicted = dd.getConfig().getInt(p.getName()+"."+drug+".addicted");
 			if(addicted+20 <= 100)
 				dd.getConfig().set(p.getName()+"."+drug+".addicted", addicted+20);
 			else
@@ -202,7 +202,7 @@ public class DrugHandler {
 				dd.getConfig().set(p.getName()+"."+drug+".addicted", 100);
 			}
 			
-			int overdose = dd.getConfig().getInt(p.getName()+"."+drug+".overdose");
+			overdose = dd.getConfig().getInt(p.getName()+"."+drug+".overdose");
 			if(overdose+20 <= 100)
 				dd.getConfig().set(p.getName()+"."+drug+".overdose", overdose+20);
 			else
@@ -355,7 +355,7 @@ public class DrugHandler {
 			}, random);
 			break;
 		case 40:
-			int random = (int) (Math.random()*1200);
+			random = (int) (Math.random()*1200);
 			
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
 			{
@@ -394,7 +394,7 @@ public class DrugHandler {
 			}, random);
 			break;
 		case 353:
-			int random = (int) (Math.random()*1200);
+			random = (int) (Math.random()*1200);
 			
 			Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
 			{

@@ -4,6 +4,7 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
+import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.DamageHandler;
 
 import org.bukkit.entity.Player;
@@ -12,6 +13,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 
@@ -22,16 +25,19 @@ public class HeroesListener implements Listener{
 	private CustomItemHandler customItemHandler;
 	private ItemHandler itemHandler;
 	private DamageHandler dmgHandler;
+	private PowerHandler ph;
 	
 	public HeroesListener(RPGEssentials plugin) {
 		this.plugin = plugin;
 		customItemHandler = new CustomItemHandler();
 		itemHandler = new ItemHandler();
 		dmgHandler = new DamageHandler();
+		ph = new PowerHandler();
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-	public void onWeaponDamage(WeaponDamageEvent event) {
+	public void onWeaponDamage(WeaponDamageEvent event) 
+	{
 		Player p = null, e = null;
 		if(event.getAttackerEntity() instanceof Player)
 			p = (Player) event.getAttackerEntity();
@@ -70,5 +76,7 @@ public class HeroesListener implements Listener{
 				event.setDamage(newDmg);
 			customItemHandler.repairItems(e);
 		}
+		if(ph.hasPower(p, "poison"))
+			e.addPotionEffect(new PotionEffect(PotionEffectType.POISON, (int) (200*ph.getPlayerPowers().get(p).get("poison")), (ph.getPlayersPowers(p).get("poison").intValue())));
 	}
 }

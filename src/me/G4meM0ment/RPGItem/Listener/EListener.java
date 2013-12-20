@@ -4,6 +4,7 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
+import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.DamageHandler;
 
 import org.bukkit.entity.Player;
@@ -13,6 +14,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class EListener implements Listener {
 
@@ -20,6 +23,7 @@ public class EListener implements Listener {
 	private ItemHandler itemHandler;
 	private DamageHandler dmgHandler;
 	private CustomItemHandler customItemHandler;
+	private PowerHandler ph;
 	
 	public EListener(RPGEssentials plugin) 
 	{
@@ -27,6 +31,7 @@ public class EListener implements Listener {
 		itemHandler = new ItemHandler();
 		dmgHandler = new DamageHandler();
 		customItemHandler = new CustomItemHandler();
+		ph = new PowerHandler();
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -67,6 +72,9 @@ public class EListener implements Listener {
 				event.setDamage(newDmg);
 			customItemHandler.repairItems(e);
 		}
+		
+		if(ph.hasPower(p, "poison"))
+			e.addPotionEffect(new PotionEffect(PotionEffectType.POISON, (int) (200*ph.getPlayerPowers().get(p).get("poison")), (ph.getPlayersPowers(p).get("poison").intValue())));
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)

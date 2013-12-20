@@ -104,24 +104,16 @@ public class CommandHandler {
 				}
 			}
 			
-			boolean next = false;
 			for(String s : args)
-			{
-				if(next)
-					p = getPlayer(s);
-				if(s.equals("p:"))
-				{
-					next = true;
-					continue;
-				}
-			}
+				if(s.contains("p:"))
+					p = getPlayer(s.replace("p:", ""));
 			
 			if(p == null) 
 			{
 				if(sender instanceof Player)
 					player.sendMessage("Cannot find player");
 				else
-					plugin.getLogger().info("Cannot find player");
+					plugin.getLogger().info(subplugin.getLogTit()+"Cannot find player");
 				//TODO add messenger
 				return true;
 			}
