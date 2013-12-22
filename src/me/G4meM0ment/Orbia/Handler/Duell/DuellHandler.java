@@ -123,6 +123,7 @@ public class DuellHandler {
 	public boolean isInDuell(Player p, boolean isParentRequest, boolean isRegistered)
 	{
 		if(p == null) return false;
+		if(duells == null || duells.isEmpty()) return false;
 		if(plugin.getHeroes().getCharacterManager().getHero(p).getParty() != null && !isRegistered)
 			p = getRegisteredPartyMember(p);
 			

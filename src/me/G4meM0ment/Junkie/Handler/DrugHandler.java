@@ -8,6 +8,10 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.gui.Color;
+import org.getspout.spoutapi.player.SkyManager;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 import me.G4meM0ment.Junkie.Junkie;
 import me.G4meM0ment.Junkie.DataStorage.DrugData;
@@ -169,22 +173,40 @@ public class DrugHandler {
 		case 357:
 			p.getWorld().playSound(p.getLocation(), Sound.EAT, 1, 0);
 			
-			while(p.getFoodLevel() > 1)
+			final int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
 			{
-				Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
+				@Override
+				public void run() 
 				{
-					@Override
-					public void run()
-					{
+					if(p.getFoodLevel() > 0)
 						p.setFoodLevel(p.getFoodLevel()-1);
-
-					}
-				}, 40);
-				if(p.getFoodLevel() <= 1)
-					break;
-			}
+				}
+			}, 0, 40);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
+			{
+				@Override
+				public void run() 
+				{
+					Bukkit.getScheduler().cancelTask(id);
+				}
+			}, 800);
 			
-			//TODO add spout feature: change sky color
+			final SpoutPlayer sp = SpoutManager.getPlayer(p);
+			final SkyManager sky = SpoutManager.getSkyManager();
+			sky.setSkyColor(sp, new Color(255, 0, 255));
+			sky.setCloudColor(sp, new Color(153, 60, 153));
+			sky.setFogColor(sp, new Color(255, 153, 255));
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
+			{
+				@Override
+				public void run()
+				{
+						sky.setCloudColor(sp, Color.remove());
+						sky.setFogColor(sp, Color.remove());
+						sky.setSkyColor(sp, Color.remove());
+				}
+			}, 12000);
+
 			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
 			dd.saveConfig();
 			break;

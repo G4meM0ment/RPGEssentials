@@ -9,6 +9,7 @@ import me.G4meM0ment.Orbia.Handler.SIHandler;
 import me.G4meM0ment.Orbia.Handler.Duell.DuellHandler;
 import me.G4meM0ment.Orbia.Tutorial.TutorialHandler;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGEssentials.Utils.InvisibilityHandler;
 import me.G4meM0ment.ReNature.OtherPlugins.ReTowny;
 
 import org.bukkit.Bukkit;
@@ -24,7 +25,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -52,8 +52,8 @@ public class PListener implements Listener{
 	private SIHandler sih;
 	private CMHandler cmh;
 	private DuellHandler dh;
+	private InvisibilityHandler iH;
 	
-	private static List<Player> hiden = new ArrayList<Player>();
 	private static List<Player> dropping = new ArrayList<Player>();
 		
 	public PListener(RPGEssentials plugin){
@@ -63,25 +63,8 @@ public class PListener implements Listener{
 		sih = new SIHandler(subplugin);
 		cmh = new CMHandler();
 		dh = new DuellHandler();
+		iH = new InvisibilityHandler();
 	}
-
-	/*@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerDeath(PlayerDeathEvent event) {		
-		return;
-		if(!(event.getEntity() instanceof Player)) return;
-		Player p = event.getEntity();
-		if(p.getKiller() == null || !(p.getKiller() instanceof Player)) return;
-		Player k = p.getKiller();
-		UPlayer up = UPlayer.get(p);
-		UPlayer uk = UPlayer.get(k);
-		Faction faction = up.getFaction();
-		Faction faction2 = uk.getFaction();
-		
-		if(faction.getRelationTo(faction2).isAtLeast(Rel.ENEMY)) {
-			up.setPower(up.getPower() - subplugin.getConfig().getDouble("factionsPowerLossOnEnemyKill"));
-			up.sendMessage("You lost "+subplugin.getConfig().getDouble("factionsPowerLossOnEnemyKill")+" power!");
-		} 
-	}*/
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onPlayerJoin(PlayerJoinEvent event)
@@ -122,6 +105,8 @@ public class PListener implements Listener{
 		
 		if(!tutHandler.finishedTutorial(p))
 			tutHandler.startStage(p,tutHandler.getStage(p));
+		
+		SpoutManager.getSkyManager().setCloudHeight(SpoutManager.getPlayer(p), 174);
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -270,25 +255,15 @@ public class PListener implements Listener{
 		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
 		Block b = p.getLocation().getBlock().getRelative(0, -1, 0);
 
-		if(!p.isSneaking() && hiden.contains(p) && b.getType() != Material.HAY_BLOCK && b.getType() != Material.LEAVES)
+		if(!p.isSneaking() && iH.isHiden(p) && b.getType() != Material.HAY_BLOCK && b.getType() != Material.LEAVES)
 		{
-			for(Player player : Bukkit.getOnlinePlayers())
-			{
-				//TODO add ghost support
-				player.showPlayer(p);
-			}
-			hiden.remove(p);
+			iH.showPlayer(p);
 			return;
 		}
-		if(p.isSneaking() && (b.getType() == Material.HAY_BLOCK || b.getType() == Material.LEAVES) && !hiden.contains(p))
+		if(p.isSneaking() && (b.getType() == Material.HAY_BLOCK || b.getType() == Material.LEAVES) && !iH.isHiden(p))
 		{
-			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 2));
-			p.hidePlayer(p);
-			for(Player player : Bukkit.getOnlinePlayers())
-			{
-				player.hidePlayer(p);
-			}
-			hiden.add(p);
+			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 60, 2));
+			iH.hidePlayerForShown(p);
 		}
 		
 		if(h.getParty() != null) return;
@@ -347,6 +322,7 @@ public class PListener implements Listener{
 		
 	}
 	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onKeyPressed(KeyPressedEvent event)
 	{
 		final Player p = event.getPlayer().getPlayer();

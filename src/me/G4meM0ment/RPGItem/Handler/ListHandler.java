@@ -17,44 +17,55 @@ public class ListHandler {
 	private static HashMap<String, List<CustomItem>> customItemTypes = new HashMap<String, List<CustomItem>>();
 	private static String powers[] = new String[] {"speed","scuba","nightvision","invisibility", "poison"};
 	
-	public ListHandler() {
+	public ListHandler() 
+	{
 		itemHandler = new ItemHandler();
 	}
 	
-	public static HashMap<String, List<CustomItem>> getCustomItemTypes() {
+	public static HashMap<String, List<CustomItem>> getCustomItemTypes() 
+	{
 		return customItemTypes;
 	}
 	
 	//Getting a list from the hashmap
-	public static List<CustomItem> getCustomItemTypeList(String customItemName) {
+	public static List<CustomItem> getCustomItemTypeList(String customItemName) 
+	{
 		return getCustomItemTypes().get(customItemName);
 	}
 	
 	//Handling lists with specific custom items
-	public void initializeList(String customTypeName) {
+	public void initializeList(String customTypeName) 
+	{
 		getCustomItemTypes().put(customTypeName, new ArrayList<CustomItem>());
 	}
-	public static void addCustomItemToList(CustomItem customItem, List<CustomItem> list) {
+	public static void addCustomItemToList(CustomItem customItem, List<CustomItem> list) 
+	{
 		getCustomItemTypeList(customItem.getDispName()).add(customItem);
 	}
 	
 	//check if specific custom item is already included
-	public boolean containsCustomItem(List<CustomItem> list, ItemStack item) {
-		for(CustomItem cItem : list) {
-			if(cItem.getId() == Integer.valueOf(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)))) {
+	public boolean containsCustomItem(List<CustomItem> list, ItemStack item) 
+	{
+		for(CustomItem cItem : list) 
+		{
+			if(cItem.getId() == Integer.valueOf(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)))) 
+			{
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public String[] getPowers() {
+	public String[] getPowers() 
+	{
 		return powers;
 	}
 
 	public void updateItems() {
-		for(List<CustomItem> list : getCustomItemTypes().values()) {
-			for(CustomItem cItem : list) {
+		for(List<CustomItem> list : getCustomItemTypes().values()) 
+		{
+			for(CustomItem cItem : list) 
+			{
 				CustomItemHandler customItemHandler = new CustomItemHandler();
 				
 				customItemHandler.updateItem(cItem.getItem(), null, false);

@@ -31,7 +31,7 @@ public class PListener implements Listener {
 	}
 		
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerInteractEvent(PlayerInteractEvent event) 
 	{
 		if(event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR)
@@ -47,7 +47,7 @@ public class PListener implements Listener {
 		int id = item.getTypeId();
 		int amnt = item.getAmount();
 		if(drugs.contains(id)) 
-		{	
+		{
 			event.setCancelled(true);
 			if(item.getAmount() <= 1)
 				p.getInventory().remove(item);

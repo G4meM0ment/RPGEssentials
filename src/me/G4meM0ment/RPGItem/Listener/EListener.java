@@ -74,7 +74,7 @@ public class EListener implements Listener {
 		}
 		
 		if(ph.hasPower(p, "poison"))
-			e.addPotionEffect(new PotionEffect(PotionEffectType.POISON, (int) (200*ph.getPlayerPowers().get(p).get("poison")), (ph.getPlayersPowers(p).get("poison").intValue())));
+			e.addPotionEffect(new PotionEffect(PotionEffectType.POISON, (int) (40*ph.getPlayerPowers().get(p).get("poison")), (ph.getPlayersPowers(p).get("poison").intValue())));
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
