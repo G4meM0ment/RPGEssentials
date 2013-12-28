@@ -54,20 +54,23 @@ public class HeroesListener implements Listener{
 		{	
 			ItemStack item = p.getItemInHand();
 			customItemHandler.repairItems(p);
-			if(!item.hasItemMeta() || !itemHandler.isCustomItem(p.getItemInHand())) return;
-			CustomItem cItem = customItemHandler.getCustomItem(item);
-			
-			if(cItem.getDurability() == 0)
-			{
-				event.setCancelled(true);
-
-				return;
-			}
-			double newDmg = event.getDamage()+dmgHandler.handleDamageEvent(p);
 			if(itemHandler.isCustomItem(p.getItemInHand()))
-				customItemHandler.itemUsed(cItem.getItem());
-			if(newDmg >= 0)
-				event.setDamage(newDmg);
+			{
+				CustomItem cItem = customItemHandler.getCustomItem(item);
+				if(cItem != null) 
+				{			
+					if(cItem.getDurability() == 0)
+					{
+						event.setCancelled(true);
+						return;
+					}
+					double newDmg = event.getDamage()+dmgHandler.handleDamageEvent(p);
+					if(itemHandler.isCustomItem(p.getItemInHand()))
+						customItemHandler.itemUsed(cItem.getItem());
+					if(newDmg >= 0)
+						event.setDamage(newDmg);
+				}
+			}
 		}
 		if(e != null)
 		{

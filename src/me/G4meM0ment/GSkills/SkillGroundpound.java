@@ -54,7 +54,6 @@ public class SkillGroundpound extends ActiveSkill {
 	@Override
     public SkillResult use(Hero hero, String args[]) {
     	Player p = hero.getPlayer();
-    	Location l = p.getLocation();
     	int radius = SkillConfigManager.getUseSetting(hero, this, SkillSetting.RADIUS.node(), 10, false);
         List<Entity> entites = p.getNearbyEntities(radius, radius, radius);
         int counter = SkillConfigManager.getUseSetting(hero, this, "targets", 6, false);
@@ -62,15 +61,15 @@ public class SkillGroundpound extends ActiveSkill {
     			((SkillConfigManager.getUseSetting(hero, this, "LevelMultiplier", 0.1, false)) * hero.getSkillLevel(this)));
         
         hero.setMana(hero.getMana() - (SkillConfigManager.getUseSetting(hero, this, "mana", 12, false)));
-        p.teleport(new Location(l.getWorld(), l.getX(), l.getY()+((SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false))) * hero.getSkillLevel(this), l.getZ()));
         
-        for(Entity e : entites) {
-        	if(e instanceof LivingEntity && counter > 0) {
-        		((LivingEntity) e).damage(damage);
-        		counter--;
-        	}
-        }
-    	
+	    for(Entity e : entites) 
+	    	if(e instanceof LivingEntity && counter > 0) 
+	        {
+	    		Location l = e.getLocation();
+	            ((LivingEntity) e).damage(damage);
+	            counter--;
+	            e.teleport(new Location(l.getWorld(), l.getX(), l.getY()+((SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false))), l.getZ()));
+	        }	    	
         return SkillResult.NORMAL;
     }
 	

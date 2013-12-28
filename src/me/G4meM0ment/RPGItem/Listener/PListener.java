@@ -81,11 +81,16 @@ public class PListener implements Listener {
 		{
 				Block b = event.getClickedBlock();
 				if(b.getType() == Material.ANVIL && p.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
-				if(permHandler.hasRPGItemRepairPerms(p) && hasItemInInv(p, cItem.getRepairMaterial(), 1)) {
-					customItemHandler.repairCustomItem(cItem, subplugin.getConfig().getInt("RepairAmountPerRepair"));
-					p.playSound(b.getLocation(), Sound.ANVIL_USE, 50, 1);
-					p.getInventory().removeItem(new ItemStack(cItem.getRepairMaterial(), 1));
-					event.setCancelled(true);
+				Material m = cItem.getRepairMaterial();
+				if(m != null)
+				{
+					if(permHandler.hasRPGItemRepairPerms(p) && hasItemInInv(p, cItem.getRepairMaterial(), 1))
+					{
+						customItemHandler.repairCustomItem(cItem, subplugin.getConfig().getInt("RepairAmountPerRepair"));
+						p.playSound(b.getLocation(), Sound.ANVIL_USE, 50, 1);
+						p.getInventory().removeItem(new ItemStack(cItem.getRepairMaterial(), 1));
+						event.setCancelled(true);
+					}	
 				}
 		} else if(event.getAction() == Action.LEFT_CLICK_BLOCK)
 		{

@@ -57,6 +57,7 @@ public class PListener implements Listener {
 			
 			if(item.getType() == Material.MUSHROOM_SOUP)
 				p.getInventory().addItem(new ItemStack(Material.BOWL, 1));
+			
 		}
 	}
 }

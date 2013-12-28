@@ -40,7 +40,7 @@ public class TutorialHandler {
 		tutData.saveConfig();
 	}
 	
-	public void startStage(Player p, Stage s) 
+	public void startStage(Player p, Stage s)
 	{
 		switch(s)
 		{

@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -33,9 +34,10 @@ public class JobListener implements Listener {
 		farmer.add(Material.GOLD_HOE);
 		farmer.add(Material.DIAMOND_HOE);
 		farmer.add(Material.WHEAT);
-		farmer.add(Material.APPLE);
 		farmer.add(Material.CARROT_ITEM);
 		farmer.add(Material.SUGAR_CANE);
+		farmer.add(Material.POTATO_ITEM);
+		farmer.add(Material.SEEDS);
 	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -77,6 +79,24 @@ public class JobListener implements Listener {
 				p.sendMessage(ChatColor.GRAY+"Du bist nicht trainiert eine "+ChatColor.WHITE+p.getItemInHand().getType().toString().replace("_", " ").toLowerCase()+ChatColor.GRAY+" zu verwenden!");
 			}
 
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockBreak(BlockBreakEvent event)
+	{
+		Player p = event.getPlayer();
+		if(p == null) return;
+		if(event.getBlock() == null) return;
+		if(isMinerTool(p.getItemInHand()))
+		{
+			if(p.hasPermission("orbia.job.miner"))
+				return;
+			else
+			{
+				event.setCancelled(true);
+				p.sendMessage(ChatColor.GRAY+"Du bist nicht trainiert eine "+ChatColor.WHITE+p.getItemInHand().getType().toString().replace("_", " ").toLowerCase()+ChatColor.GRAY+" zu verwenden!");
+			}
 		}
 	}
 	

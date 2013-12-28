@@ -107,16 +107,20 @@ public class SkillFear extends ActiveSkill{
         }
 
         @Override
-        public void tickHero(Hero hero) {
+        public void tickHero(Hero hero) 
+        {
             super.tickHero(hero);
             Player player = hero.getPlayer();
 
-            for(Entity entity : player.getNearbyEntities(range, range, range)) {
-                if(entity instanceof Monster) {
+            for(Entity entity : player.getNearbyEntities(range, range, range)) 
+            {
+                if(entity instanceof Monster) 
+                {
                     Monster mob = (Monster) entity;
                     mob.setTarget(null);
                 }
             }
+            if(hero.getMaxMana() <= 0) return;
             if(mana > 0 && !firstTime) {
                 if(hero.getMana() - mana < 0) {
                     hero.setMana(0);

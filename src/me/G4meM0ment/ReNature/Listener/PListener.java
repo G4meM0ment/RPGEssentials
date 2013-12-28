@@ -1,6 +1,5 @@
 package me.G4meM0ment.ReNature.Listener;
 
-
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.ReNature.ReNature;
 import me.G4meM0ment.ReNature.OtherPlugins.ReFaction;
@@ -38,7 +37,7 @@ public class PListener implements Listener{
 			return;
 		
 		Material itemType = event.getPlayer().getItemInHand().getType();
-		if(itemType == Material.LAVA_BUCKET || itemType == Material.LAVA || itemType == Material.WATER_BUCKET || itemType == Material.WATER)
+		if(itemType == Material.LAVA_BUCKET || itemType == Material.LAVA || itemType == Material.WATER_BUCKET || itemType == Material.WATER || itemType == Material.CAKE_BLOCK)
 		{
 			event.setCancelled(true);
 		}
@@ -46,6 +45,5 @@ public class PListener implements Listener{
 		{
 			event.setCancelled(true);
 		}
-	}
-	
+	}	
 }

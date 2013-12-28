@@ -35,7 +35,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.getspout.spoutapi.SpoutManager;
-import org.getspout.spoutapi.event.input.KeyPressedEvent;
 
 import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
@@ -93,6 +92,7 @@ public class PListener implements Listener{
 			}
 		}, 20);
 		
+
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
 		{
 			@Override
@@ -159,7 +159,13 @@ public class PListener implements Listener{
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		if(event.getAction() != Action.RIGHT_CLICK_BLOCK || !event.getPlayer().getItemInHand().hasItemMeta()) return;
+		if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+		if(event.getClickedBlock().getType() == Material.BEACON || event.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE)
+		{
+			event.setCancelled(true);
+			return;
+		}
+		if(!event.getPlayer().getItemInHand().hasItemMeta()) return; 
 		ReTowny reTowny = new ReTowny(plugin);
 		if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Bauhammer") && (reTowny.isTown(event.getClickedBlock().getLocation()) || event.getPlayer().getGameMode() == GameMode.CREATIVE))
 		{
@@ -322,6 +328,7 @@ public class PListener implements Listener{
 		
 	}
 	
+	/*
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onKeyPressed(KeyPressedEvent event)
 	{
@@ -338,5 +345,5 @@ public class PListener implements Listener{
 				}
 			}, 60);
 		}
-	}
+	} */
 }

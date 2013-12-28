@@ -14,5 +14,6 @@
 	<classpathentry kind="lib" path="../APIs/HeroChat.jar"/>
 	<classpathentry kind="lib" path="../APIs/bukkit.jar"/>
 	<classpathentry kind="lib" path="../APIs/spoutcraftplugin.jar"/>
+	<classpathentry kind="lib" path="../APIs/MobArena.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.UnamedPortalPlugin.DataStorage.PortalData;
+import me.G4meM0ment.UnamedPortalPlugin.Handler.PortalHandler;
 import me.G4meM0ment.UnamedPortalPlugin.Listener.PListener;
 
 import org.bukkit.Bukkit;
@@ -20,6 +21,7 @@ public class UnnamedPortalPlugin {
 	private RPGEssentials plugin;
 	private PListener plistener;
 	private PortalData portalData;
+	private PortalHandler ph;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -29,7 +31,8 @@ public class UnnamedPortalPlugin {
 	private static Logger logger;
 	private static boolean isEnabled = false;
 
-	public UnnamedPortalPlugin(RPGEssentials plugin) {
+	public UnnamedPortalPlugin(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
 		plistener = new PListener(plugin);
 		
@@ -40,9 +43,12 @@ public class UnnamedPortalPlugin {
 		configFile = new File(dir+"/config.yml");
 		
 		portalData = new PortalData(this);
+		ph = new PortalHandler(this);
 	}
-	public UnnamedPortalPlugin() {
+	public UnnamedPortalPlugin() 
+	{
 		portalData = new PortalData(this);
+		ph = new PortalHandler(this);
 	}
 
 	public boolean onEnable() {
@@ -55,6 +61,7 @@ public class UnnamedPortalPlugin {
 			@Override
 			public void run() {
 				portalData.initializePortals();
+				ph.loadChunks();
 			}
 		});
 		
