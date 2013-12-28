@@ -30,7 +30,8 @@ public class DrugData {
 		configFile = new File(dir+"/data.yml");
 	}
 
-	public DrugData() {
+	public DrugData() 
+	{
 		subplugin = new Junkie();
 	}
 	

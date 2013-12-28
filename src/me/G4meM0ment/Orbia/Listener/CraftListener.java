@@ -58,6 +58,10 @@ public class CraftListener implements Listener {
 		nonCraftables.add(Material.DIAMOND_PICKAXE);
 		nonCraftables.add(Material.DIAMOND_SPADE);
 		nonCraftables.add(Material.DIAMOND_SWORD);
+		
+		nonCraftables.add(Material.BOW);
+		nonCraftables.add(Material.FISHING_ROD);
+		nonCraftables.add(Material.SHEARS);
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
