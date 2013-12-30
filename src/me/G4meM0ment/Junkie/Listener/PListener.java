@@ -77,10 +77,9 @@ public class PListener implements Listener {
 		p.sendMessage("Ergebniss:");
 		for(String drug : dd.getConfig().getConfigurationSection(e.getName()).getKeys(false))
 		{
-			if((dd.getConfig().getInt(e.getName()+"."+drug+".consum")-System.currentTimeMillis()) < 1800000)
-			{
-				p.sendMessage(drug+": Positiv seit "+(dd.getConfig().getInt(e.getName()+"."+drug+".consum")-System.currentTimeMillis())/1000);
-			}
+			long diff = System.currentTimeMillis()-(dd.getConfig().getLong(e.getName()+"."+drug+".consum"));
+			if(diff < 1800000L)
+				p.sendMessage(drug+": Positiv seit "+diff/1000);
 		}
 		p.sendMessage("Keine weiteren Drogen im Urin");
 	}

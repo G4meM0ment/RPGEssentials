@@ -68,6 +68,6 @@ public class CraftListener implements Listener {
 	public void onPlayerCraft(PrepareItemCraftEvent event)
 	{
 		if(nonCraftables.contains(event.getRecipe().getResult().getType()))
-			event.getRecipe().getResult().setType(Material.AIR);
+			event.getInventory().setResult(null);
 	}
 }

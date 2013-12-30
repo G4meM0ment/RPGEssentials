@@ -44,12 +44,13 @@ public class MAListener implements Listener{
 				@Override
 				public void run() 
 				{
-					Bukkit.dispatchCommand(p, "/ma leave");
+					Bukkit.dispatchCommand(p, "ma leave");
 				}
 				
 			}, 60);
 			players.remove(p.getName());
 		}
+		
 	}
 
 }

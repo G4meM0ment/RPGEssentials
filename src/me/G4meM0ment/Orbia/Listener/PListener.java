@@ -29,6 +29,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -107,6 +108,14 @@ public class PListener implements Listener{
 			tutHandler.startStage(p,tutHandler.getStage(p));
 		
 		SpoutManager.getSkyManager().setCloudHeight(SpoutManager.getPlayer(p), 174);
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onPlayerKick(PlayerKickEvent event) 
+	{
+		Player p = event.getPlayer();
+		if(p == null) return;
+		event.setLeaveMessage(ChatColor.DARK_GRAY+"["+ChatColor.DARK_RED+"-"+ChatColor.DARK_GRAY+"] "+p.getName());
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)

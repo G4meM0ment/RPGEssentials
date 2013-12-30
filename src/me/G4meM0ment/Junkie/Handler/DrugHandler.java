@@ -171,6 +171,7 @@ public class DrugHandler {
 			dd.saveConfig();
 			break;
 		case 357:
+			dd.getConfig().set(p.getName()+"."+drug+".consum", System.currentTimeMillis());
 			p.getWorld().playSound(p.getLocation(), Sound.EAT, 1, 0);
 			
 			final int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()

@@ -48,7 +48,7 @@ public class Orbia {
 		plistener = new PListener(plugin);
 		jl = new JobListener();
 		hl = new HeroesListener(plugin);
-		mal = new MAListener();
+		mal = new MAListener(plugin);
 		cl = new CraftListener();
 		
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
