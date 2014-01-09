@@ -105,6 +105,8 @@ public class DrugHandler {
 	
 	public void consum(final Player p, int drug)			//DROGEN-Effekte
 	{
+		if(!dd.getConfig().getConfigurationSection(p.getName()+"."+drug).contains("clean"))
+			dd.getConfig().set(p.getName()+"."+drug+".clean", true);
 		switch(drug)
 		{
 		case 39: 
