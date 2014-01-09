@@ -7,6 +7,8 @@ import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.DamageHandler;
 
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -79,7 +81,18 @@ public class HeroesListener implements Listener{
 				event.setDamage(newDmg);
 			customItemHandler.repairItems(e);
 		}
+		try
+		{
+		if(ph.getPlayerPowers() == null) return;
 		if(ph.hasPower(p, "poison"))
+		{
+			if(ph.getPlayersPowers(p).get("poison") == null) return;
+			if(!(e instanceof LivingEntity)) return;
 			e.addPotionEffect(new PotionEffect(PotionEffectType.POISON, (int) (40*ph.getPlayerPowers().get(p).get("poison")), (ph.getPlayersPowers(p).get("poison").intValue())));
+		}
+		}catch(NullPointerException exception)
+		{
+			System.out.println("Debug: Exception NPE: IN HeroesListener geschi mit dem Poison, you know?");
+		}
 	}
 }

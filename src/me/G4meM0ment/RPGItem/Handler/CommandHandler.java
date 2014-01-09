@@ -127,8 +127,12 @@ public class CommandHandler {
 				return true;
 			}
 			
+			int id = 0;
+			if(subplugin.getConfig().getBoolean("useIDs"))
+				id = customItemHandler.getFreeId(name);
 			FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
-			customItemHandler.spawnCustomItem(p, new CustomItem(null, config.getString("displayName"), customItemHandler.getFreeId(name), config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()),
+			
+			customItemHandler.spawnCustomItem(p, new CustomItem(null, config.getString("displayName"), id, config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()),
 					config.getInt("damage"), config.getInt("damageMax"), config.getInt("durability"), config.getString("description"), config.getInt("price"), config.getString("lore"),
 					Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), Material.valueOf(config.getString("repair").toUpperCase()), config.getInt("durability")));
 			

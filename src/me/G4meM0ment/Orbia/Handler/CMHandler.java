@@ -3,9 +3,7 @@ package me.G4meM0ment.Orbia.Handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class CMHandler {
 	
@@ -29,7 +27,7 @@ public class CMHandler {
 			players.add(p);
 	}
 	
-	public boolean isItemInHotbar(Player player, ItemStack item)
+	/*public boolean isItemInHotbar(Player player, ItemStack item)
 	{
 		if(player.getInventory().getItemInHand().getType() == Material.AIR && item.getType() != Material.AIR)
 		{
@@ -43,5 +41,5 @@ public class CMHandler {
 		    	return true;
 		}
 		return false;
-	}
+	} */
 }

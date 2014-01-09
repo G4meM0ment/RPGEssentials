@@ -3,10 +3,12 @@ package me.G4meM0ment.RPGItem.OtherPlugins;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import net.dandielo.citizens.traders_v3.tNpcStatus;
@@ -23,6 +25,7 @@ public class RPGItem extends ItemFlag{
 	/* Init both handlers by instances? Singleton system */
 	private /*static*/ CustomItemHandler customItemHandler; // = CustomItemHandler.getInstance();
 	private /*static*/ ItemHandler itemHandler; // = ItemHandler.getInstance();
+	private me.G4meM0ment.RPGItem.RPGItem subplugin;
 	
 	private int rpgID;
 	
@@ -35,6 +38,7 @@ public class RPGItem extends ItemFlag{
 		//customItemHandler = CustomItemHandler.getInstance();
 		//itemHandler = ItemHandler.getInstance();
 		
+		subplugin = new me.G4meM0ment.RPGItem.RPGItem();
 		customItemHandler = new CustomItemHandler();
 		itemHandler = new ItemHandler();
 		
@@ -44,6 +48,8 @@ public class RPGItem extends ItemFlag{
 	@Override
 	public void onAssign(ItemStack item, boolean endItem) throws InvalidItemException 
 	{
+		if(!subplugin.getConfig().getBoolean("useIDs")) return;
+		
 		//get the existing lore
 		ItemMeta meta = item.getItemMeta();
 		List<String> itemLore = meta.getLore();
@@ -66,6 +72,8 @@ public class RPGItem extends ItemFlag{
 	
 	public void onFactorize(ItemStack item) throws AttributeValueNotFoundException
 	{
+		if(!subplugin.getConfig().getBoolean("useIDs")) return;
+		
 		//n lore = no RPG item
 		if ( !item.getItemMeta().hasLore() )
 			throw new AttributeValueNotFoundException();

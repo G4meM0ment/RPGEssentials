@@ -59,6 +59,9 @@ public class DrugHandler {
 					{
 						int drug = Integer.parseInt(s);
 						
+						if(!dd.getConfig().getConfigurationSection(p.getName()+"."+drug).getKeys(false).contains("clean"))
+							dd.getConfig().set(p.getName()+"."+drug+".clean", true);
+						
 						if (dd.getConfig().getInt(p.getName()+"."+drug+".addicted")-5 <= 0)
 							dd.getConfig().set(p.getName()+"."+drug+".addicted", 0);						
 						else
@@ -67,13 +70,13 @@ public class DrugHandler {
 						if(dd.getConfig().getInt(p.getName()+"."+drug+".overdose")-20 <= 0)
 							dd.getConfig().set(p.getName()+"."+drug+".overdose", 0);
 						else
-						dd.getConfig().set(p.getName()+"."+drug+".overdose", dd.getConfig().getInt(p.getName()+"."+drug+".overdose")-20);
+							dd.getConfig().set(p.getName()+"."+drug+".overdose", dd.getConfig().getInt(p.getName()+"."+drug+".overdose")-20);
 						
 						dd.saveConfig();
 						
 						int addicted = dd.getConfig().getInt(p.getName()+"."+drug+".addicted");
-						long time = System.currentTimeMillis() - dd.getConfig().getLong(p.getName()+"."+drug+".consum");
-						if(addicted > 0 && !dd.getConfig().getBoolean(p.getName()+"."+drug+".clean") && time < 600000)
+						//long time = System.currentTimeMillis() - dd.getConfig().getLong(p.getName()+"."+drug+".consum");
+						if(addicted > 0 && !dd.getConfig().getBoolean(p.getName()+"."+drug+".clean")/* && time < 600000*/)
 						{
 							int random = (int) (Math.random()*12000);
 							final Player fP = p;

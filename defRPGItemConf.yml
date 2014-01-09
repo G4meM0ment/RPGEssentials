@@ -1,3 +1,4 @@
+useIDs: false
 FormatLineSize: 39
 ItemTooltipGeneralDurabilityFormat: '&fDurability: %actual/%max'
 ItemTooltipGeneralInfoFormat: '&f%hand        %type'

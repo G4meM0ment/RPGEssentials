@@ -15,6 +15,13 @@ public class CraftListener implements Listener {
 	
 	public CraftListener()
 	{
+		nonCraftables.add(Material.WOOD_AXE);
+		nonCraftables.add(Material.WOOD_HOE);
+		nonCraftables.add(Material.WOOD_PICKAXE);
+		nonCraftables.add(Material.WOOD_SPADE);
+		nonCraftables.add(Material.WOOD_PICKAXE);
+		nonCraftables.add(Material.WOOD_SWORD);
+		
 		nonCraftables.add(Material.STONE_AXE);
 		nonCraftables.add(Material.STONE_HOE);
 		nonCraftables.add(Material.STONE_PICKAXE);
@@ -62,12 +69,20 @@ public class CraftListener implements Listener {
 		nonCraftables.add(Material.BOW);
 		nonCraftables.add(Material.FISHING_ROD);
 		nonCraftables.add(Material.SHEARS);
+		
+		nonCraftables.add(Material.GOLD_NUGGET);
+		nonCraftables.add(Material.INK_SACK);
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onPlayerCraft(PrepareItemCraftEvent event)
 	{
 		if(nonCraftables.contains(event.getRecipe().getResult().getType()))
-			event.getInventory().setResult(null);
+		{
+			if(event.getRecipe().getResult().getType() == Material.INK_SACK && event.getRecipe().getResult().getData().getData() != 9)
+				return;
+			event.getInventory().setResult(null);	
+		}
+
 	}
 }

@@ -27,7 +27,7 @@ public class ReTowny {
 	public boolean isTown(Location l) {
 		
 		//TODO remove Workaround
-		if(wg.getRegionManager(l.getWorld()).getRegion("wa").contains(l.getBlockX(), l.getBlockY(), l.getBlockZ()))
+		if(wg.getRegionManager(l.getWorld()).getRegion("wa").contains(l.getBlockX(), l.getBlockY(), l.getBlockZ()) || wg.getRegionManager(l.getWorld()).getRegion("bf").contains(l.getBlockX(), l.getBlockY(), l.getBlockZ()))
 			return true;
 		else
 			return false;

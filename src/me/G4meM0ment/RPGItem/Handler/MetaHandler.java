@@ -76,26 +76,30 @@ public class MetaHandler {
 			else
 			{
 				if(customItem.getItem().getType() == Material.BOW)
+				{
 					baseDamage = hClass.getProjectileDamage(ProjectileType.ARROW);
+					dmg = (int) (baseDamage+(hClass.getProjDamageLevel(ProjectileType.ARROW)*h.getLevel()));
+				}
 				else
 					if(hClass.getItemDamage(customItem.getItem().getType()) != null)
+					{
 						baseDamage = hClass.getItemDamage(customItem.getItem().getType());
-			
-				dmg = (int) (baseDamage+(hClass.getItemDamageLevel(customItem.getItem().getType())*h.getLevel()));
+						dmg = (int) (baseDamage+(hClass.getItemDamageLevel(customItem.getItem().getType())*h.getLevel()));
+					}
 			}
 		}
 		
-		if(customItem.getDurability() >= 0 && !subplugin.getConfig().getString("ItemTooltipGeneralDurabilityFormat").isEmpty())
+		if(customItem.getDurability() >= 0 && !subplugin.getConfig().getString("ItemTooltipGeneralDurabilityFormat").isEmpty() && subplugin.getConfig().getBoolean("useIDs"))
 			preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipGeneralDurabilityFormat").replace("%actual", Integer.toString(customItem.getDurability())).replace("%max", Integer.toString(customItem.getMaxDurability()))));
 		
 		if(!customItem.getHand().isEmpty() || !customItem.getType().isEmpty() && !subplugin.getConfig().getString("ItemTooltipGeneralInfoFormat").isEmpty())
 			preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipGeneralInfoFormat").replace("%hand", customItem.getHand()).replace("%type", customItem.getType())));
 		
 		if(isArmor(customItem.getItem()))
-			if(!subplugin.getConfig().getString("ItemTooltipArmorFormat").isEmpty())
+//			if(!subplugin.getConfig().getString("ItemTooltipArmorFormat").isEmpty())
 				preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipArmorFormat").replace("%dmgValue", Integer.toString(customItem.getDmgValue()+dmg)).replace("%maxDmgValue", Integer.toString(customItem.getDmgValueMax()+dmg))));
 		else
-			if(!subplugin.getConfig().getString("ItemTooltipDamageFormat").isEmpty())
+//			if(!subplugin.getConfig().getString("ItemTooltipDamageFormat").isEmpty())
 				preLore.add(ChatColor.translateAlternateColorCodes('&', subplugin.getConfig().getString("ItemTooltipDamageFormat").replace("%dmgValue", Integer.toString(customItem.getDmgValue()+dmg)).replace("%maxDmgValue", Integer.toString(customItem.getDmgValueMax()+dmg))));
 		
 		if(!subplugin.getConfig().getString("ItemTooltipPriceFormat").isEmpty())
@@ -125,7 +129,8 @@ public class MetaHandler {
 			}
 		}
 		
-		lore.add(ChatColor.BLACK+Integer.toString(customItem.getId()));
+		if(subplugin.getConfig().getBoolean("useIDs"))
+			lore.add(ChatColor.BLACK+Integer.toString(customItem.getId()));
 		return lore;
 	}
 	

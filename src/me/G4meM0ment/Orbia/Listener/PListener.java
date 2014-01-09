@@ -18,15 +18,21 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Damageable;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -36,12 +42,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.event.input.KeyPressedEvent;
+import org.getspout.spoutapi.keyboard.Keyboard;
 
 import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Chatter.Result;
 import com.dthielke.herochat.Herochat;
+import com.garbagemule.MobArena.MobArenaHandler;
 import com.herocraftonline.heroes.characters.Hero;
 
 public class PListener implements Listener{
@@ -55,6 +64,7 @@ public class PListener implements Listener{
 	private InvisibilityHandler iH;
 	
 	private static List<Player> dropping = new ArrayList<Player>();
+	private static List<Player> backpack = new ArrayList<Player>();
 		
 	public PListener(RPGEssentials plugin){
 		this.plugin = plugin;
@@ -126,6 +136,9 @@ public class PListener implements Listener{
 		event.setQuitMessage(ChatColor.DARK_GRAY+"["+ChatColor.DARK_RED+"-"+ChatColor.DARK_GRAY+"] "+p.getName());
 		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
 		
+		if(h.isInCombat())
+			p.damage(1000.0);
+		
 		if(h.getParty() != null)
 		{
 			Player l = h.getParty().getLeader().getPlayer();
@@ -176,10 +189,19 @@ public class PListener implements Listener{
 		}
 		if(!event.getPlayer().getItemInHand().hasItemMeta()) return; 
 		ReTowny reTowny = new ReTowny(plugin);
+		try {
 		if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Bauhammer") && (reTowny.isTown(event.getClickedBlock().getLocation()) || event.getPlayer().getGameMode() == GameMode.CREATIVE))
+			sih.changeSubId(event.getClickedBlock(), event.getPlayer().getGameMode().equals(GameMode.CREATIVE));
+		} catch(NullPointerException e)
 		{
-			sih.changeSubId(event.getClickedBlock(), event.getPlayer().hasPermission("orbia.admin"));
+			System.out.println("Debug: "+reTowny+event.getClickedBlock());
 		}
+	}
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent event)
+	{
+		if(event.getRightClicked() instanceof Horse)
+			event.setCancelled(true);
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -306,8 +328,16 @@ public class PListener implements Listener{
 		if(event.getMessage().contains("hero choose"))
 			event.setCancelled(true);
 		
-		if(event.getMessage().contains("mana"))
-			event.setCancelled(true);
+		if(plugin.getHeroes().getCharacterManager().getHero(event.getPlayer()).isInCombat())
+		{
+			if(event.getMessage().contains("pet") ||
+					event.getMessage().contains("mount") ||
+					event.getMessage().contains("mnt"))
+			{
+				SpoutManager.getPlayer(event.getPlayer()).sendNotification("Kampf", "Nicht erlaubt!", Material.IRON_SWORD);
+				event.setCancelled(true);
+			}
+		}
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -337,7 +367,7 @@ public class PListener implements Listener{
 		
 	}
 	
-	/*
+	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onKeyPressed(KeyPressedEvent event)
 	{
@@ -354,5 +384,32 @@ public class PListener implements Listener{
 				}
 			}, 60);
 		}
-	} */
+		/*MobArenaHandler mah = new MobArenaHandler();
+		if(event.getKey() == Keyboard.KEY_B && mah.inRegion(event.getPlayer().getPlayer().getLocation()))
+		{
+			backpack.add(p);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
+			{
+				@Override
+				public void run()
+				{
+					backpack.remove(p);
+				}
+			}, 60);
+		} */
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onInventoryOpen(InventoryOpenEvent event)
+	{
+		MobArenaHandler mah = new MobArenaHandler();
+		if(mah.inRegion(event.getPlayer().getLocation())) event.setCancelled(true);
+	}
+	
+	@EventHandler(ignoreCancelled = false, priority = EventPriority.MONITOR)
+	public void onCreatureSpawn(CreatureSpawnEvent event)
+	{
+		if(event.getEntityType() == EntityType.HORSE && event.getSpawnReason() == SpawnReason.CUSTOM)
+			event.setCancelled(false);
+	}
 }

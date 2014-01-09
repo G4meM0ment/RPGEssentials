@@ -11,6 +11,7 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.util.Vector;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
@@ -73,14 +74,17 @@ public class SkillGroundpound extends ActiveSkill {
         hero.setMana(hero.getMana() - (SkillConfigManager.getUseSetting(hero, this, "mana", 12, false)));
         
 	    for(Entity e : entites) 
-	    	if((e instanceof LivingEntity) && counter > 0) 
+	    	if((e instanceof LivingEntity) && counter > 0)
 	        {
 	    		LivingEntity le = (LivingEntity) e;
-	    		if(e instanceof Player)
-	    			if(getPlayer(((Player) e).getName()) == null)
-	    				continue;
-	    		p.damage(damage, le);
-	    		e.setVelocity(e.getLocation().toVector().add(l.toVector()).normalize().multiply(10));
+	    		EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(p, e, DamageCause.ENTITY_ATTACK, damage);
+	    		
+	    		Bukkit.getPluginManager().callEvent(event);
+	    		if(event.isCancelled())
+	    			continue;
+	    		
+	    		le.damage(event.getDamage());
+	    		le.setVelocity(le.getVelocity().setY(SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false)));
 	            counter--;
 	        }	    	
         return SkillResult.NORMAL;

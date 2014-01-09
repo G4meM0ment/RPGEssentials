@@ -11,7 +11,6 @@ public class ItemHandler {
 	
 	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
-	@SuppressWarnings("unused")
 	private RPGItem subplugin;
 	@SuppressWarnings("unused")
 	private ItemData itemData;
@@ -30,23 +29,28 @@ public class ItemHandler {
 		if(item == null) return false;
 		if(!item.hasItemMeta()) return false;
 		if(item.getItemMeta().getDisplayName() == null) return false;
-		if(item.getItemMeta().getLore() == null) return false;
 		
-		int id = 0;
+		if(subplugin.getConfig().getBoolean("useIDs")) 
+		{
+			if(item.getItemMeta().getLore() == null) return false;
 		
-		try
-		{
-		    //Try to get the ID 
-		    id = Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)));
-		} catch( NumberFormatException e )
-		{
-		    //ID not found set it to 0
-		    id = 0;
+			int id = 0;
+		
+			try
+			{
+				//Try to get the ID 
+				id = Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1)));
+			} catch( NumberFormatException e )
+			{
+				//ID not found set it to 0
+				id = 0;
+			}
+		
+			if(id > 0) 
+				return true; 
+			return false;
 		}
-		
-		if(id > 0) 
+		else
 			return true;
-		
-		return false;
 	}
 }

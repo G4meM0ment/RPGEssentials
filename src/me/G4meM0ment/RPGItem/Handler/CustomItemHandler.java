@@ -45,7 +45,8 @@ public class CustomItemHandler {
 		Material.FLINT_AND_STEEL, Material.SHEARS, Material.FISHING_ROD, Material.BOW,
 	};
 	
-	public CustomItemHandler(RPGEssentials plugin) {
+	public CustomItemHandler(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
 		subplugin = new RPGItem();
 		itemConfig = new ItemConfig();
@@ -55,7 +56,8 @@ public class CustomItemHandler {
 		metaHandler = new MetaHandler(plugin);
 		itemHandler = new ItemHandler();
 	}
-	public CustomItemHandler() {
+	public CustomItemHandler() 
+	{
 		subplugin = new RPGItem();
 		lh = new ListHandler();	
 		itemConfig = new ItemConfig();
@@ -77,7 +79,7 @@ public class CustomItemHandler {
 					repairItems(p);
 				}
 			}
-		}, 0 , 400);
+		}, 0 , 200);
 	}
 	
 	public void spawnCustomItem(Player p, CustomItem customItem) 
@@ -85,7 +87,6 @@ public class CustomItemHandler {
 		//Variable decleration
 		ItemStack item = new ItemStack(customItem.getSkin(), 1);
 		customItem.setItem(item);
-		FileConfiguration data = itemData.getDataFile(itemData.getFile(customItem.getDispName()));
 		FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(customItem.getDispName()));
 		List<CustomItem> list = ListHandler.getCustomItemTypeList(customItem.getDispName());
 		
@@ -97,37 +98,51 @@ public class CustomItemHandler {
 		item.setData(new MaterialData(customItem.getData()));
 		enchantHandler.addEnchantments(item, config);
 		
-		//setting up id specific durability
-		data.set(Integer.toString(customItem.getId())+".durability", config.getInt("durability"));
-		try 
-		{
-			data.save(itemData.getFile(customItem.getDispName()));
-		} catch (IOException e) {}
+        if(subplugin.getConfig().getBoolean("useIDs"))
+        {
+    		FileConfiguration data = itemData.getDataFile(itemData.getFile(customItem.getDispName()));
+        	//setting up id specific durability
+        	data.set(Integer.toString(customItem.getId())+".durability", config.getInt("durability"));
+        	try 
+        	{
+        		data.save(itemData.getFile(customItem.getDispName()));
+        	} catch (IOException e) {}
+        }
 		
         //adding item to list
         if(list == null)
         	lh.initializeList(customItem.getDispName());
-		ListHandler.addCustomItemToList(customItem, list);
+        if(subplugin.getConfig().getBoolean("useIDs"))
+        	ListHandler.addCustomItemToList(customItem, list);
+        else if(ListHandler.getCustomItemTypeList(customItem.getDispName()).isEmpty())
+        	ListHandler.addCustomItemToList(customItem, list);
 		
 		p.getInventory().addItem(item);
 	}
 	
-	public int getFreeId(String name) {
+	public int getFreeId(String name) 
+	{
 		int counter = 1;
 		String id = itemData.getDataFile(itemData.getFile(name)).getString(counter+".durability");
-		while(id != null) {
+		while(id != null) 
+		{
 			counter++;
 			id = itemData.getDataFile(itemData.getFile(name)).getString(counter+".durability");
 		}
 		return counter;
 	}
 
-	public void updateItem(ItemStack item, Player p, boolean full) {
-		int id = 0;
-		try {
-			id = Integer.valueOf((ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
-		}catch (NumberFormatException e) {}
-		if(id == 0) return;
+	public void updateItem(ItemStack item, Player p, boolean full) 
+	{
+		int id = 0;		
+		if(subplugin.getConfig().getBoolean("useIDs"))
+		{
+
+			try {
+				id = Integer.valueOf((ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
+			}catch (NumberFormatException e) {}
+			if(id == 0) return;
+		}
 		
 		CustomItem customItem = getCustomItem(ChatColor.stripColor(item.getItemMeta().getDisplayName()), id);
 		if(customItem == null) return;
@@ -139,7 +154,7 @@ public class CustomItemHandler {
 		customItem.setSkin(Material.valueOf(itemConfig.getConfig(config).getString("skin").toUpperCase()));
 		customItem.setDmgValue(itemConfig.getConfig(config).getInt("damage"));
 		customItem.setDmgValueMax(itemConfig.getConfig(config).getInt("damageMax"));
-		if(full)
+		if(full && subplugin.getConfig().getBoolean("useIDs"))
 			customItem.setDurability(itemData.getDataFile(data).getInt(customItem.getId()+".durability"));
 		customItem.setDesc(itemConfig.getConfig(config).getString("description"));
 		customItem.setPrice(itemConfig.getConfig(config).getInt("price"));
@@ -152,11 +167,14 @@ public class CustomItemHandler {
 		if(customItem.getMaxDurability() < 0)
 		{
 			customItem.setDurability(-1);
-			itemData.getDataFile(data).set(Integer.toString(customItem.getId())+".durability", -1);
-			try 
+			if(subplugin.getConfig().getBoolean("useIDs"))
 			{
-				itemData.getDataFile(data).save(data);
-			} catch (IOException e) {}
+				itemData.getDataFile(data).set(Integer.toString(customItem.getId())+".durability", -1);
+				try 
+				{
+					itemData.getDataFile(data).save(data);
+				} catch (IOException e) {}
+			}
 		}
 		
 		//set the meta information & get id specific values
@@ -205,7 +223,10 @@ public class CustomItemHandler {
         //adding item to list
         if(list == null)
         	lh.initializeList(customItem.getDispName());
-		ListHandler.addCustomItemToList(customItem, list);
+        if(subplugin.getConfig().getBoolean("useIDs"))
+        	ListHandler.addCustomItemToList(customItem, list);
+        else if(ListHandler.getCustomItemTypeList(customItem.getDispName()).isEmpty())
+        	ListHandler.addCustomItemToList(customItem, list);
 		
 		updateItem(item, null, true);
 	}
@@ -214,10 +235,17 @@ public class CustomItemHandler {
 	public CustomItem getCustomItem(String displayName, int specificItemId) 
 	{
 		if(ListHandler.getCustomItemTypeList(displayName) == null) return null;
-		for(CustomItem cItem : ListHandler.getCustomItemTypeList(displayName)) 
+		if(subplugin.getConfig().getBoolean("useIDs"))
 		{
-			if(cItem.getId() == specificItemId)
-				return cItem;
+			for(CustomItem cItem : ListHandler.getCustomItemTypeList(displayName)) 
+			{
+				if(cItem.getId() == specificItemId)
+					return cItem;
+			}
+		}
+		else
+		{
+			return ListHandler.getCustomItemTypeList(displayName).get(0);
 		}
 		return null;
 	}
@@ -228,17 +256,23 @@ public class CustomItemHandler {
 		int id = Integer.parseInt(ChatColor.stripColor(lore.get(lore.size()-1)));
 		if(ListHandler.getCustomItemTypeList(name) == null) return null;
 		
-		for(CustomItem cItem : ListHandler.getCustomItemTypeList(name)) 
+		if(subplugin.getConfig().getBoolean("useIDs"))
 		{
-			if(cItem.getId() == id)
-				return cItem;
+			for(CustomItem cItem : ListHandler.getCustomItemTypeList(name)) 
+			{
+				if(cItem.getId() == id)
+					return cItem;
+			}
+		}
+		else
+		{
+			return ListHandler.getCustomItemTypeList(name).get(0);
 		}
 		return null;
 	}
 	
 	public void itemUsed(ItemStack item) 
 	{
-
 		if(itemHandler.isCustomItem(item))
 		{
 			CustomItem cItem = getCustomItem(item);
@@ -257,8 +291,13 @@ public class CustomItemHandler {
 			{
 				if(!i.hasItemMeta()) continue;
 				if(itemHandler.isCustomItem(i))
+				{
+					if(i.getType() == Material.BOW && i.getType().getMaxDurability()-i.getDurability() < 2)
+						continue;
 					repairItem(i);
-			} else
+				}
+			} 
+			else
 				repairItem(i);
 		}
 		for(ItemStack i : p.getInventory().getArmorContents())
@@ -269,7 +308,8 @@ public class CustomItemHandler {
 				if(!i.hasItemMeta()) continue;
 				if(itemHandler.isCustomItem(i))
 					repairItem(i);
-			} else
+			} 
+			else
 				repairItem(i);
 		}
 	}

@@ -61,7 +61,6 @@ public class PListener implements Listener {
 			
 			if(item.getType() == Material.MUSHROOM_SOUP)
 				p.getInventory().addItem(new ItemStack(Material.BOWL, 1));
-			
 		}
 	}
 	
@@ -75,12 +74,13 @@ public class PListener implements Listener {
 		if(!(p.hasPermission("junkie.test") && p.getItemInHand().getType() == Material.GLASS_BOTTLE) || !e.isSneaking()) return;
 			
 		p.sendMessage("Ergebniss:");
-		for(String drug : dd.getConfig().getConfigurationSection(e.getName()).getKeys(false))
-		{
-			long diff = System.currentTimeMillis()-(dd.getConfig().getLong(e.getName()+"."+drug+".consum"));
-			if(diff < 1800000L)
-				p.sendMessage(drug+": Positiv seit "+diff/1000);
-		}
+		if(dd.getConfig().contains(e.getName()))
+			for(String drug : dd.getConfig().getConfigurationSection(e.getName()).getKeys(false))
+			{
+				long diff = System.currentTimeMillis()-(dd.getConfig().getLong(e.getName()+"."+drug+".consum"));
+				if(diff < 1800000L)
+					p.sendMessage(drug+": Positiv seit "+diff/1000/60);
+			}
 		p.sendMessage("Keine weiteren Drogen im Urin");
 	}
 }

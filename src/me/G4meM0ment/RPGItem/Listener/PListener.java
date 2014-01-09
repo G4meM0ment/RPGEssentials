@@ -19,6 +19,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -73,14 +74,14 @@ public class PListener implements Listener {
 	{
 		Player p = event.getPlayer();
 		if(!(event.getClickedBlock() instanceof Block)) return;
+		Block b = event.getClickedBlock();
+		if(b.getType() == Material.ANVIL && p.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
 		if(p == null || !itemHandler.isCustomItem(p.getItemInHand())) return;
 		
 		ItemMeta meta = p.getItemInHand().getItemMeta();
 		CustomItem cItem = customItemHandler.getCustomItem(ChatColor.stripColor(meta.getDisplayName()), Integer.parseInt(ChatColor.stripColor(meta.getLore().get(meta.getLore().size()-1))));
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
-				Block b = event.getClickedBlock();
-				if(b.getType() == Material.ANVIL && p.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
 				Material m = cItem.getRepairMaterial();
 				if(m != null)
 				{
@@ -97,6 +98,13 @@ public class PListener implements Listener {
 			if(cItem.getDurability() == 0)
 				event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onEntityShootBow(EntityShootBowEvent event) 
+	{
+		if(event.getEntity() instanceof Player)
+			customItemHandler.repairItem(event.getBow());
 	}
 	
 	public boolean hasItemInInv(Player p, Material m, int amount) 

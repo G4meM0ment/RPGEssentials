@@ -20,7 +20,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.getspout.spoutapi.SpoutManager;
 
 public class Orbia {
 	private RPGEssentials plugin;
@@ -46,7 +45,7 @@ public class Orbia {
 	{
 		this.plugin = plugin;
 		plistener = new PListener(plugin);
-		jl = new JobListener();
+		jl = new JobListener(plugin);
 		hl = new HeroesListener(plugin);
 		mal = new MAListener(plugin);
 		cl = new CraftListener();
@@ -81,9 +80,11 @@ public class Orbia {
 		tutData.reloadConfig();
 		tutData.saveConfig();
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
+		{
 			@Override
-			public void run() {
+			public void run() 
+			{
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "dmarker deleteset id:markers");
 			}
 		});

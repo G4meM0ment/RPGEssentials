@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
@@ -20,30 +21,38 @@ public class Converter {
 	
 	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
+	private RPGItem subplugin;
 	private ItemHandler itemHandler;
 	private CustomItemHandler customItemHandler;
 	private MetaHandler metaHandler;
 	
 	public Converter(RPGEssentials plugin) {
 		this.plugin = plugin;
+		subplugin = new RPGItem();
 		itemHandler = new ItemHandler();
 		customItemHandler = new CustomItemHandler();
 		metaHandler = new MetaHandler(plugin);
 	}
 	
-	public void convertCustomItems(String oldName, CustomItem cloned) {
-		for(World world : Bukkit.getServer().getWorlds()) {
+	public void convertCustomItems(String oldName, CustomItem cloned) 
+	{
+		for(World world : Bukkit.getServer().getWorlds()) 
+		{
 			List<Entity> list = world.getEntities();
 			Iterator<Entity> entities = list.iterator();
-			while(entities.hasNext()) {
+			while(entities.hasNext()) 
+			{
 				Entity entity = entities.next();
-				if(entity instanceof Item) {
+				if(entity instanceof Item) 
+				{
 					ItemStack item = (ItemStack) entity;
-					if(itemHandler.isCustomItem(item) && ChatColor.stripColor(item.getItemMeta().getDisplayName()).equals(oldName)) {
-						CustomItem cItem = customItemHandler.getCustomItem(oldName, Integer.valueOf(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
+					if(itemHandler.isCustomItem(item) && ChatColor.stripColor(item.getItemMeta().getDisplayName()).equals(oldName)) 
+					{
+						CustomItem cItem = customItemHandler.getCustomItem(item);
 						
 						cItem.setDispName(cloned.getDispName());
-						cItem.setId(customItemHandler.getFreeId(cloned.getDispName()));
+						if(subplugin.getConfig().getBoolean("useIDs"))
+							cItem.setId(customItemHandler.getFreeId(cloned.getDispName()));
 						
 						cItem.setData(cloned.getData());
 						cItem.setDmgValue(cloned.getDmgValue());

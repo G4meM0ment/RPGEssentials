@@ -77,8 +77,22 @@ public class CommandHandler {
 			}
 		}
 		
-		if(sender instanceof Player && command.getName().equalsIgnoreCase("c")) {
+		if(sender instanceof Player && command.getName().equalsIgnoreCase("c")) 
+		{
 			Player p = (Player) sender;
+			if(args.length > 0)
+				if(args[0].equalsIgnoreCase("?"))
+				{
+					if(plugin.getHeroes().getCharacterManager().getHero(p).isInCombat())
+						p.sendMessage(ChatColor.GRAY+"Du befindest dich im Kampf");
+					else
+						p.sendMessage(ChatColor.GRAY+"Du befindest dich NICHT im Kampf");
+					if(cmh.isInCombatMode(p))
+						p.sendMessage(ChatColor.GRAY+"Dein Kampfmodus ist eingeschalten");
+					else
+						p.sendMessage(ChatColor.GRAY+"Dein Kampfmodus ist ausgeschalten");
+					return true;
+				}
 			cmh.toggleCombatMode(p);
 			if(cmh.isInCombatMode(p))
 				p.sendMessage(ChatColor.GRAY+"Du bist jetzt im Kampfmodus!");
@@ -195,7 +209,7 @@ public class CommandHandler {
 			Player p = (Player) sender;
 			p.sendMessage(ChatColor.DARK_PURPLE+"oOo---------------| Hilfe |---------------oOo");
 			p.sendMessage(ChatColor.DARK_PURPLE+"Kommandos:");
-			p.sendMessage(ChatColor.DARK_PURPLE+"/g, /l, /p "+ChatColor.DARK_PURPLE+"Wechsel in den globalen, lokalen oder Gruppenchat");
+			p.sendMessage(ChatColor.GREEN+"/g, /l, /p "+ChatColor.DARK_PURPLE+"Wechsel in den globalen, lokalen oder Gruppenchat");
 			p.sendMessage(ChatColor.GREEN+"/c "+ChatColor.DARK_PURPLE+"Schalte den Kampfmodus ein/aus, du wirst nicht mehr ausversehen Gegenstände fallen lassen");
 			p.sendMessage(ChatColor.GREEN+"/hero help "+ChatColor.DARK_PURPLE+"Zeigt dir die Kommandos für deine Klasse & Gruppen");
 			p.sendMessage(ChatColor.GREEN+"/hero tools "+ChatColor.DARK_PURPLE+"Gegenstände die du verwenden kannst");
