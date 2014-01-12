@@ -18,14 +18,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 
 public class HeroesListener implements Listener{
 	
-	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private CustomItemHandler customItemHandler;
 	private ItemHandler itemHandler;
@@ -84,21 +81,24 @@ public class HeroesListener implements Listener{
 				event.setDamage(newDmg);
 			customItemHandler.repairItems(e);
 		}
-		try
-		{
-		if(ph.getPlayerPowers() == null) return;
+		
 		if(ph.hasPower(p, "poison"))
 		{
 			if(ph.getPlayersPowers(p).get("poison") == null) return;
-			if(!(e instanceof LivingEntity)) return;
-			EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(p, e, DamageCause.POISON, ph.getPlayersPowers(p).get("poison"));
+			if(e == null && !(event.getEntity() instanceof Monster))
+				return;
+			LivingEntity le = (LivingEntity) event.getEntity();
+			final Double dmg = ph.getPlayersPowers(p).get("poison");	
+			
+			EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(p, le, DamageCause.POISON, ph.getPlayersPowers(p).get("poison"));
 			Bukkit.getPluginManager().callEvent(damageEvent);
-			final Double dmg = ph.getPlayersPowers(p).get("poison");			
+			System.out.println("Debug: has poison "+p);
 			
 			if(!event.isCancelled())
 			{
+				System.out.println("Debug: Is not cancelled "+p);
 				final Player fP = p;
-				final LivingEntity fE = e;
+				final LivingEntity fE = le;
 				final int taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
 				{
 					@Override
@@ -116,11 +116,6 @@ public class HeroesListener implements Listener{
 					}
 				}, (long) (ph.getPlayerPowers().get(fP).get("poison")*4*20));					
 			}
-			e.addPotionEffect(new PotionEffect(PotionEffectType.POISON, (int) (40*ph.getPlayerPowers().get(p).get("poison")), (ph.getPlayersPowers(p).get("poison").intValue())));
-		}
-		}catch(NullPointerException exception)
-		{
-			System.out.println("Debug: Exception NPE: IN HeroesListener geschi mit dem Poison, you know?");
 		}
 	}
 }

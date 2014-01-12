@@ -82,8 +82,7 @@ public class SkillGroundpound extends ActiveSkill {
 	    			continue;
 	    		
 	    		le.damage(event.getDamage());
-	    		//le.getVelocity().setY(SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false));
-	    		le.setVelocity(le.getVelocity().setY(1/*SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false)*/));
+	    		le.setVelocity(le.getVelocity().setY(0.5/*SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false)*/));
 	            counter--;
 	        }	    	
         return SkillResult.NORMAL;
