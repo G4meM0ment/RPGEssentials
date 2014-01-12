@@ -26,8 +26,7 @@ public class DamageHandler {
 		if(p.getItemInHand() == null) return -1;
 		if(!itemHandler.isCustomItem(p.getItemInHand())) return -1; 
 		ItemStack item = p.getItemInHand();
-		ItemMeta meta = item.getItemMeta();
-		CustomItem cItem = customItemHandler.getCustomItem(ChatColor.stripColor(meta.getDisplayName()), Integer.parseInt(ChatColor.stripColor(meta.getLore().get(meta.getLore().size()-1))));
+		CustomItem cItem = customItemHandler.getCustomItem(item);
 
 		if(cItem != null) {
 			int dmg = cItem.getDmgValue();
@@ -49,8 +48,7 @@ public class DamageHandler {
 			if(event != null)
 				dmgMod -= processArmor(event);
 			else {
-				CustomItem cItem = customItemHandler.getCustomItem(ChatColor.stripColor(item.getItemMeta().getDisplayName()),
-						Integer.parseInt(ChatColor.stripColor(item.getItemMeta().getLore().get(item.getItemMeta().getLore().size()-1))));
+				CustomItem cItem = customItemHandler.getCustomItem(item);
 				if(cItem != null) {
 					double protect = cItem.getDmgValue();
 					double maxProtect = cItem.getDmgValueMax();

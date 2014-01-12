@@ -190,7 +190,8 @@ public class CustomItemHandler {
 		enchantHandler.addEnchantments(item, itemConfig.getConfig(config));
 	}
 	
-	public void registerItem(ItemStack item, int id) {
+	public void registerItem(ItemStack item, int id) 
+	{
 		if(item == null) return;
 		if(itemConfig.getFile(ChatColor.stripColor(item.getItemMeta().getDisplayName())) == null) return;
 		if(id <= 0) id = getFreeId(ChatColor.stripColor(item.getItemMeta().getDisplayName()));
@@ -208,16 +209,20 @@ public class CustomItemHandler {
 		else
 			item.setItemMeta(metaHandler.getItemMeta(customItem, null));
 		enchantHandler.addEnchantments(item, config);
-		item.getItemMeta().getLore().add(ChatColor.BLACK+Integer.toString(id));
 		
-		//setting up id specific durability
-		data.set(Integer.toString(customItem.getId())+".durability", config.getInt("durability"));
-        try 
-        {
-        	data.save(itemData.getFile(customItem.getDispName()));
-		} catch (IOException e) 
+		if(subplugin.getConfig().getBoolean("useIDs"))
 		{
-			e.printStackTrace();
+			item.getItemMeta().getLore().add(ChatColor.BLACK+Integer.toString(id));
+		
+			//setting up id specific durability
+			data.set(Integer.toString(customItem.getId())+".durability", config.getInt("durability"));
+			try 
+			{
+				data.save(itemData.getFile(customItem.getDispName()));
+			} catch (IOException e) 
+			{
+				subplugin.getLogger().warning(subplugin.getLogTit()+"Could not save data file from "+customItem.getDispName());
+			}
 		}
 
         //adding item to list
@@ -253,11 +258,12 @@ public class CustomItemHandler {
 	{
 		List<String> lore = i.getItemMeta().getLore();
 		String name = ChatColor.stripColor(i.getItemMeta().getDisplayName());
-		int id = Integer.parseInt(ChatColor.stripColor(lore.get(lore.size()-1)));
+		
 		if(ListHandler.getCustomItemTypeList(name) == null) return null;
 		
 		if(subplugin.getConfig().getBoolean("useIDs"))
 		{
+			int id = Integer.parseInt(ChatColor.stripColor(lore.get(lore.size()-1)));
 			for(CustomItem cItem : ListHandler.getCustomItemTypeList(name)) 
 			{
 				if(cItem.getId() == id)
@@ -266,6 +272,8 @@ public class CustomItemHandler {
 		}
 		else
 		{
+			if(ListHandler.getCustomItemTypeList(name).isEmpty())
+				registerItem(i, 0);
 			return ListHandler.getCustomItemTypeList(name).get(0);
 		}
 		return null;
@@ -292,13 +300,17 @@ public class CustomItemHandler {
 				if(!i.hasItemMeta()) continue;
 				if(itemHandler.isCustomItem(i))
 				{
-					if(i.getType() == Material.BOW && i.getType().getMaxDurability()-i.getDurability() < 2)
+					if(i.getType() == Material.BOW && i.getType().getMaxDurability()-i.getDurability() > 2)
 						continue;
 					repairItem(i);
 				}
 			} 
 			else
+			{
+				if(i.getType() == Material.BOW && i.getType().getMaxDurability()-i.getDurability() > 2)
+					continue;
 				repairItem(i);
+			}
 		}
 		for(ItemStack i : p.getInventory().getArmorContents())
 		{
@@ -340,7 +352,8 @@ public class CustomItemHandler {
 			cItem.setDurability(cItem.getDurability()+amount);
 	}
 	
-	public boolean isColorable(ItemStack item) {
+	public boolean isColorable(ItemStack item) 
+	{
 		if(item.getType() == Material.LEATHER_HELMET || item.getType() == Material.LEATHER_CHESTPLATE || item.getType() == Material.LEATHER_LEGGINGS || item.getType() == Material.LEATHER_BOOTS)
 			return true;
 		else

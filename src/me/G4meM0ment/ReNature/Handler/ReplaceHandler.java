@@ -20,32 +20,39 @@ public class ReplaceHandler {
 	private int millis = 50000;
 	private int recoverMillis = 250000;
 	
-	public ReplaceHandler(RPGEssentials plugin) {
+	public ReplaceHandler(RPGEssentials plugin)
+	{
 		this.plugin = plugin;
 		subplugin = new ReNature();
 	}
-	public ReplaceHandler() {
+	public ReplaceHandler() 
+	{
 	}
 	
 	public void addBlock(NBlock b) {
 		blocks.add(b);
 	}
-	public void removeBlock(NBlock b) {
+	public void removeBlock(NBlock b)
+	{
 		blocks.remove(b);
 	}
-	public void removeAll() {
+	public void removeAll() 
+	{
 		blocks.removeAll(blocks);
 	}
-	public List<NBlock> getBlockList() {
+	public List<NBlock> getBlockList() 
+	{
 		return blocks;
 	}
 	
-	public void start() {
+	public void start()
+	{
 		/*recoverMillis = reNature.getConfig().getInt("recoverTime");
 		millis = (recoverMillis*20)/100; */
 		millis = 50000;
 		
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() 
+		{
 				public void run() {
 					if(blocks.size() > 0)
 						check(0);
@@ -53,24 +60,29 @@ public class ReplaceHandler {
 			}, 0, millis/5);
 	}
 	
-	private void check(int pos) {
+	private void check(int pos) 
+	{
 		NBlock block = blocks.get(pos);
-		if((System.currentTimeMillis() - block.getMillis()) > recoverMillis) {
+		if((System.currentTimeMillis() - block.getMillis()) > recoverMillis) 
+		{
 			renew(block);
 			if(blocks.size()-1 >= pos+1)
 				check(pos+1);
 		}
 	}
 	
-	private void renew(NBlock b) {
+	private void renew(NBlock b)
+	{
 		if(b == null) return;
-		if(!checkPlayers(b.getBlock().getWorld().getPlayers(), b.getBlock())) {
+		if(!checkPlayers(b.getBlock().getWorld().getPlayers(), b.getBlock()))
+		{
 
 			Block block = b.getBlock();
 			Block griefed;
 			try {
 			griefed = block.getLocation().getBlock();
-			} catch(IllegalStateException e) {
+			} catch(IllegalStateException e) 
+			{
 				e.printStackTrace();
 				griefed = block;
 				
@@ -82,12 +94,12 @@ public class ReplaceHandler {
 			if(griefed.getType() != b.getMaterial() ||griefed.getData() != b.getData())
 				addBlock(b);
 			removeBlock(b);
-		} else {
+		} else
 			return;
-		}
 	}
 	
-	private void forceRenew(NBlock b) {
+	private void forceRenew(NBlock b) 
+	{
 		if(b == null) return;
 		
 		Block block = b.getBlock();			
@@ -97,34 +109,36 @@ public class ReplaceHandler {
 		griefed.setData(b.getData(), false);
 			
 		removeBlock(b);
-		if(!griefed.getType().equals(b.getMaterial()) || griefed.getData() != b.getData()) {
+		if(!griefed.getType().equals(b.getMaterial()) || griefed.getData() != b.getData())
 			addBlock(b);
-		}
 	}
 	
-	public void workList() {
-		for(NBlock b : new ArrayList<NBlock>(getBlockList())) {
+	public void workList() 
+	{
+		for(NBlock b : new ArrayList<NBlock>(getBlockList())) 
+		{
 			forceRenew(b);
 		}
 		plugin.getLogger().info(subplugin.getLogTit()+"Nature recovered completely");
 	}
 	
-	private boolean checkPlayers(List<Player> players, Block b) {
+	private boolean checkPlayers(List<Player> players, Block b) 
+	{
 		if(subplugin.isDisabling())
 			return false;
 		//TODO check if online players listed...
 		int dist = subplugin.getConfig().getInt("playerRespawnDistance");
 		for(Player p : players) {
-			if(p.getLocation().distance(b.getLocation()) > dist) {
+			if(p.getLocation().distance(b.getLocation()) > dist) 
 				continue;
-			}
 			else
 				return true;
 		}
 		return false;
 	}
 	
-	public boolean contains(Location l) {
+	public boolean contains(Location l) 
+	{
 		List<NBlock> blocks = getBlockList();
 		for(NBlock b : blocks) {
 			if(b.getBlock().getLocation().distance(l) == 0)

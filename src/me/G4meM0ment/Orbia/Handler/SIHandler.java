@@ -31,11 +31,11 @@ public class SIHandler {
 	{
 		items = subplugin.getConfig().getIntegerList("ChangeableSubId");
 	}
-	public void changeSubId(Block b, boolean force)
+	public void changeSubId(Block b, int range, boolean force)
 	{
 		if(items.contains(b.getType().getId()) || force)
 		{
-			b.setData((byte) (b.getData()+1));
+			b.setData((byte) (b.getData()+range));
 		}
 	}
 }

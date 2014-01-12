@@ -69,6 +69,7 @@ public class CraftListener implements Listener {
 		nonCraftables.add(Material.BOW);
 		nonCraftables.add(Material.FISHING_ROD);
 		nonCraftables.add(Material.SHEARS);
+		nonCraftables.add(Material.FLINT_AND_STEEL);
 		
 		nonCraftables.add(Material.GOLD_NUGGET);
 		nonCraftables.add(Material.INK_SACK);

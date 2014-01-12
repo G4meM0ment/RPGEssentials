@@ -77,7 +77,7 @@ public class JobListener implements Listener {
 				p.sendMessage(ChatColor.GRAY+"Du bist nicht trainiert eine "+ChatColor.WHITE+p.getItemInHand().getType().toString().replace("_", " ").toLowerCase()+ChatColor.GRAY+" zu verwenden!");
 			}
 		}
-		if(isFarmerTool(p.getItemInHand()) && !plugin.getHeroes().getCharacterManager().getHero(p).getHeroClass().toString().equalsIgnoreCase("kundschafter"))
+		if(isFarmerTool(p.getItemInHand()) && (!plugin.getHeroes().getCharacterManager().getHero(p).getHeroClass().toString().equalsIgnoreCase("kundschafter") && p.getItemInHand().getType() == Material.SHEARS))
 		{
 			if(p.hasPermission("orbia.job.farmer"))
 				return;

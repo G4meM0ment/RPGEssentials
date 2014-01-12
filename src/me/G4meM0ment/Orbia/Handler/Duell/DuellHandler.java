@@ -16,7 +16,7 @@ public class DuellHandler {
 
 	private static RPGEssentials plugin;
 	private static HashMap<String, HashMap<String, DuellState>> duells = new HashMap<String, HashMap<String, DuellState>>();
-	private static HashMap<String, List<String>> parties = new HashMap<String, List<String>>();
+//	private static HashMap<String, List<String>> parties = new HashMap<String, List<String>>();
 	private static List<Player> gracers = new ArrayList<Player>();
 	
 	public DuellHandler(RPGEssentials plugin) 
@@ -42,7 +42,7 @@ public class DuellHandler {
    		if(request)
    			initDuellRequest(r, p, false);
 	}
-	public void initPartyDuellRequest(Player p, Player r, boolean request)
+/*	public void initPartyDuellRequest(Player p, Player r, boolean request)
 	{
 		if(p == null || r == null) return;
 		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
@@ -60,7 +60,7 @@ public class DuellHandler {
 	
    		if(request)
    			initPartyDuellRequest(r, p, false);
-	}
+	} */
 
 
 	public void initDuell(String p, boolean first)
@@ -80,7 +80,7 @@ public class DuellHandler {
 		if(first)
 			initDuell(key, false);
    	}
-	public void initPartyDuell(String p, boolean first)
+/*	public void initPartyDuell(String p, boolean first)
 	{
 		if(p == null) return;
 		if(!duells.containsKey(p)) return;
@@ -96,7 +96,7 @@ public class DuellHandler {
 		
 		if(first)
 			initPartyDuell(key, false);
-	}
+	} */
 	
 	public void removeDuell(String p)
 	{
@@ -112,10 +112,10 @@ public class DuellHandler {
 		if(player2 != null)
 			player.setCustomName(key);
 		
-		if(parties.containsKey(p))
+	/*	if(parties.containsKey(p))
 			parties.remove(p);
 		if(parties.containsKey(key))
-			parties.remove(key);
+			parties.remove(key); */
 		duells.remove(p);
 		duells.remove(key);
 	}
@@ -179,8 +179,8 @@ public class DuellHandler {
 		return gracers;
 	}
 	
-	public HashMap<String, List<String>> getParties()
+	/*public HashMap<String, List<String>> getParties()
 	{
 		return parties;
-	}
+	}*/
 }

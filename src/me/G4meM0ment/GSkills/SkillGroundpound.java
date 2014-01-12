@@ -7,11 +7,9 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.util.Vector;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
@@ -84,7 +82,8 @@ public class SkillGroundpound extends ActiveSkill {
 	    			continue;
 	    		
 	    		le.damage(event.getDamage());
-	    		le.setVelocity(le.getVelocity().setY(SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false)));
+	    		//le.getVelocity().setY(SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false));
+	    		le.setVelocity(le.getVelocity().setY(1/*SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false)*/));
 	            counter--;
 	        }	    	
         return SkillResult.NORMAL;

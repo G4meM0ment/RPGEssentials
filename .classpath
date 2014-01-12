@@ -16,5 +16,6 @@
 	<classpathentry kind="lib" path="../APIs/spoutcraftplugin.jar"/>
 	<classpathentry kind="lib" path="../APIs/MobArena.jar"/>
 	<classpathentry kind="lib" path="../APIs/backpack-b148.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Julians/Desktop/java/eclipse/APIs/citizens.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

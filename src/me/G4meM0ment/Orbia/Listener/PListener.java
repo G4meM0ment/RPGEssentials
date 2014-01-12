@@ -11,6 +11,8 @@ import me.G4meM0ment.Orbia.Tutorial.TutorialHandler;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGEssentials.Utils.InvisibilityHandler;
 import me.G4meM0ment.ReNature.OtherPlugins.ReTowny;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
+import net.dandielo.citizens.traders_v3.traits.TraderTrait;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,7 +45,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.input.KeyPressedEvent;
-import org.getspout.spoutapi.keyboard.Keyboard;
 
 import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
@@ -64,7 +65,6 @@ public class PListener implements Listener{
 	private InvisibilityHandler iH;
 	
 	private static List<Player> dropping = new ArrayList<Player>();
-	private static List<Player> backpack = new ArrayList<Player>();
 		
 	public PListener(RPGEssentials plugin){
 		this.plugin = plugin;
@@ -139,7 +139,7 @@ public class PListener implements Listener{
 		if(h.isInCombat())
 			p.damage(1000.0);
 		
-		if(h.getParty() != null)
+		/*if(h.getParty() != null)
 		{
 			Player l = h.getParty().getLeader().getPlayer();
 			if(!dh.isInDuell(l, true, false)) return;	
@@ -154,7 +154,7 @@ public class PListener implements Listener{
 					i.getPlayer().sendMessage(ChatColor.DARK_RED+"Deine Gruppe hat das Duell gewonnen!");
 				dh.removeDuell(dh.getRegisteredPartyMember(p).getName());
 			}
-		}
+		} */
 
 		if(!dh.isInDuell(p, true, false)) return;
 		Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
@@ -181,17 +181,21 @@ public class PListener implements Listener{
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		if(event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+		if(event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
 		if(event.getClickedBlock().getType() == Material.BEACON || event.getClickedBlock().getType() == Material.ENCHANTMENT_TABLE)
 		{
 			event.setCancelled(true);
 			return;
 		}
+		int range = 1;
+		if(event.getAction() == Action.LEFT_CLICK_BLOCK)
+			range = -1;
 		if(!event.getPlayer().getItemInHand().hasItemMeta()) return; 
 		ReTowny reTowny = new ReTowny(plugin);
-		try {
-		if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Bauhammer") && (reTowny.isTown(event.getClickedBlock().getLocation()) || event.getPlayer().getGameMode() == GameMode.CREATIVE))
-			sih.changeSubId(event.getClickedBlock(), event.getPlayer().getGameMode().equals(GameMode.CREATIVE));
+		try 
+		{
+			if(event.getPlayer().getItemInHand().getItemMeta().getDisplayName().equals("Bauhammer") && (reTowny.isTown(event.getClickedBlock().getLocation()) || event.getPlayer().getGameMode() == GameMode.CREATIVE))
+				sih.changeSubId(event.getClickedBlock(), range, event.getPlayer().getGameMode().equals(GameMode.CREATIVE));
 		} catch(NullPointerException e)
 		{
 			System.out.println("Debug: "+reTowny+event.getClickedBlock());
@@ -227,8 +231,8 @@ public class PListener implements Listener{
 		
 		if(h.getParty() != null)
 		{
-			Player l = h.getParty().getLeader().getPlayer();
-			if(!dh.isInDuell(l, true, false)) return;	
+			/*Player l = h.getParty().getLeader().getPlayer();
+			if(!dh.isInDuell(l, true, false)) return;	*/
 			
 			if(d.getHealth() - event.getDamage() <= 0)
 			{
@@ -237,7 +241,7 @@ public class PListener implements Listener{
 				p.setHealth(6.0);
 				
 				p.sendMessage(ChatColor.DARK_RED+"Du bist gestorben und wurdest aus der Duellgruppe entfernt!");
-				List<String> party = dh.getParties().get(dh.getRegisteredPartyMember(p).getName());
+				/*List<String> party = dh.getParties().get(dh.getRegisteredPartyMember(p).getName());
 				party.remove(p);
 				if(party.isEmpty())
 				{
@@ -246,7 +250,7 @@ public class PListener implements Listener{
 					for(Hero i : plugin.getHeroes().getCharacterManager().getHero(Bukkit.getPlayer(dh.getDuellPartner(dh.getRegisteredPartyMember(p).getName()))).getParty().getMembers())
 						i.getPlayer().sendMessage(ChatColor.DARK_RED+"Deine Gruppe hat das Duell gewonnen!");
 					dh.removeDuell(dh.getRegisteredPartyMember(p).getName());
-				}
+				} */
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
 				{
 					@Override
@@ -367,6 +371,15 @@ public class PListener implements Listener{
 		
 	}
 	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+	public void onNPCRightClick(NPCRightClickEvent event)
+	{
+		if(event.getNPC().hasTrait(TraderTrait.class) && plugin.getHeroes().getCharacterManager().getHero(event.getClicker()).getBind(event.getClicker().getItemInHand().getType()) != null)
+		{
+			event.getClicker().sendMessage(ChatColor.GRAY+"Nutze einen anderen Gegenstand um das Händlerinventar zu öffnen!");
+			event.setCancelled(true);
+		}
+	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onKeyPressed(KeyPressedEvent event)
@@ -384,19 +397,6 @@ public class PListener implements Listener{
 				}
 			}, 60);
 		}
-		/*MobArenaHandler mah = new MobArenaHandler();
-		if(event.getKey() == Keyboard.KEY_B && mah.inRegion(event.getPlayer().getPlayer().getLocation()))
-		{
-			backpack.add(p);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
-			{
-				@Override
-				public void run()
-				{
-					backpack.remove(p);
-				}
-			}, 60);
-		} */
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)

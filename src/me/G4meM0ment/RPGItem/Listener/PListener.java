@@ -9,7 +9,6 @@ import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.PermHandler;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.InventoryHandler;
 
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -23,9 +22,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.PlayerInventory;
 
 public class PListener implements Listener {
 	
@@ -53,7 +51,7 @@ public class PListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player p = event.getPlayer();
-		Inventory i = p.getInventory();
+		PlayerInventory i = p.getInventory();
 		if(p == null || i == null) return;
 		
 		invHandler.processInventory(i, p);
@@ -63,7 +61,7 @@ public class PListener implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent event) 
 	{
 		Player p = event.getPlayer();
-		Inventory i = p.getInventory();
+		PlayerInventory i = p.getInventory();
 		if(p == null || i == null) return;
 		
 		itemData.saveDataToFiles();
@@ -76,10 +74,9 @@ public class PListener implements Listener {
 		if(!(event.getClickedBlock() instanceof Block)) return;
 		Block b = event.getClickedBlock();
 		if(b.getType() == Material.ANVIL && p.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
-		if(p == null || !itemHandler.isCustomItem(p.getItemInHand())) return;
+		if(p == null || !itemHandler.isCustomItem(p.getItemInHand()) || !subplugin.getConfig().getBoolean("useIDs")) return;
 		
-		ItemMeta meta = p.getItemInHand().getItemMeta();
-		CustomItem cItem = customItemHandler.getCustomItem(ChatColor.stripColor(meta.getDisplayName()), Integer.parseInt(ChatColor.stripColor(meta.getLore().get(meta.getLore().size()-1))));
+		CustomItem cItem = customItemHandler.getCustomItem(p.getItemInHand());
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
 		{
 				Material m = cItem.getRepairMaterial();

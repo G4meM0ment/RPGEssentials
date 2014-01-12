@@ -7,6 +7,7 @@ import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.DamageHandler;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -14,6 +15,8 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -88,6 +91,31 @@ public class HeroesListener implements Listener{
 		{
 			if(ph.getPlayersPowers(p).get("poison") == null) return;
 			if(!(e instanceof LivingEntity)) return;
+			EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(p, e, DamageCause.POISON, ph.getPlayersPowers(p).get("poison"));
+			Bukkit.getPluginManager().callEvent(damageEvent);
+			final Double dmg = ph.getPlayersPowers(p).get("poison");			
+			
+			if(!event.isCancelled())
+			{
+				final Player fP = p;
+				final LivingEntity fE = e;
+				final int taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
+				{
+					@Override
+					public void run() 
+					{
+						fE.damage(dmg);
+					}
+				}, 0, 20);
+				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+				{
+					@Override
+					public void run() 
+					{
+						Bukkit.getScheduler().cancelTask(taskID);
+					}
+				}, (long) (ph.getPlayerPowers().get(fP).get("poison")*4*20));					
+			}
 			e.addPotionEffect(new PotionEffect(PotionEffectType.POISON, (int) (40*ph.getPlayerPowers().get(p).get("poison")), (ph.getPlayersPowers(p).get("poison").intValue())));
 		}
 		}catch(NullPointerException exception)

@@ -3,12 +3,10 @@ package me.G4meM0ment.RPGItem.OtherPlugins;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import net.dandielo.citizens.traders_v3.tNpcStatus;
@@ -48,7 +46,7 @@ public class RPGItem extends ItemFlag{
 	@Override
 	public void onAssign(ItemStack item, boolean endItem) throws InvalidItemException 
 	{
-		if(!subplugin.getConfig().getBoolean("useIDs")) return;
+		
 		
 		//get the existing lore
 		ItemMeta meta = item.getItemMeta();
@@ -56,6 +54,7 @@ public class RPGItem extends ItemFlag{
 		if ( itemLore == null ) //If no lore exists create a new list for it
 			itemLore = new ArrayList<String>();
 		
+		if(!subplugin.getConfig().getBoolean("useIDs")) return;
 		//Check if the item is Abstract = In traders stock or used for copmaring when selling that item
 	        if ( this.item.hasFlag(Abstract.class) )
 	        {
@@ -72,7 +71,7 @@ public class RPGItem extends ItemFlag{
 	
 	public void onFactorize(ItemStack item) throws AttributeValueNotFoundException
 	{
-		if(!subplugin.getConfig().getBoolean("useIDs")) return;
+
 		
 		//n lore = no RPG item
 		if ( !item.getItemMeta().hasLore() )
@@ -92,17 +91,18 @@ public class RPGItem extends ItemFlag{
 		//Is this a custom RPG item?
 		if(!itemHandler.isCustomItem(itemClone)) 
 			throw new AttributeValueNotFoundException();
-			
+		
+		if(!subplugin.getConfig().getBoolean("useIDs")) return;	
 		//Do we need to save the ID
 		if(this.item.hasFlag(Abstract.class))
 			this.rpgID = -1;
 		else
 		//get the last lore lone from the cleaned lore
 			this.rpgID = Integer.parseInt(ChatColor.stripColor(cleanedLore.get(cleanedLore.size()-1)));
-		
+
 		//remove the last line from the lore
 		cleanedLore.remove(cleanedLore.size()-1);
-		
+				
 		//set back the lore
 		ItemMeta meta = item.getItemMeta();
 		meta.setLore(cleanedLore); //dunno if this might make some problems later, for now its ok :) 
