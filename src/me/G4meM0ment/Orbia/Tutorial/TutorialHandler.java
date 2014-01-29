@@ -15,9 +15,18 @@ public class TutorialHandler {
 	
 	public boolean finishedTutorial(Player p) 
 	{
-		if(p.hasPermission("orbia.tutorial.finished")) return true;
+		if(p.hasPermission("orbia.tutorial.finished"))
+		{
+			if(!hasStage(p))
+				setStage(p, Stage.FIRST);
+			return true;
+		}
 		if(!hasStage(p))
+		{
+			System.out.println("Debug: Player has no stage");
 			setStage(p, Stage.FIRST);
+			return false;
+		}
 		return getStage(p) == Stage.FINISHED;
 	}
 	

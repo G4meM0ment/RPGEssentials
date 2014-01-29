@@ -22,7 +22,8 @@ public class HeroesListener implements Listener{
 	
 	private static HashMap<Projectile, Double> arrowVel = new HashMap<Projectile, Double>();
 	
-	public HeroesListener(RPGEssentials plugin) {
+	public HeroesListener(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
 	}
 	
@@ -65,6 +66,12 @@ public class HeroesListener implements Listener{
 						event.setDamage(.0);
 				}
 	}
+	
+	/*@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+	public void onManaChange(ManaChangeEvent event) 
+	{
+		manaHandler.updateManaBar(event.getHero().getPlayer(), event.getHero());
+	}*/
 	
 	private double calculateVelDmg(double vel, double basedmg, double leveldmg)
 	{

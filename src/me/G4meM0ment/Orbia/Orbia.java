@@ -7,9 +7,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.G4meM0ment.Orbia.Handler.GolemHandler;
+import me.G4meM0ment.Orbia.Handler.ManaHandler;
 import me.G4meM0ment.Orbia.Handler.SIHandler;
 import me.G4meM0ment.Orbia.Handler.Job.JobListener;
 import me.G4meM0ment.Orbia.Listener.CraftListener;
+import me.G4meM0ment.Orbia.Listener.DuellListener;
 import me.G4meM0ment.Orbia.Listener.HeroesListener;
 import me.G4meM0ment.Orbia.Listener.MAListener;
 import me.G4meM0ment.Orbia.Listener.PListener;
@@ -27,11 +29,13 @@ public class Orbia {
 	private TutorialData tutData;
 	@SuppressWarnings("unused")
 	private GolemHandler golemHandler;
+	private ManaHandler manaHandler;
 	private SIHandler sih;
 	private JobListener jl;
 	private HeroesListener hl;
 	private MAListener mal;
 	private CraftListener cl;
+	private DuellListener dl;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -49,12 +53,14 @@ public class Orbia {
 		hl = new HeroesListener(plugin);
 		mal = new MAListener(plugin);
 		cl = new CraftListener();
+		dl = new DuellListener(plugin);
 		
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(jl, plugin);
 		plugin.getServer().getPluginManager().registerEvents(hl, plugin);
 		plugin.getServer().getPluginManager().registerEvents(mal, plugin);
 		plugin.getServer().getPluginManager().registerEvents(cl, plugin);
+		plugin.getServer().getPluginManager().registerEvents(dl, plugin);
 		
 		dir = plugin.getDir()+"/Orbia";
 		logger = plugin.getLogger();
@@ -63,6 +69,7 @@ public class Orbia {
 		tutData = new TutorialData(this);
 		golemHandler = new GolemHandler(plugin);
 		sih = new SIHandler(this);
+		manaHandler = new ManaHandler(plugin);
 	}
 	public Orbia()
 	{
@@ -88,6 +95,8 @@ public class Orbia {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "dmarker deleteset id:markers");
 			}
 		});
+		
+		manaHandler.startUpdater();
 		
 		isEnabled = true;
 		return true;

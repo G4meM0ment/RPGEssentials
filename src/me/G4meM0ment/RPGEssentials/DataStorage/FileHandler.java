@@ -11,18 +11,20 @@ public class FileHandler {
 	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	
-	public FileHandler(RPGEssentials plugin) {
+	public FileHandler(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
 	}
-	public FileHandler() {
+	public FileHandler() 
+	{
 		
 	}
 	
-	public List<File> getFiles(File directory) {
+	public List<File> getFiles(File directory) 
+	{
 	    List<File> files = new ArrayList<File>();
-		for (final File fileEntry : directory.listFiles()) {
+		for (final File fileEntry : directory.listFiles()) 
 	            files.add(fileEntry);
-	    }
 		return files;
 	}
 

@@ -194,7 +194,8 @@ public class CustomItemHandler {
 	{
 		if(item == null) return;
 		if(itemConfig.getFile(ChatColor.stripColor(item.getItemMeta().getDisplayName())) == null) return;
-		if(id <= 0) id = getFreeId(ChatColor.stripColor(item.getItemMeta().getDisplayName()));
+		if(id <= 0 && subplugin.getConfig().getBoolean("useIDs")) 
+			id = getFreeId(ChatColor.stripColor(item.getItemMeta().getDisplayName()));
 		ItemMeta meta = item.getItemMeta();
 		CustomItem customItem = new CustomItem(item, ChatColor.stripColor(meta.getDisplayName()), id, 0, item.getType(),
 				0 , 0, 0, "", 0, "", Quality.TRASH, "", "", Material.AIR, 0);
@@ -273,8 +274,12 @@ public class CustomItemHandler {
 		else
 		{
 			if(ListHandler.getCustomItemTypeList(name).isEmpty())
+			{
 				registerItem(i, 0);
-			return ListHandler.getCustomItemTypeList(name).get(0);
+				System.out.println("Debug: registered "+name+" "+ListHandler.getCustomItemTypeList(name).toString());
+			}
+			if(!ListHandler.getCustomItemTypeList(name).isEmpty())
+				return ListHandler.getCustomItemTypeList(name).get(0);
 		}
 		return null;
 	}

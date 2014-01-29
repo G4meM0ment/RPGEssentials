@@ -4,4 +4,5 @@ RPGItemEnabled: false
 UnnamedPortalPluginEnabled: false
 RentablesEnabled: false
 AmbienceEnabled: false
+InventoryBackupEnabled: false
 UsePermissions: true

@@ -32,7 +32,7 @@ public class GolemHandler {
 						{
 							if(p.getGameMode() == GameMode.CREATIVE)
 								continue;
-							for(Entity e : p.getNearbyEntities(30, 30, 30))
+							for(Entity e : p.getNearbyEntities(40, 40, 40))
 							{
 								if(e instanceof IronGolem)
 								{

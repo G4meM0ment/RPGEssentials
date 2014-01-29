@@ -67,7 +67,11 @@ public class InventoryHandler {
 				ItemMeta meta = item.getItemMeta();
 				String name = ChatColor.stripColor(meta.getDisplayName());
 				List<String> lore = meta.getLore();
-				int size = lore.size();
+				int size = 0;
+				if(lore == null && subplugin.getConfig().getBoolean("useIDs"))
+					return;
+				else if(lore != null)
+					size = lore.size();
 				List<CustomItem> list;
 				
 				if(ListHandler.getCustomItemTypeList(name) == null) 
@@ -83,7 +87,7 @@ public class InventoryHandler {
 				FileConfiguration data = itemData.getDataFile(itemData.getFile(name));
 				int id = 0;
 				if(subplugin.getConfig().getBoolean("useIDs"))
-					Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
+					id = Integer.valueOf(ChatColor.stripColor(lore.get(size-1)));
 				
 				if(config == null) return;
 				

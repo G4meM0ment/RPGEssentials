@@ -32,7 +32,8 @@ public class CommandHandler {
 	
 	public boolean exec(CommandSender sender, Command command, String label, String[] args) 
 	{
-		if(sender instanceof Player && command.getName().equalsIgnoreCase("l")) {
+		if(sender instanceof Player && command.getName().equalsIgnoreCase("l")) 
+		{
 			plugin.getHerochat();
 			if(plugin.getHerochat() == null) return false;
 			Player p = (Player) sender;
@@ -55,7 +56,8 @@ public class CommandHandler {
 			
 		}
 		
-		if(sender instanceof Player && command.getName().equalsIgnoreCase("g")) {
+		if(sender instanceof Player && command.getName().equalsIgnoreCase("g")) 
+		{
 			plugin.getHerochat();
 			if(plugin.getHerochat() == null) return false;
 			Player p = (Player) sender;
@@ -102,7 +104,33 @@ public class CommandHandler {
 			return true;
 		}
 		
-		if(sender instanceof Player && command.getName().equalsIgnoreCase("duell") && args.length > 0) {
+		if(sender instanceof Player && command.getName().equalsIgnoreCase("a")) 
+		{
+			plugin.getHerochat();
+			if(plugin.getHerochat() == null) return false;
+			Player p = (Player) sender;
+			if(!p.hasPermission("herochat.join.Administratoren")) return false;
+			Channel c = Herochat.getChannelManager().getChannel("Administratoren");
+			if(args.length == 0) 
+			{
+				if(Herochat.getChatterManager().getChatter(p).getActiveChannel() == c) 
+				{
+					p.sendMessage(ChatColor.YELLOW+"Du redest bereits im Administratoren Kanal");
+					return true;
+				}
+				Herochat.getChatterManager().getChatter(p).addChannel(c, false, false);
+				Herochat.getChatterManager().getChatter(p).setActiveChannel(c , false, false);
+				p.sendMessage(ChatColor.YELLOW+"Du redest jetzt im Administratoren Kanal");
+				return true;
+			} else 
+			{
+				p.chat("/&4a "+getMessage(args));
+				return true;
+			}
+		}
+		
+		if(sender instanceof Player && command.getName().equalsIgnoreCase("duell") && args.length > 0)
+		{
 			Player p = (Player) sender;
 			Player r = null;
 			Hero pH = plugin.getHeroes().getCharacterManager().getHero(p);

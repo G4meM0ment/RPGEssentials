@@ -2,13 +2,12 @@ package me.G4meM0ment.GSkills;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import com.herocraftonline.heroes.Heroes;
@@ -25,7 +24,7 @@ public class SkillGroundpound extends ActiveSkill {
     {
         super(plugin, "Groundpound");
         setUsage("/skill groundpound");
-        setDescription("You'll jump and make do aoe damage");
+        setDescription("You hit the ground and throw your enemies in the air");
         setTypes(SkillType.DAMAGING, SkillType.FORCE);
         setArgumentRange(0, 0);
         setIdentifiers("skill groundpound");
@@ -74,42 +73,21 @@ public class SkillGroundpound extends ActiveSkill {
 	    for(Entity e : entites) 
 	    	if((e instanceof LivingEntity) && counter > 0)
 	        {
-	    		LivingEntity le = (LivingEntity) e;
-	    		EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(p, e, DamageCause.ENTITY_ATTACK, damage);
+				if(!(e instanceof Player) && !(e instanceof Monster))
+					continue;
 	    		
+				LivingEntity le = (LivingEntity) e;
+				if(!damageCheck(p, le)) continue;
+				damageEntity(le, p, damage, DamageCause.MAGIC);
+				/*EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(p, e, DamageCause.ENTITY_ATTACK, damage);
 	    		Bukkit.getPluginManager().callEvent(event);
 	    		if(event.isCancelled())
 	    			continue;
 	    		
-	    		le.damage(event.getDamage());
-	    		le.setVelocity(le.getVelocity().setY(0.5/*SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false)*/));
+	    		le.damage(event.getDamage());*/
+	    		le.setVelocity(le.getVelocity().setY(0.85/*SkillConfigManager.getUseSetting(hero, this, "jumpMultiplier", 1.2, false)*/));
 	            counter--;
 	        }	    	
         return SkillResult.NORMAL;
     }
-	
-    public Player getPlayer(final String name) 
-    {
-        Player[] players = Bukkit.getOnlinePlayers();
- 
-        Player found = null;
-        String lowerName = name.toLowerCase();
-        int delta = Integer.MAX_VALUE;
-        for (Player player : players) 
-        {
-            if (player.getName().toLowerCase().startsWith(lowerName)) 
-            {
-                int curDelta = player.getName().length() - lowerName.length();
-                if (curDelta < delta) 
-                {
-                    found = player;
-                    delta = curDelta;
-                    break;
-                }
-                if (curDelta == 0) break;
-            }
-
-        }
-        return found;
-    }	
 }

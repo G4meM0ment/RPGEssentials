@@ -7,26 +7,23 @@ import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 import me.G4meM0ment.RPGItem.Handler.EventHandler.DamageHandler;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 
 public class HeroesListener implements Listener{
 	
+	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
 	private CustomItemHandler customItemHandler;
 	private ItemHandler itemHandler;
 	private DamageHandler dmgHandler;
+	@SuppressWarnings("unused")
 	private PowerHandler ph;
 	
 	public HeroesListener(RPGEssentials plugin) {
@@ -37,7 +34,7 @@ public class HeroesListener implements Listener{
 		ph = new PowerHandler();
 	}
 	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void onWeaponDamage(WeaponDamageEvent event) 
 	{
 		Player p = null, e = null;
@@ -82,29 +79,29 @@ public class HeroesListener implements Listener{
 			customItemHandler.repairItems(e);
 		}
 		
-		if(ph.hasPower(p, "poison"))
+		/*
+		 * TODO replace with materials to hit
+		 * 
+		 */
+/*		if(ph.hasPower(p, "poison") && p.getItemInHand().getType() == Material.SHEARS)
 		{
 			if(ph.getPlayersPowers(p).get("poison") == null) return;
-			if(e == null && !(event.getEntity() instanceof Monster))
-				return;
+			final Player fP = p;
 			LivingEntity le = (LivingEntity) event.getEntity();
-			final Double dmg = ph.getPlayersPowers(p).get("poison");	
+			final Double dmg = 1.0;	
 			
-			EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(p, le, DamageCause.POISON, ph.getPlayersPowers(p).get("poison"));
-			Bukkit.getPluginManager().callEvent(damageEvent);
-			System.out.println("Debug: has poison "+p);
+//			EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(p, le, DamageCause.ENTITY_ATTACK, ph.getPlayersPowers(p).get("poison"));
+//			Bukkit.getPluginManager().callEvent(damageEvent);
 			
-			if(!event.isCancelled())
-			{
-				System.out.println("Debug: Is not cancelled "+p);
-				final Player fP = p;
+//			if(!damageEvent.isCancelled())
+//			{
 				final LivingEntity fE = le;
 				final int taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
 				{
 					@Override
 					public void run() 
 					{
-						fE.damage(dmg);
+						fE.damage(dmg, fP);
 					}
 				}, 0, 20);
 				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
@@ -114,8 +111,8 @@ public class HeroesListener implements Listener{
 					{
 						Bukkit.getScheduler().cancelTask(taskID);
 					}
-				}, (long) (ph.getPlayerPowers().get(fP).get("poison")*4*20));					
-			}
-		}
+				}, 80 (long) (ph.getPlayerPowers().get(fP).get("poison")*4*20));					
+//			}
+		} */
 	}
 }

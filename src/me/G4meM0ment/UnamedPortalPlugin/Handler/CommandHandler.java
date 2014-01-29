@@ -26,7 +26,8 @@ public class CommandHandler {
 	private PermHandler permHandler;
 	private PortalData portalData;
 	
-	public CommandHandler(RPGEssentials plugin) {
+	public CommandHandler(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
 		ph = new PortalHandler(plugin.getUnnamedPortalPlugin());
 		weHandler = new WorldEditHandler();
@@ -34,19 +35,26 @@ public class CommandHandler {
 		portalData = new PortalData();
 	}
 	
-	public boolean exec(CommandSender sender, Command command, String label, String[] args) {
+	public boolean exec(CommandSender sender, Command command, String label, String[] args) 
+	{
 		Player player = (Player) sender;
 		
-		if(args.length > 0 && args[0].equals("help")) {
-			if(sender instanceof Player) {
+		if(args.length > 0 && args[0].equals("help")) 
+		{
+			if(sender instanceof Player) 
+			{
 				//TODO add messenger
-			} else {
+			} 
+			else 
+			{
 				//TODO add messenger
 			}
 		}
 		
-		if(args.length > 0 && args[0].equals("create") && !args[1].isEmpty() && sender instanceof Player) {
-			if(!permHandler.hasPortalAdminPerm(player)) {
+		if(args.length > 0 && args[0].equals("create") && !args[1].isEmpty() && sender instanceof Player) 
+		{
+			if(!permHandler.hasPortalAdminPerm(player)) 
+			{
 				player.sendMessage("You don't have permission");
 				//TODO add messenger
 				return true;
@@ -55,7 +63,8 @@ public class CommandHandler {
 			String portal = args[1];
 			Portal destination = null;
 			Location l = null;
-			if(args.length > 2) {
+			if(args.length > 2) 
+			{
 				destination = ph.getPortal(args[2]);
 				l = destination.getBlocks().get(destination.getBlocks().size()/2).getLocation();
 			}
@@ -64,12 +73,15 @@ public class CommandHandler {
 			
 			Selection sel = plugin.getWorldEdit().getSelection(player);
 
-			if(sel == null) {
+			if(sel == null) 
+			{
 				List<Block> blocks = new ArrayList<Block>();
 				blocks.add(player.getLocation().getBlock());
 				ph.createPortal(new Portal(portal, blocks, l));
 				player.sendMessage("Portal created");
-			} else {
+			} 
+			else 
+			{
 				ph.createPortal(new Portal(portal, weHandler.getSelectedBlocks(sel), l));
 				player.sendMessage("Portal created");
 			}
@@ -77,19 +89,22 @@ public class CommandHandler {
 		}
 			
 		if(args.length > 0 && args[0].equals("setdestination") && !args[1].isEmpty() && sender instanceof Player) {
-			if(!permHandler.hasPortalAdminPerm(player)) {
+			if(!permHandler.hasPortalAdminPerm(player)) 
+			{
 				player.sendMessage("You don't have permission");
 				//TODO add messenger
 				return true;
 			}
 			Portal portal = ph.getPortal(args[1]);
-			if(portal == null) {
+			if(portal == null) 
+			{
 				player.sendMessage("Cannot find portal");
 				//TODO add messenger
 				return true;
 			}
 			Location l = null;
-			if(args.length > 2) {
+			if(args.length > 2) 
+			{
 				Portal dest = ph.getPortal(args[2]);
 				if(dest != null)
 					l = dest.getBlocks().get(dest.getBlocks().size()/2).getLocation();
@@ -110,8 +125,10 @@ public class CommandHandler {
 			player.sendMessage("Destination changed");
 			return true;
 		}
-		if(args.length > 0 && args[0].equals("delete") && !args[1].isEmpty()) {
-			if(sender instanceof Player && !permHandler.hasPortalAdminPerm(player)) {
+		if(args.length > 0 && args[0].equals("delete") && !args[1].isEmpty()) 
+		{
+			if(sender instanceof Player && !permHandler.hasPortalAdminPerm(player)) 
+			{
 				//TODO add messenger
 				player.sendMessage("You don't have permission");
 				return true;
@@ -122,8 +139,10 @@ public class CommandHandler {
 			return true;
 		}
 		
-		if(args.length > 0 && args[0].equals("list")) {
-			if(sender instanceof Player && !permHandler.hasPortalAdminPerm(player)) {
+		if(args.length > 0 && args[0].equals("list")) 
+		{
+			if(sender instanceof Player && !permHandler.hasPortalAdminPerm(player)) 
+			{
 				//TODO add messenger
 				player.sendMessage("You don't have permission");
 				return true;

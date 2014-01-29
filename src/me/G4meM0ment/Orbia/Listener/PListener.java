@@ -6,7 +6,6 @@ import java.util.List;
 import me.G4meM0ment.Orbia.Orbia;
 import me.G4meM0ment.Orbia.Handler.CMHandler;
 import me.G4meM0ment.Orbia.Handler.SIHandler;
-import me.G4meM0ment.Orbia.Handler.Duell.DuellHandler;
 import me.G4meM0ment.Orbia.Tutorial.TutorialHandler;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGEssentials.Utils.InvisibilityHandler;
@@ -19,7 +18,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Damageable;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Horse;
 import org.bukkit.entity.Player;
@@ -61,10 +59,10 @@ public class PListener implements Listener{
 	private TutorialHandler tutHandler;
 	private SIHandler sih;
 	private CMHandler cmh;
-	private DuellHandler dh;
 	private InvisibilityHandler iH;
 	
 	private static List<Player> dropping = new ArrayList<Player>();
+	private static List<String> quitting = new ArrayList<String>();
 		
 	public PListener(RPGEssentials plugin){
 		this.plugin = plugin;
@@ -72,7 +70,6 @@ public class PListener implements Listener{
 		tutHandler = new TutorialHandler();
 		sih = new SIHandler(subplugin);
 		cmh = new CMHandler();
-		dh = new DuellHandler();
 		iH = new InvisibilityHandler();
 	}
 	
@@ -83,6 +80,11 @@ public class PListener implements Listener{
 		if(p == null) return;
 		if(p.hasPermission("voxelsniper.litesniper") || p.hasPermission("voxelsniper.sniper"))
 			Bukkit.getServer().dispatchCommand(p, "vs disable");
+				
+		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
+		if(h.isVerbose())
+			Bukkit.getServer().dispatchCommand(p, "hero verbose");
+		
 		event.setJoinMessage(ChatColor.DARK_GRAY+"["+ChatColor.DARK_GREEN+"+"+ChatColor.DARK_GRAY+"] "+p.getName());
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
 		{
@@ -96,6 +98,8 @@ public class PListener implements Listener{
 						plugin.getHerochat();
 						Herochat.getChatterManager().getChatter(p).addChannel(Herochat.getChannelManager().getChannel("Lokal"), false, false);
 						Herochat.getChatterManager().getChatter(p).addChannel(Herochat.getChannelManager().getChannel("Global"), false, false);
+						if(p.hasPermission("herochat.join.Administratoren"))
+							Herochat.getChatterManager().getChatter(p).addChannel(Herochat.getChannelManager().getChannel("Administratoren"), false, false);
 						Herochat.getChatterManager().getChatter(p).setActiveChannel(Herochat.getChannelManager().getChannel("Global"), false, false);
 					}
 					catch(NullPointerException e) {}
@@ -103,6 +107,11 @@ public class PListener implements Listener{
 			}
 		}, 20);
 		
+		if(quitting.contains(p.getName()))
+		{
+			p.damage(1000L);
+			quitting.remove(p.getName());
+		}
 
 		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
 		{
@@ -115,7 +124,10 @@ public class PListener implements Listener{
 		}, 80);
 		
 		if(!tutHandler.finishedTutorial(p))
-			tutHandler.startStage(p,tutHandler.getStage(p));
+		{
+			System.out.println("Debug: Player hasn't finished the tutorial");
+			tutHandler.startStage(p, tutHandler.getStage(p));
+		}
 		
 		SpoutManager.getSkyManager().setCloudHeight(SpoutManager.getPlayer(p), 174);
 	}
@@ -133,36 +145,22 @@ public class PListener implements Listener{
 	{
 		final Player p = event.getPlayer();
 		if(p == null) return;
+		final String pName = p.getName();
 		event.setQuitMessage(ChatColor.DARK_GRAY+"["+ChatColor.DARK_RED+"-"+ChatColor.DARK_GRAY+"] "+p.getName());
 		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
 		
 		if(h.isInCombat())
-			p.damage(1000.0);
-		
-		/*if(h.getParty() != null)
 		{
-			Player l = h.getParty().getLeader().getPlayer();
-			if(!dh.isInDuell(l, true, false)) return;	
-				
-			List<String> party = dh.getParties().get(dh.getRegisteredPartyMember(p).getName());
-			party.remove(p);
-			if(party.isEmpty())
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
 			{
-				for(Hero i : h.getParty().getMembers())
-					i.getPlayer().sendMessage(ChatColor.DARK_RED+"Deine Gruppe hat das Duell verloren!");
-				for(Hero i : plugin.getHeroes().getCharacterManager().getHero(Bukkit.getPlayer(dh.getDuellPartner(dh.getRegisteredPartyMember(p).getName()))).getParty().getMembers())
-					i.getPlayer().sendMessage(ChatColor.DARK_RED+"Deine Gruppe hat das Duell gewonnen!");
-				dh.removeDuell(dh.getRegisteredPartyMember(p).getName());
-			}
-		} */
-
-		if(!dh.isInDuell(p, true, false)) return;
-		Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
-		
-		if(p2 != null)
-			p2.sendMessage(ChatColor.DARK_RED+"Du hast das Duell gewonnen!");
-			
-		dh.removeDuell(p.getName());
+				@Override
+				public void run()
+				{
+					if(Bukkit.getPlayer(p.getName()) == null)
+						quitting.add(pName);
+				}
+			}, 12000);
+		}
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
@@ -213,79 +211,12 @@ public class PListener implements Listener{
 	{
 		if(!(event.getEntity() instanceof Player)) return;
 		final Player p = (Player) event.getEntity();
-		if(dh.getGracers().contains(p))
-			event.setCancelled(true);
-		
+
 		if(event.getCause() == DamageCause.FALL || event.getCause() == DamageCause.FALLING_BLOCK)
 		{
 			Block b = p.getLocation().getBlock().getRelative(0, -1, 0);
 			if(b.getType() == Material.WOOL || b.getType() == Material.HAY_BLOCK || b.getType() == Material.LEAVES)
 				event.setDamage(0.0);
-		}
-		
-		Damageable d = p;
-		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
-		
-		if(!dh.isInDuell(p, true, false)) return;	
-
-		
-		if(h.getParty() != null)
-		{
-			/*Player l = h.getParty().getLeader().getPlayer();
-			if(!dh.isInDuell(l, true, false)) return;	*/
-			
-			if(d.getHealth() - event.getDamage() <= 0)
-			{
-				dh.getGracers().add(p);
-				event.setDamage(0.0);
-				p.setHealth(6.0);
-				
-				p.sendMessage(ChatColor.DARK_RED+"Du bist gestorben und wurdest aus der Duellgruppe entfernt!");
-				/*List<String> party = dh.getParties().get(dh.getRegisteredPartyMember(p).getName());
-				party.remove(p);
-				if(party.isEmpty())
-				{
-					for(Hero i : h.getParty().getMembers())
-						i.getPlayer().sendMessage(ChatColor.DARK_RED+"Deine Gruppe hat das Duell verloren!");
-					for(Hero i : plugin.getHeroes().getCharacterManager().getHero(Bukkit.getPlayer(dh.getDuellPartner(dh.getRegisteredPartyMember(p).getName()))).getParty().getMembers())
-						i.getPlayer().sendMessage(ChatColor.DARK_RED+"Deine Gruppe hat das Duell gewonnen!");
-					dh.removeDuell(dh.getRegisteredPartyMember(p).getName());
-				} */
-				Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
-				{
-					@Override
-					public void run()
-					{
-						dh.getGracers().remove(p);
-					}
-				}, 200);
-			}
-		}
-		
-		final Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
-		if(d.getHealth() - event.getDamage() <= 0)
-		{
-			dh.getGracers().add(p);
-			event.setDamage(0.0);
-			p.setHealth(6.0);
-			
-			p.sendMessage(ChatColor.DARK_RED+"Du hast das Duell verloren!");
-			if(p2 != null)
-			{
-				p2.setHealth(6.0);
-				p2.sendMessage(ChatColor.DARK_RED+"Du hast das Duell gewonnen!");
-				dh.getGracers().add(p2);
-			}
-			dh.removeDuell(p.getName());
-			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
-			{
-				@Override
-				public void run()
-				{
-					dh.getGracers().remove(p);
-					dh.getGracers().remove(p2);
-				}
-			}, 200);
 		}
 	}
 	
@@ -293,7 +224,6 @@ public class PListener implements Listener{
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		Player p = event.getPlayer();
-		Hero h = plugin.getHeroes().getCharacterManager().getHero(p);
 		Block b = p.getLocation().getBlock().getRelative(0, -1, 0);
 
 		if(!p.isSneaking() && iH.isHiden(p) && b.getType() != Material.HAY_BLOCK && b.getType() != Material.LEAVES)
@@ -306,24 +236,6 @@ public class PListener implements Listener{
 			p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 60, 2));
 			iH.hidePlayerForShown(p);
 		}
-		
-		if(h.getParty() != null) return;
-		if(!dh.isInDuell(p, true, false)) return;
-		
-		Player p2 = Bukkit.getPlayer(dh.getDuellPartner(p.getName()));
-		if(p2 == null)
-		{
-			p.sendMessage(ChatColor.DARK_RED+"Auﬂerhalb der Duell Reichweite... Duell beendet!");
-			dh.removeDuell(p.getName());
-			return;
-		}
-		
-		if(p.getLocation().distance(p2.getLocation()) >= 300)
-		{
-			p.sendMessage(ChatColor.DARK_RED+"Auﬂerhalb der Duell Reichweite... Duell beendet!");
-			p2.sendMessage(ChatColor.DARK_RED+"Auﬂerhalb der Duell Reichweite... Duell beendet!");
-			dh.removeDuell(p.getName());
-		}
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
@@ -334,9 +246,10 @@ public class PListener implements Listener{
 		
 		if(plugin.getHeroes().getCharacterManager().getHero(event.getPlayer()).isInCombat())
 		{
-			if(event.getMessage().contains("pet") ||
+			if((event.getMessage().contains("pet") && !event.getMessage().contains("pet remove")) ||
 					event.getMessage().contains("mount") ||
-					event.getMessage().contains("mnt"))
+					event.getMessage().contains("mnt") ||
+					event.getMessage().contains("ma"))
 			{
 				SpoutManager.getPlayer(event.getPlayer()).sendNotification("Kampf", "Nicht erlaubt!", Material.IRON_SWORD);
 				event.setCancelled(true);

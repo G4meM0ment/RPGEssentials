@@ -25,6 +25,10 @@ commands:
         aliases: [rentables]
         description: Main command for Rentables
         usage: /rentables help
+    ib:
+        aliases: [ib]
+        description: Inventory backup command
+        usage: /ib <player> <file number>
     l:
         aliases: [l]
         description: Chat in lokal channel
@@ -37,6 +41,10 @@ commands:
         aliases: [c]
         description: Toggle combat mode
         usage: /c
+    a:
+        aliases: [a]
+        description: Chat in administration channel
+        usage: /a
     orbia:
         aliases: [orbia]
         description: main cmd for orbia

@@ -9,13 +9,17 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 public class SkillCritical extends PassiveSkill {
 
-    public SkillCritical(Heroes plugin) {
+    public SkillCritical(Heroes plugin) 
+    {
         super(plugin, "Critical");
         setDescription("Passive $1% chance to do $2 times damage.");
         setTypes(SkillType.COUNTER, SkillType.BUFF);
@@ -24,7 +28,8 @@ public class SkillCritical extends PassiveSkill {
     }
 
     @Override
-    public String getDescription(Hero hero) {
+    public String getDescription(Hero hero) 
+    {
         double chance = (SkillConfigManager.getUseSetting(hero, this, SkillSetting.CHANCE.node(), 0.2, false) +
                 (SkillConfigManager.getUseSetting(hero, this, SkillSetting.CHANCE_LEVEL.node(), 0.0, false) * hero.getSkillLevel(this))) * 100;
         chance = chance > 0 ? chance : 0;
@@ -36,7 +41,8 @@ public class SkillCritical extends PassiveSkill {
     }
 
     @Override
-    public ConfigurationSection getDefaultConfig() {
+    public ConfigurationSection getDefaultConfig() 
+    {
         ConfigurationSection node = super.getDefaultConfig();
         node.set(SkillSetting.CHANCE.node(), 0.2);
         node.set(SkillSetting.CHANCE_LEVEL.node(), 0);
@@ -45,28 +51,39 @@ public class SkillCritical extends PassiveSkill {
         return node;
     }
     
-    public class SkillHeroListener implements Listener {
+    public class SkillHeroListener implements Listener 
+    {
         private Skill skill;
-        public SkillHeroListener(Skill skill) {
+        public SkillHeroListener(Skill skill) 
+        {
             this.skill = skill;
         }
         
-        @EventHandler
-        public void onEntityDamage(WeaponDamageEvent event) {
-                if(!(event.isCancelled())&&(event.getDamager() instanceof Hero)){
-                        Hero hero = (Hero) event.getDamager();
-                            if (hero.hasEffect("Critical")) {
+        @EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+        public void onEntityDamage(WeaponDamageEvent event) 
+        {
+        	if(!(event.isCancelled())&&(event.getDamager() instanceof Hero))
+            {
+            	Hero hero = (Hero) event.getDamager();
+            	Material m = hero.getPlayer().getItemInHand().getType();
+            	String heroClass = hero.getHeroClass().getName();
+                if (hero.hasEffect("Critical") 
+                	&& ((heroClass.equalsIgnoreCase("Kundschafter") && m == Material.SHEARS)
+                	|| (heroClass.equalsIgnoreCase("Barbar") && (m == Material.WOOD_AXE || m == Material.STONE_AXE)))) 
+                {
                     double chance = (SkillConfigManager.getUseSetting(hero, skill, SkillSetting.CHANCE.node(), 0.2, false) +
                             (SkillConfigManager.getUseSetting(hero, skill, SkillSetting.CHANCE_LEVEL.node(), 0.0, false) * hero.getSkillLevel(skill)));
                     chance = chance > 0 ? chance : 0;
-                    if (Math.random() <= chance) {
+                    if (Math.random() <= chance) 
+                    {
                         double damageMod = (SkillConfigManager.getUseSetting(hero, skill, "damage-multiplier", 0.2, false) +
                                 (SkillConfigManager.getUseSetting(hero, skill, "damage-multiplier-increase", 0.0, false) * hero.getSkillLevel(skill)));
                         damageMod = damageMod > 0 ? damageMod : 0;
                         event.setDamage((event.getDamage() * damageMod));
+                        hero.getPlayer().getWorld().playSound(hero.getPlayer().getLocation(), Sound.SUCCESSFUL_HIT, 10, 1);
                     }
-                            }
                 }
+            }
         }
     }
 }
