@@ -15,6 +15,13 @@ public class Grave {
 	private Material blockMaterial;
 	private int data;
 
+	/**
+	 * Contains all information needed for a players grave
+	 * @param loc
+	 * @param sign
+	 * @param p
+	 * @param placedMillis
+	 */
 	public Grave(Location loc, Sign sign, String p, long placedMillis)
 	{
 		this.loc = loc;

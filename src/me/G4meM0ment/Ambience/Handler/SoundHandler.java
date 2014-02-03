@@ -103,12 +103,12 @@ public class SoundHandler {
 			if(s.equalsIgnoreCase(trigger))
 				if(p.getWorld().getTime() < 12000 && sd.getConfig().getConfigurationSection(trigger).getKeys(false).contains("url_night"))
 					if(sd.getConfig().getBoolean(s+".preLogin"))
-						return sd.getConfig().getString(s+".url_night").split("/")[sd.getConfig().getString(s+".url_night").split("/").length-1];
+						return sd.getConfig().getString(s+".url_night").split("/")[sd.getConfig().getString(s+".url_night").split("/").length-1].replace("/", "");
 					else
 						return sd.getConfig().getString(s+".url_night");
 				else
 					if(sd.getConfig().getBoolean(s+".preLogin"))
-						return sd.getConfig().getString(s+".url").split("/")[sd.getConfig().getString(s+".url").split("/").length-1];
+						return sd.getConfig().getString(s+".url").split("/")[sd.getConfig().getString(s+".url").split("/").length-1].replace("/", "");
 					else
 						return sd.getConfig().getString(s+".url");
 		}

@@ -29,6 +29,14 @@ commands:
         aliases: [ib]
         description: Inventory backup command
         usage: /ib <player> <file number>
+    dar:
+        aliases: [dar]
+        description: Death and Rebirth main command
+        usage: /dar reload
+    shrine:
+        aliases: [shrine]
+        description: Death and Rebirth shrine command
+        usage: /shrine add|remove|list <name>
     l:
         aliases: [l]
         description: Chat in lokal channel

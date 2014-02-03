@@ -241,17 +241,25 @@ public class PListener implements Listener{
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{
-		if(event.getMessage().contains("hero choose"))
+		String msg = event.getMessage();
+		
+		if(msg.toLowerCase().contains("hero choose"))
 			event.setCancelled(true);
+		
+		if(msg.toLowerCase().startsWith("p "))
+		{
+			Bukkit.dispatchCommand(event.getPlayer(), "party "+msg.substring(1, msg.length()-1));
+			event.setCancelled(true);
+		}
 		
 		if(plugin.getHeroes().getCharacterManager().getHero(event.getPlayer()).isInCombat())
 		{
-			if((event.getMessage().contains("pet") && !event.getMessage().contains("pet remove")) ||
-					event.getMessage().contains("mount") ||
-					event.getMessage().contains("mnt") ||
-					event.getMessage().contains("ma"))
+			if((msg.toLowerCase().contains("pet") && !msg.toLowerCase().contains("pet remove")) ||
+					msg.toLowerCase().contains("mount") ||
+					msg.toLowerCase().contains("mnt") ||
+					msg.toLowerCase().contains("ma"))
 			{
-				SpoutManager.getPlayer(event.getPlayer()).sendNotification("Kampf", "Nicht erlaubt!", Material.IRON_SWORD);
+				SpoutManager.getPlayer(event.getPlayer()).sendNotification("Du bist im Kampf", "Nicht erlaubt!", Material.IRON_SWORD);
 				event.setCancelled(true);
 			}
 		}

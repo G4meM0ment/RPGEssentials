@@ -1,0 +1,13 @@
+useIDs: false
+FormatLineSize: 39
+ItemTooltipGeneralDurabilityFormat: '&fDurability: %actual/%max'
+ItemTooltipGeneralInfoFormat: '&f%hand        %type'
+ItemTooltipDamageFormat: '&fDamage: %dmgValue - %maxDmgValue'
+ItemTooltipArmorFormat: '&fArmor: %dmgValue - %maxDmgValue'
+ItemTooltipPriceFormat: '&fPrice: %priceValue Aurei'
+ItemTooltipDescriptionFormat: '&f%description'
+ItemTooltipLoreFormat: '&o%lore'
+DurabilityLoss: true
+DurabilityAffectingUtility: 25
+DisableVanillaItemDurability: true
+RepairAmountPerRepair: 100

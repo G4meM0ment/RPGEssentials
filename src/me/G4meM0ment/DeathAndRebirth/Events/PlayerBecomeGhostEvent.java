@@ -8,6 +8,14 @@ import org.bukkit.event.HandlerList;
 
 public class PlayerBecomeGhostEvent extends Event implements Cancellable {
 
+	/**
+	 * 
+	 * This event fires when a player gets killed and DaR tries to
+	 * execute all methods for him to become a ghost
+	 * 
+	 */
+	
+	private static final HandlerList HANDLERS = new HandlerList();
 	boolean cancelled = false;
 	Player player;
 	Location location;
@@ -33,7 +41,7 @@ public class PlayerBecomeGhostEvent extends Event implements Cancellable {
 	@Override
 	public HandlerList getHandlers() 
 	{
-		return null;
+		return HANDLERS;
 	}
 	
 	public Player getPlayer()

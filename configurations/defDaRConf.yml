@@ -1,0 +1,56 @@
+##############################################################
+#                                                            #
+#                 DEATH AND REBIRTH CONFIG                   #
+#                                                            #
+#                                                            #
+#                                                            #
+##############################################################
+
+#################### General Settings ########################
+worlds:
+- world
+- world2
+
+##################### Grave Settings #########################
+maxGraveDistance: 3
+graveSign: true
+signText: 'R.I.P'
+autoSignRemove: 86400000
+
+#################### Spawning Settings #######################
+dropItems: false
+corpseSpawn: false
+timeUntilCanRes: 20000
+
+##################### Ghost Settings #########################
+blockGhostInteractions: false
+disabledCommands:
+- /kill
+- /back
+compass: true
+destroyBlocks: true
+ghostChat: true
+crossWorldGhost: true
+
+#################### Shrine Settings ########################
+shrineRadius: 6
+protectShrines: false
+
+################## Spoutcraft Settings ######################
+useSpoutcraft: false
+
+################ Sound Settings #####################
+playBackgroundSounds: true
+deathSound: http://your_sounds.com/death.wav
+rebirthSound: http://your_sounds.com/res.wav
+resurrectSound: http://your_sounds.com/res.wav
+
+################ Texture Settings ###################
+ghostSkin: http://your_textures.com/ghost1.png
+ghostResourcepack: http://your_textures.com/resourcepack.zip
+
+################ Color Settings #####################
+changeColors: true
+skyColor: 0.8;0;0
+fogColor: 0.8;0;0
+cloudColor: 0;0;0

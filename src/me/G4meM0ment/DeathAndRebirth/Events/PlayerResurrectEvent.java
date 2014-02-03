@@ -8,6 +8,15 @@ import org.bukkit.event.HandlerList;
 
 public class PlayerResurrectEvent extends Event implements Cancellable {
 
+	/**
+	 * 
+	 * This event fires when a player right clicks his grave or shrine or another player
+	 * resurrects him (however he does)
+	 * 
+	 */
+	
+	
+	private static final HandlerList HANDLERS = new HandlerList();
 	boolean cancelled = false;
 	Player resurrected, resurrecter;
 	Location clicked, reborn;
@@ -33,7 +42,7 @@ public class PlayerResurrectEvent extends Event implements Cancellable {
 	@Override
 	public HandlerList getHandlers() 
 	{
-		return null;
+		return HANDLERS;
 	}
 	
 	/**

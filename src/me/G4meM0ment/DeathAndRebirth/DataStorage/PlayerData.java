@@ -13,6 +13,7 @@ import me.G4meM0ment.DeathAndRebirth.Handler.ShrineHandler;
 import me.G4meM0ment.DeathAndRebirth.Types.DARPlayer;
 import me.G4meM0ment.DeathAndRebirth.Types.Grave;
 import me.G4meM0ment.DeathAndRebirth.Types.Shrine;
+import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -46,7 +47,7 @@ public class PlayerData {
 
 	public PlayerData() 
 	{
-		subplugin = new DeathAndRebirth();
+		subplugin = ((RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials")).getDeathAndRebirth();
 		gH = new GhostHandler();
 		shrineH = new ShrineHandler();
 	}
@@ -98,27 +99,36 @@ public class PlayerData {
 	public void saveDataToFile()
 	{	
 		FileConfiguration config = getConfig();
+		
+		/*
+		 * save cache data to file
+		 */
 		for(String worldName : gH.getDARPlayerLists().keySet())
 		{
-			for(DARPlayer p : gH.getDARPlayers(Bukkit.getWorld(worldName)))
+			//remove old saves
+			config.set(worldName, null);
+			
+			for(DARPlayer p : gH.getDARPlayers(worldName))
 			{
 				if(p.getShrine() != null)
-					config.set(worldName+"."+p.getPlayer().getName()+".shrine", p.getShrine().getName());
-				config.set(worldName+"."+p.getPlayer().getName()+".dead", p.isDead());
-				config.set(worldName+"."+p.getPlayer().getName()+".robbed", p.isRobbed());
+					config.set(worldName+"."+p.getPlayerName()+".shrine", p.getShrine().getName());
+				config.set(worldName+"."+p.getPlayerName()+".dead", p.isDead());
+				config.set(worldName+"."+p.getPlayerName()+".robbed", p.isRobbed());
 				if(p.getGrave() != null)
 				{
 					Grave g = p.getGrave();
-					config.set(worldName+"."+p.getPlayer().getName()+".grave.material", g.getBlockMaterial().toString());	
-					config.set(worldName+"."+p.getPlayer().getName()+".grave.materialData", g.getBlockMaterial().getData().toString());
-					config.set(worldName+"."+p.getPlayer().getName()+".grave.location.x", g.getLocation().getBlockX());
-					config.set(worldName+"."+p.getPlayer().getName()+".grave.location.y", g.getLocation().getBlockY());
-					config.set(worldName+"."+p.getPlayer().getName()+".grave.location.z", g.getLocation().getBlockZ());
-					config.set(worldName+"."+p.getPlayer().getName()+".grave.location.millis", g.getPlacedMillis());
+					if(g.getBlockMaterial() != null)
+						config.set(worldName+"."+p.getPlayerName()+".grave.material", g.getBlockMaterial().toString());	
+					if(g.getBlockMaterial() != null)
+						config.set(worldName+"."+p.getPlayerName()+".grave.materialData", g.getData());
+					config.set(worldName+"."+p.getPlayerName()+".grave.location.x", g.getLocation().getBlockX());
+					config.set(worldName+"."+p.getPlayerName()+".grave.location.y", g.getLocation().getBlockY());
+					config.set(worldName+"."+p.getPlayerName()+".grave.location.z", g.getLocation().getBlockZ());
+					config.set(worldName+"."+p.getPlayerName()+".grave.location.millis", g.getPlacedMillis());
 				}
-
 			}
 		}
+		saveConfig();
 	}
 	
 	public void loadDataFromFile()
@@ -137,26 +147,36 @@ public class PlayerData {
 				/*
 				 * Getting grave data from config
 				 */
-				Material m = Material.getMaterial(config.getString(worldName+"."+pName+".grave.material"));
-				int data = config.getInt(config.getString(worldName+"."+pName+".grave.materialData"));
-				Location loc = new Location(Bukkit.getWorld(worldName),
-						config.getInt(worldName+"."+pName+".grave.location.x"), 
-						config.getInt(worldName+"."+pName+".grave.location.y"), 
-						config.getInt(worldName+"."+pName+".grave.location.z"));
-				long millis = config.getLong(worldName+"."+pName+".grave.location.millis");
-				Sign sign = null;
-				try
+				Grave g = null;
+				if(config.getConfigurationSection(worldName+"."+pName+".grave") != null)
 				{
-					sign = (Sign) loc.getBlock();
-				}
-				catch(ClassCastException e) {}
+					Location loc = new Location(Bukkit.getWorld(worldName),
+							config.getInt(worldName+"."+pName+".grave.location.x"), 
+							config.getInt(worldName+"."+pName+".grave.location.y"), 
+							config.getInt(worldName+"."+pName+".grave.location.z"));
+					long millis = config.getLong(worldName+"."+pName+".grave.location.millis");
+					Sign sign = null;
+					try
+					{
+						sign = (Sign) loc.getBlock();
+					}
+					catch(ClassCastException e) {}
 
-				Grave g = new Grave(loc, sign, pName, millis);
-				g.setBlockMaterial(m);
-				g.setData(data);
+					g = new Grave(loc, sign, pName, millis);
+					try
+					{
+						Material m = Material.getMaterial(config.getString(worldName+"."+pName+".grave.material"));
+						int data = config.getInt(config.getString(worldName+"."+pName+".grave.materialData"));
+						g.setBlockMaterial(m);
+						g.setData(data);
+					}
+					catch(IllegalArgumentException e) {}
+				}
 				
 				//Getting bound shrine
-				Shrine s = shrineH.getShrine(config.getString(worldName+"."+pName+".shrine"));
+				Shrine s = null;
+				if(config.getConfigurationSection(worldName+"."+pName+".shrine") != null)
+					s = shrineH.getShrine(config.getString(worldName+"."+pName+".shrine"), Bukkit.getWorld(worldName));
 				
 				//add new darplayer to list
 				list.add(new DARPlayer(pName, dead, true, robbed, g, s));

@@ -4,26 +4,43 @@ import org.bukkit.Location;
 
 public class Shrine {
 	
-	private Location p1, p2, spawn;
+	private Location max, min, spawn;
 	private boolean binding;
 	private String name;
 	
-	public Location getP1() 
+	/**
+	 * Contains all information needed for a shrine
+	 * @param name
+	 * @param max
+	 * @param min
+	 * @param spawn
+	 * @param binding
+	 */
+	public Shrine(String name, Location max, Location min, Location spawn, boolean binding)
 	{
-		return p1;
-	}
-	public void setP1(Location p1) 
-	{
-		this.p1 = p1;
+		this.name = name;
+		this.max = max;
+		this.min = min;
+		this.spawn = spawn;
+		this.binding = binding;
 	}
 	
-	public Location getP2() 
+	public Location getMax() 
 	{
-		return p2;
+		return max;
 	}
-	public void setP2(Location p2) 
+	public void setMax(Location max) 
 	{
-		this.p2 = p2;
+		this.max = max;
+	}
+	
+	public Location getMin() 
+	{
+		return min;
+	}
+	public void setMin(Location min) 
+	{
+		this.min = min;
 	}
 	
 	public Location getSpawn() 

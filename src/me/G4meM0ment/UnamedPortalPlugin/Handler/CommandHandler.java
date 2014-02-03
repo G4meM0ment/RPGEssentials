@@ -82,8 +82,14 @@ public class CommandHandler {
 			} 
 			else 
 			{
-				ph.createPortal(new Portal(portal, weHandler.getSelectedBlocks(sel), l));
-				player.sendMessage("Portal created");
+				List<Block> blocks = weHandler.getSelectedBlocks(sel);
+				if(blocks.size() > plugin.getConfig().getInt("MaxWorldEditBlocksForCreation"))
+					player.sendMessage("Too large WorldEdit selection: You selected "+blocks.size()+" blocks, maximum is "+plugin.getConfig().getInt("MaxWorldEditBlocksForCreation"));
+				else
+				{
+					ph.createPortal(new Portal(portal, weHandler.getSelectedBlocks(sel), l));
+					player.sendMessage("Portal created");
+				}
 			}
 			return true;
 		}
@@ -114,7 +120,8 @@ public class CommandHandler {
 				l = player.getLocation();
 			portal.setDestination(l);
 			
-			if(portal.getDestination() != null) {
+			if(portal.getDestination() != null)
+			{
 				portalData.getConfig().set(portal.getID()+".destination.world", portal.getDestination().getWorld().getName());
 				portalData.getConfig().set(portal.getID()+".destination.x", portal.getDestination().getBlockX());
 				portalData.getConfig().set(portal.getID()+".destination.y", portal.getDestination().getBlockY());

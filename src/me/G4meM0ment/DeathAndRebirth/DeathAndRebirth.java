@@ -10,7 +10,11 @@ import me.G4meM0ment.DeathAndRebirth.DataStorage.DropData;
 import me.G4meM0ment.DeathAndRebirth.DataStorage.PlayerData;
 import me.G4meM0ment.DeathAndRebirth.DataStorage.ShrineData;
 import me.G4meM0ment.DeathAndRebirth.Handler.ConfigHandler;
+import me.G4meM0ment.DeathAndRebirth.Handler.GhostHandler;
+import me.G4meM0ment.DeathAndRebirth.Handler.GraveHandler;
 import me.G4meM0ment.DeathAndRebirth.Handler.ShrineHandler;
+import me.G4meM0ment.DeathAndRebirth.Listener.BListener;
+import me.G4meM0ment.DeathAndRebirth.Listener.EListener;
 import me.G4meM0ment.DeathAndRebirth.Listener.PListener;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
@@ -28,9 +32,13 @@ public class DeathAndRebirth {
 	private ShrineData shrineData;
 	
 	private PListener pListener;
+	private BListener bListener;
+	private EListener eListener;
 	
 	private ShrineHandler sH;
 	private static ConfigHandler cH;
+	private GhostHandler gH;
+	private GraveHandler graveH;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -40,33 +48,65 @@ public class DeathAndRebirth {
 	private static Logger logger;
 	private static boolean isEnabled = false;
 
+	/**
+	 * Death and Rebirth subplugin of
+	 * RPGEssentials
+	 * @param plugin
+	 */
 	public DeathAndRebirth(RPGEssentials plugin) 
 	{
 		this.plugin = plugin;
 		pListener = new PListener(this);
+		bListener = new BListener();
+		eListener = new EListener();
 		
+		/*
+		 * register all event listeners
+		 */
 		plugin.getServer().getPluginManager().registerEvents(pListener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(bListener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(eListener, plugin);
 		
+		/*
+		 * setup dir, config and logger
+		 */
 		dir = plugin.getDir()+"/DeathAndRebirth";
 		logger = plugin.getLogger();
 		configFile = new File(dir+"/config.yml");
 		
+		/*
+		 * init handlers and utils
+		 */
+		dropData = new DropData(this);
+		playerData = new PlayerData(this);
+		shrineData = new ShrineData(this);
+		
+		cH = new ConfigHandler();
+		sH = new ShrineHandler();
+		gH = new GhostHandler(this);
+		graveH = new GraveHandler();
+	}
+	public DeathAndRebirth() 
+	{
+		plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
 		dropData = new DropData(this);
 		playerData = new PlayerData(this);
 		shrineData = new ShrineData(this);
 		
 		sH = new ShrineHandler();
-	}
-	public DeathAndRebirth() 
-	{
-//		portalData = new PortalData(this);
-//		ph = new PortalHandler(this);
+		gH = new GhostHandler(this);
+		graveH = new GraveHandler();
 	}
 
+	/**
+	 * Fired when RPGEssentials enabled and enabled DaR
+	 * @return
+	 */
 	public boolean onEnable() {
 		//creating config or loading
 		reloadConfig();
 		saveConfig();
+		cH.loadSettings();
 		dropData.reloadConfig();
 		dropData.saveConfig();
 		playerData.reloadConfig();
@@ -82,8 +122,35 @@ public class DeathAndRebirth {
 			@Override
 			public void run() 
 			{
+				System.out.println("Loading all settings!");
+				cH.loadSettings();
+				gH.initPlayerLists();
+				sH.initShrineLists();
+				playerData.loadDataFromFile();
+				shrineData.loadDataFromFile();
 			}
 		});
+		
+		/*
+		 * For auto saving and scheduled repeating tasks
+		 */
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() 
+		{
+			@Override
+			public void run() 
+			{
+				/*
+				 * saving data ...
+				 */
+				saveConfigs();
+				saveDataFiles();
+				
+				/*
+				 * checking for too old graves
+				 */
+				graveH.removeOldSigns();
+			}
+		}, 0, 12000);
 		
 		isEnabled = true;
 		return true;
@@ -91,29 +158,70 @@ public class DeathAndRebirth {
 
 	public boolean onDisable() 
 	{
+		//save all data from cache to file
+		cH.saveSettings();		
+		playerData.saveDataToFile();
+		shrineData.saveDataToFile();
+
 		isEnabled = false;
 		return true;
 	}
 	
+	/**
+	 * reload all configs of dar
+	 */
 	public void reloadConfigs() 
 	{
 		reloadConfig();
 		dropData.reloadConfig();
 		playerData.reloadConfig();
 		shrineData.reloadConfig();
+		cH.loadSettings();
 	}
+	/**
+	 * save all data from cache to file
+	 */
+	public void saveConfigs() 
+	{		
+		cH.saveSettings();
+	}
+	
+	/**
+	 * reload all data files of dar
+	 */
+	public void reloadDataFiles() 
+	{
+		dropData.reloadConfig();
+		playerData.reloadConfig();
+		shrineData.reloadConfig();
+		
+		playerData.loadDataFromFile();
+		shrineData.loadDataFromFile();
+	}
+	/**
+	 * save all data from cache to file
+	 */
+	public void saveDataFiles() 
+	{		
+		playerData.saveDataToFile();
+		shrineData.saveDataToFile();
+	}
+	
+	/**
+	 * Reload the config file
+	 */
 	public void reloadConfig() 
 	{
-	    if (configFile == null) 
+	    if(configFile == null) 
 	    {
-	    	configFile = new File(dir, "/config.yml");
+	    	configFile = new File(dir+"/config.yml");
 			plugin.getLogger().info(logTit+"Created Config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
 	    InputStream defConfigStream = plugin.getResource("defDaRConf.yml");
-	    if (defConfigStream != null) 
+	    if(defConfigStream != null) 
 	    {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
@@ -121,15 +229,22 @@ public class DeathAndRebirth {
 	    }
 		plugin.getLogger().info(logTit+"Config loaded.");
 	}
+	/**
+	 * Returns the File config to work with
+	 * @return
+	 */
 	public FileConfiguration getConfig() 
 	{
-	    if (config == null)
+	    if(config == null)
 	        reloadConfig();
 	    return config;
 	}
+	/**
+	 * Save the config file
+	 */
 	public void saveConfig() 
 	{
-	    if (config == null || configFile == null) 
+	    if(config == null || configFile == null) 
 	    {
 	    	return;
 	    }
@@ -137,7 +252,8 @@ public class DeathAndRebirth {
 	    {
 	        config.save(configFile);
 	        plugin.getLogger().info(logTit+"Config saved");
-	    } catch (IOException ex) 
+	    } 
+	    catch (IOException ex) 
 	    {
 	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }

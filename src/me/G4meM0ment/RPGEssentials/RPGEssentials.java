@@ -12,6 +12,7 @@ import me.G4meM0ment.UnamedPortalPlugin.UnnamedPortalPlugin;
 import net.dandielo.citizens.traders_v3.bukkit.DtlTraders;
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -181,6 +182,20 @@ public class RPGEssentials extends JavaPlugin{
 		else
 			getLogger().info("InventoryBackup found, but disabled in config!");
 		
+//################ Initializing DeathAndRebirth and debugging ################
+		if(getConfig().getBoolean("DeathAndRebirthEnabled")) 
+		{
+			dar = new DeathAndRebirth(this);
+			boolean darEnabled = dar.onEnable();
+							
+			if(darEnabled)
+				getLogger().info("DeathAndRebirth enabled!");
+			else
+				getLogger().info("DeathAndRebirth couldn't be enabled!");
+		} 
+		else
+			getLogger().info("DeathAndRebirth found, but disabled in config!");
+		
 //################ Initializing Orbia and debugging ################
 		if(getConfig().getKeys(false).contains("OrbiaEnabled") && getConfig().getBoolean("OrbiaEnabled")) 
 		{
@@ -213,27 +228,39 @@ public class RPGEssentials extends JavaPlugin{
 		getLogger().info("Disabling sub-plugins:");
 		
 		if(rpgItem != null)
-			if(rpgItem.onDisable() && rpgItem.isEnabled())
+			if(!rpgItem.onDisable() && rpgItem.isEnabled())
 				getLogger().info("RPGItem disabled!");
 		
 		if(reNature != null)
-			if(reNature.isEnabled() && reNature.onDisable())
+			if(!reNature.isEnabled() && reNature.onDisable())
 				getLogger().info("ReNature disabled!");
 		
 		if(junkie != null)
-			if(junkie.onDisable() && junkie.isEnabled())
+			if(junkie.onDisable() && !junkie.isEnabled())
 				getLogger().info("Junkie disabled!");
 		
 		if(upp != null)
-			if(upp.onDisable() && upp.isEnabled())
+			if(upp.onDisable() && !upp.isEnabled())
 				getLogger().info("UnnamedPortalPlugin disabled!");
 		
 		if(rent != null)
-			if(rent.onDisable() && rent.isEnabled())
+			if(rent.onDisable() && !rent.isEnabled())
 				getLogger().info("Rentables disabled!");
 		
+		if(ambience != null)
+			if(ambience.onDisable() && !ambience.isEnabled())
+				getLogger().info("Ambience disabled!");
+		
+		if(ib != null)
+			if(ib.onDisable() && !ib.isEnabled())
+				getLogger().info("InventoryBackup disabled!");
+		
+		if(dar != null)
+			if(dar.onDisable() && !dar.isEnabled())
+				getLogger().info("DeathAndRebirth disabled!");
+		
 		if(orbia != null)
-			if(orbia.onDisable() && orbia.isEnabled())
+			if(orbia.onDisable() && !orbia.isEnabled())
 				getLogger().info("Orbia disabled!");
 	}
 	
@@ -408,6 +435,11 @@ public class RPGEssentials extends JavaPlugin{
 		return herochat;
 	}
 	
+	public boolean isSpoutcraftPluginEnabled()
+	{
+		return (Bukkit.getPluginManager().getPlugin("Spout") != null);
+	}
+	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) 
 	{
 		if(ch.onCommand(sender, command, label, args))
@@ -441,5 +473,10 @@ public class RPGEssentials extends JavaPlugin{
 	public UnnamedPortalPlugin getUnnamedPortalPlugin() 
 	{
 		return upp;
+	}
+	
+	public DeathAndRebirth getDeathAndRebirth() 
+	{
+		return dar;
 	}
  }

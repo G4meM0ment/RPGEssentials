@@ -122,7 +122,8 @@ public class RPGItem {
 		itemData.initializeDataFiles();
 	}
 	public void reloadConfig() {
-	    if (configFile == null) {
+	    if (configFile == null) 
+	    {
 	    	configFile = new File(dir+"/config.yml");
 	    	getLogger().info(logTit+"Created config.");
 	    }
@@ -130,17 +131,18 @@ public class RPGItem {
 	 
 	    // Look for defaults in the jar
 	    InputStream defConfigStream = plugin.getResource(defConfig);
-	    if(defConfigStream != null) {
+	    if(defConfigStream != null) 
+	    {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
 	    }
 	    getLogger().info(logTit+"Config loaded.");
 	}
-	public FileConfiguration getConfig() {
-	    if (config == null) {
+	public FileConfiguration getConfig() 
+	{
+	    if(config == null)
 	        reloadConfig();
-	    }
 	    return config;
 	}
 	public void saveConfig() {

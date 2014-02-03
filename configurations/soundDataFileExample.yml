@@ -1,0 +1,23 @@
+nether:
+    type: sound
+    url: https://dl.dropboxusercontent.com/u/96045686/SoundPack/nether.ogg
+    distance: 45
+    vol: 50
+    preLogin: false
+plains:
+    type: sound
+    url: https://dl.dropboxusercontent.com/u/96045686/SoundPack/daytime.ogg
+    url_night: https://dl.dropboxusercontent.com/u/96045686/SoundPack/nighttime.ogg
+    distance: 45
+    vol: 50
+    preLogin: false
+hdh:
+    type: music
+    url: https://dl.dropboxusercontent.com/u/96045686/SoundPack/swamp_day.ogg
+    length: 660
+    preLogin: false
+combat:
+    type: music
+    url: https://dl.dropboxusercontent.com/u/96045686/SoundPack/combat01.ogg
+    length: 60
+    preLogin: true

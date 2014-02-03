@@ -5,12 +5,21 @@ import org.bukkit.entity.Player;
 
 public class DARPlayer {
 	
-	private String name;
+	private String displayName;
 	private Grave grave;
 	private Shrine shrine;
 	private boolean robbed, canRes, dead;
 	private String player;
 	
+	/**
+	 * Contains all information needed for a ghost (DARPlayer)
+	 * @param player
+	 * @param dead
+	 * @param canRes
+	 * @param robbed
+	 * @param grave
+	 * @param shrine
+	 */
 	public DARPlayer(String player, boolean dead, boolean canRes, boolean robbed, Grave grave, Shrine shrine)
 	{
 		this.player = player;
@@ -21,13 +30,13 @@ public class DARPlayer {
 		this.shrine = shrine;
 	}
 	
-	public String getName() 
+	public String getDisplayName() 
 	{
-		return name;
+		return displayName;
 	}
 	public void setName(String name) 
 	{
-		this.name = name;
+		this.displayName = name;
 	}
 	
 	public Grave getGrave() 

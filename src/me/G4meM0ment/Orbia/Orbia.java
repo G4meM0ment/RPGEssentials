@@ -15,6 +15,7 @@ import me.G4meM0ment.Orbia.Listener.DuellListener;
 import me.G4meM0ment.Orbia.Listener.HeroesListener;
 import me.G4meM0ment.Orbia.Listener.MAListener;
 import me.G4meM0ment.Orbia.Listener.PListener;
+import me.G4meM0ment.Orbia.Listener.TitleListener;
 import me.G4meM0ment.Orbia.Tutorial.TutorialData;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
@@ -36,6 +37,7 @@ public class Orbia {
 	private MAListener mal;
 	private CraftListener cl;
 	private DuellListener dl;
+	private TitleListener tl;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -54,6 +56,7 @@ public class Orbia {
 		mal = new MAListener(plugin);
 		cl = new CraftListener();
 		dl = new DuellListener(plugin);
+		tl = new TitleListener();
 		
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(jl, plugin);
@@ -61,6 +64,7 @@ public class Orbia {
 		plugin.getServer().getPluginManager().registerEvents(mal, plugin);
 		plugin.getServer().getPluginManager().registerEvents(cl, plugin);
 		plugin.getServer().getPluginManager().registerEvents(dl, plugin);
+		plugin.getServer().getPluginManager().registerEvents(tl, plugin);
 		
 		dir = plugin.getDir()+"/Orbia";
 		logger = plugin.getLogger();
@@ -93,6 +97,7 @@ public class Orbia {
 			public void run() 
 			{
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "dmarker deleteset id:markers");
+				tl.startAutoUpdater();
 			}
 		});
 		

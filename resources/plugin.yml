@@ -1,0 +1,75 @@
+name: RPGEssentials
+main: me.G4meM0ment.RPGEssentials.RPGEssentials
+version: 0.00.001
+Author: [G4meM0ment, Eatingyou]
+depend: [Vault, WorldEdit]
+softdepend: [Spout, Jail, WorldGuard, Factions, MCore, MyWorlds, Heroes, Towny, Citizens, dtlTraders]
+commands:
+    ge:
+        aliases: [ge]
+        description: Command for the main plugin
+        usage: /ge [reload]
+    rpgitem:
+        aliases: [rpgitem]
+        description: Main command for RPGItem
+        usage: /rpgitem help
+    ri:
+        aliases: [ri]
+        description: Main command for RPGItem
+        usage: /ri help
+    upp:
+        aliases: [upp]
+        description: Main command for UnnamedPortalPlugin
+        usage: /upp help
+    rentables:
+        aliases: [rentables]
+        description: Main command for Rentables
+        usage: /rentables help
+    ib:
+        aliases: [ib]
+        description: Inventory backup command
+        usage: /ib <player> <file number>
+    dar:
+        aliases: [dar]
+        description: Death and Rebirth main command
+        usage: /dar reload
+    shrine:
+        aliases: [shrine]
+        description: Death and Rebirth shrine command
+        usage: /shrine add|remove|list <name>
+    l:
+        aliases: [l]
+        description: Chat in lokal channel
+        usage: /l (<message>)
+    g:
+        aliases: [g]
+        description: Chat in global channel
+        usage: /g (<message>)
+    c:
+        aliases: [c]
+        description: Toggle combat mode
+        usage: /c
+    a:
+        aliases: [a]
+        description: Chat in administration channel
+        usage: /a
+    orbia:
+        aliases: [orbia]
+        description: main cmd for orbia
+        usage: /orbia <arg>
+    duell:
+        aliases: [duell]
+        description: requesting & accepting duells
+        usage: /duell accept <name> | /duell <name>
+    job:
+        aliases: [job]
+        description: Display your job
+        usage: /job
+    hilfe:
+        aliases: [hilfe]
+        description: Display help
+        usage: /hilfe
+    help:
+        aliases: [help]
+        description: Display help
+        usage: /help

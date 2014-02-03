@@ -13,12 +13,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.ReNature.Handler.ReplaceHandler;
 import me.G4meM0ment.ReNature.Listener.BListener;
+import me.G4meM0ment.ReNature.Listener.PListener;
 
 public class ReNature {
 
 	private ReplaceHandler rh;
 	private RPGEssentials plugin;
 	private BListener blistener;
+	private PListener plistener;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -33,6 +35,7 @@ public class ReNature {
 		rh = new ReplaceHandler(plugin);
 		blistener = new BListener(plugin);
 		plugin.getServer().getPluginManager().registerEvents(blistener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
 		
 		dir = plugin.getDir()+"/ReNature";
 		configFile = new File(dir+"/config.yml");

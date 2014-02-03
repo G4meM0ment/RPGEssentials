@@ -1,0 +1,10 @@
+ReNatureEnabled: false
+JunkieEnabled: false
+RPGItemEnabled: false
+UnnamedPortalPluginEnabled: false
+RentablesEnabled: false
+AmbienceEnabled: false
+InventoryBackupEnabled: false
+DeathAndRebirthEnabled: false
+UsePermissions: true
+MaxWorldEditBlocksForCreation: 200

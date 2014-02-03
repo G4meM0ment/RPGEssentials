@@ -1,0 +1,45 @@
+##### CHANGELOG #####
++ added feature
+- removed feature
+! warning
+* fixed
+
+
+Version: 0.00.001 #0001
+    + ReNatur sub-plugin
+    	+ RN config
+    		+ list for denied blocks
+    		+ list for denied relatives
+    		+ list for relatives to track
+    		+ multiworld support
+    	+ dependencies
+    		+ Towny support
+    		+ Factions support
+        * recovering whole nature on disable
+        * asynchronous exception
+    + Junkie sub-plugin
+    + Orbia specific sub-plugin
+    	+ faction support (not needed anymore)
+    + GSkills
+    	+ SkillEmpower
+    	+ SkillFear
+    	+ SkillGroundpound
+    + RPGItem
+    	+ Items with special description, damage protection & powers
+    	+ Heroes support (damage added upon class specific dmg)
+    	+ converter to convert old rpg items into new ones
+    	+ convert command
+    	+ permissions
+    	! enchantments need to have the same name as they have in bukkit, view bukkit docu for names
+    + UnamedPortalPlugin
+    	+ add portals (also with worldedit)
+    	+ set portal destination
+    	+ woosh effect
+    	+ portal permissions
+    	+ portal cooldown
+    + Rentables
+    	+ create rentable areas with worldedit and signs
+    * various alpha bugs
+    * config won't disable sub-plugins
+    ! Junkie isn't ready to be used
+    

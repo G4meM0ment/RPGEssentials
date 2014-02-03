@@ -10,24 +10,26 @@ import me.G4meM0ment.DeathAndRebirth.Types.Grave;
 
 public class GraveHandler {
 	
-	private ConfigHandler cH;
 	private GhostHandler gH;
 	
+	public GraveHandler(GhostHandler gH)
+	{
+		this.gH = gH;
+	}
 	public GraveHandler()
 	{
-		cH = new ConfigHandler();
 		gH = new GhostHandler();
 	}
 	
 	/**
-	 * To check click events
+	 * To check click events in purpose of resurrecting
 	 * @param p
 	 * @param loc
 	 * @return
 	 */
 	public boolean isPlayersGrave(DARPlayer p, Location loc)
 	{
-		if(p.getGrave().getLocation().distance(loc) <= cH.getMaxGraveDistance())
+		if(p.getGrave().getLocation().distance(loc) <= ConfigHandler.maxGraveDistance)
 			return true;
 		return false;
 	}
@@ -39,7 +41,7 @@ public class GraveHandler {
 	 */
 	public boolean isGrave(Location loc)
 	{
-		for(DARPlayer p : gH.getDARPlayers(loc.getWorld()))
+		for(DARPlayer p : gH.getDARPlayers(loc.getWorld().getName()))
 		{
 			if(p.getGrave() == null) continue;
 			if(p.getGrave().getLocation().equals(loc))
@@ -48,6 +50,11 @@ public class GraveHandler {
 		return false;
 	}
 	
+	/**
+	 * Places the players grave sign
+	 * @param g
+	 * @param b
+	 */
 	public void placeSign(Grave g, Block b)
 	{
 		if(g == null || b == null) return;
@@ -59,25 +66,48 @@ public class GraveHandler {
 		 */
 		if(m.equals(Material.LAVA) || m.equals(Material.WATER)) return;
 
+		//save the information of the old block
 		g.setBlockMaterial(b.getType());
+		g.setData(b.getData());
 		
+		//create the sign and edit its lines
 		b.setType(Material.SIGN_POST);
 		Sign sign = (Sign) b.getState();
-		sign.setLine(1, cH.getSignText());
+		sign.setLine(1, ConfigHandler.signText);
 		sign.setLine(2, g.getPlayer().getName());
-		/*
-		 * TODO add offline line
-		 */
 		sign.update(true);
 		
+		//save the sign in the grave
 		g.setSign(sign);
 	}
 	
+	/**
+	 * Removes a players sign
+	 * @param g
+	 */
 	public void removeSign(Grave g)
 	{
 		if(g == null) return;
+		if(g.getBlockMaterial() == null) return;
 		
-		g.getSign().getBlock().setType(g.getBlockMaterial());
+		g.getLocation().getBlock().setType(g.getBlockMaterial());
+		g.getLocation().getBlock().setData((byte) g.getData());
+		
+		g.setBlockMaterial(null);
+		g.setData(0);
+	}
+	
+	public void removeOldSigns()
+	{
+		for(String world : gH.getDARPlayerLists().keySet())
+		{
+			for(DARPlayer p : gH.getDARPlayers(world))
+			{
+				if(p.getGrave().getPlacedMillis() > 0)
+					if(System.currentTimeMillis()-p.getGrave().getPlacedMillis() > ConfigHandler.autoSignRemove)
+						removeSign(p.getGrave());
+			}
+		}
 	}
 
 }

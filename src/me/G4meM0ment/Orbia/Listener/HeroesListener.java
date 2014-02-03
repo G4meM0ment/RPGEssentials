@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -11,7 +13,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
+import com.herocraftonline.heroes.api.events.ExperienceChangeEvent;
 import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.CharacterDamageManager.ProjectileType;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
@@ -34,6 +39,19 @@ public class HeroesListener implements Listener{
 		if(!(event.getEntity() instanceof Arrow)) return;
 		
 		arrowVel.put(event.getEntity(), event.getEntity().getVelocity().length());
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	public void onExperienceChange(ExperienceChangeEvent event) 
+	{
+		SpoutPlayer sp = SpoutManager.getPlayer(event.getHero().getPlayer());
+		if(event.getExpChange() > 0.0)
+			sp.sendNotification("Erfahrung erhalten:", ""+event.getExpChange(), Material.EXP_BOTTLE);
+		else
+		{
+			sp.sendNotification("Erfahrung verloren:", ""+event.getExpChange(), Material.EXP_BOTTLE);
+			sp.sendMessage(ChatColor.GRAY+"Erfahrung verloren: "+ChatColor.WHITE+event.getExpChange());
+		}
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)

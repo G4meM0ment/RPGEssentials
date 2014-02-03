@@ -6,6 +6,11 @@ import org.bukkit.entity.Player;
 
 public class PermHandler {
 	
+	/**
+	 * Checks for any matching permission
+	 * @param p
+	 * @return
+	 */
 	public boolean hasNoDropPerm(Player p)
 	{
 		if(p == null) return false;
@@ -14,6 +19,11 @@ public class PermHandler {
 		return false;
 	}
 	
+	/**
+	 * Checks for any matching permission
+	 * @param p
+	 * @return
+	 */
 	public boolean hasAdminPerm(Player p)
 	{
 		if(p == null) return false;
@@ -22,6 +32,11 @@ public class PermHandler {
 		return false;
 	}
 
+	/**
+	 * Checks for any matching permission
+	 * @param p
+	 * @return
+	 */
 	public boolean hasReloadPerm(Player p)
 	{
 		if(p == null) return false;
@@ -31,6 +46,11 @@ public class PermHandler {
 		return false;
 	}
 	
+	/**
+	 * Checks for any matching permission
+	 * @param p
+	 * @return
+	 */
 	public boolean hasShrinePerm(Player p, Shrine s)
 	{
 		if(p == null) return false;
@@ -40,6 +60,11 @@ public class PermHandler {
 		return false;
 	}
 	
+	/**
+	 * Checks for any matching permission
+	 * @param p
+	 * @return
+	 */
 	public boolean hasIgnorePerm(Player p)
 	{
 		if(p == null) return false;

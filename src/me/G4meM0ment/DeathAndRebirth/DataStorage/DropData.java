@@ -9,7 +9,9 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import me.G4meM0ment.DeathAndRebirth.DeathAndRebirth;
+import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -36,7 +38,7 @@ public class DropData {
 
 	public DropData() 
 	{
-		subplugin = new DeathAndRebirth();
+		subplugin = ((RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials")).getDeathAndRebirth();
 	}
 	
 	public String getDir() {
@@ -79,6 +81,12 @@ public class DropData {
 	    }
 	}
 	
+	/**
+	 * After player revive get items from data file back to the player
+	 * @param invFile
+	 * @param path
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public ItemStack[] getItemsFromConfig(FileConfiguration invFile, String path)
 	{
@@ -86,7 +94,6 @@ public class DropData {
 		ItemStack [] itemstack = new ItemStack[keys.size()];
 		Map<String, Object> item = null;
 		int i = 0;
-		//Map<Enchantment, Integer> enchant = null;
 		
 		for(String key : keys) 
 		{
@@ -96,35 +103,23 @@ public class DropData {
 					return null;
 				Map<String, Object> map = ((MemorySection) invFile.get(path+"."+key)).getValues(false);
 				item = map;
-				/*// enchantments
-				if (map.containsKey("enchantments")) {
-					enchant = new HashMap<Enchantment, Integer>();
-		             Object raw = ((MemorySection) map.get("enchantments")).getValues(false);
-		 
-		             if (raw instanceof Map) {
-		                 Map<?, ?> enchants = (Map<?, ?>) raw;
-		 
-		                 for (Map.Entry<?, ?> entry : enchants.entrySet()) {
-		                     Enchantment enchantment = Enchantment.getByName(entry.getKey().toString());
-		 
-		                     if ((enchantment != null) && (entry.getValue() instanceof Integer)) {
-		                         enchant.put(enchantment, (Integer) entry.getValue());
-		                     }
-		                 }
-		             }
-				}
-				else {
-					enchant = null;
-				}
-				// end enchantments */
 			}
 			else
 				item = (LinkedHashMap<String, Object>) invFile.get(path+"."+key);
 			
 			itemstack[i] = ItemStack.deserialize(item);
-			//if (enchant != null) itemstack[i].addUnsafeEnchantments(enchant);
 			i++;
 		}
 		return itemstack;
+	}
+	
+	/**
+	 * remove players data after his items were given to him
+	 * @param pName
+	 * @param wName
+	 */
+	public void removePlayersSection(String pName, String wName)
+	{
+		config.set(pName+"."+wName, null);
 	}
 }

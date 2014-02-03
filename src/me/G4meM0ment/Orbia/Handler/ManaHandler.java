@@ -5,12 +5,16 @@ import java.util.HashMap;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.getspout.spoutapi.SpoutManager;
-import org.getspout.spoutapi.gui.GenericLabel;
+import org.getspout.spoutapi.gui.Color;
+import org.getspout.spoutapi.gui.GenericGradient;
+import org.getspout.spoutapi.gui.Gradient;
 import org.getspout.spoutapi.gui.Screen;
 import org.getspout.spoutapi.gui.ScreenType;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.herocraftonline.heroes.characters.Hero;
 
@@ -18,49 +22,22 @@ public class ManaHandler {
 	
 	private RPGEssentials plugin;
 	
-	public HashMap<Player, GenericLabel> widgets = new HashMap<Player, GenericLabel>();
+	private static final HashMap<Player, Gradient> widgets = new HashMap<Player, Gradient>();
+//	private static Color redBar = new Color(0.69f,0.09f,0.12f,1f);
+	private static Color blueBar = new Color(0,0,1f,1f);
 	
 	public ManaHandler(RPGEssentials plugin)
 	{
 		this.plugin = plugin;
 	}
 	
-	public GenericLabel getWidget(Player p)
+	public Gradient getWidget(Player p)
 	{
 		return widgets.get(p);
 	}
-	public void setWidget(Player p, GenericLabel label)
+	public void setWidget(Player p, Gradient label)
 	{
 		widgets.put(p, label);
-	}
-	
-	public void updateManaBar(Player p, Hero h)
-	{
-		if(p == null) return;
-		if(h == null)
-			h = plugin.getHeroes().getCharacterManager().getHero(p);
-		Screen s = SpoutManager.getPlayer(p).getCurrentScreen();
-		
-		GenericLabel manaLabel = getWidget(p);
-		if(manaLabel == null && s.getScreenType() == ScreenType.GAME_SCREEN)
-		{
-			manaLabel = new GenericLabel();
-			manaLabel.setHeight(10);
-			manaLabel.setWidth(35);
-//			manaLabel.setMarginBottom(s.getHeight()/4);
-//			manaLabel.setMarginLeft(s.getWidth()/2-manaLabel.getWidth()/2);
-			manaLabel.setY(s.getHeight()-s.getHeight()/5);
-			manaLabel.setX(s.getWidth()/2-manaLabel.getWidth()/2);
-			manaLabel.setText(ChatColor.DARK_BLUE+""+h.getMana()+"/"+ h.getMaxMana());
-			
-			SpoutManager.getPlayer(p).getCurrentScreen().attachWidget(plugin, manaLabel);
-			setWidget(p, manaLabel);
-			return;
-		}
-		else if(manaLabel == null)
-			return;
-		manaLabel.setText(ChatColor.DARK_BLUE+""+h.getMana()+"/"+ h.getMaxMana());
-		s.updateWidget(manaLabel);
 	}
 	
 	public void startUpdater()
@@ -74,6 +51,62 @@ public class ManaHandler {
 					if(plugin.getHeroes().getCharacterManager().getHero(p).getHeroClass().getName().equalsIgnoreCase("Novize"))
 						updateManaBar(p, null);
 			}
-		}, 0, 10);
+		}, 0, 5);
+	}
+	
+	public void updateManaBar(Player p, Hero h)
+	{
+		SpoutPlayer sp = SpoutManager.getPlayer(p);
+		Gradient widget = getWidget(p);
+		if(h == null)
+			h = plugin.getHeroes().getCharacterManager().getHero(p);
+		Screen s = sp.getMainScreen();
+		
+		if(widget == null && s.getScreenType().equals(ScreenType.GAME_SCREEN))
+		{
+			widget = new GenericGradient();
+			
+			widget.setHeight(4);
+			widget.setX(sp.getMainScreen().getHealthBar().getX()+10);
+			
+			sp.getMainScreen().attachWidget(plugin, widget);
+			setWidget(p, widget);
+		}
+		
+		int maxLength = 160;
+		double percent = ((double)h.getMana() / (double)h.getMaxMana())*100.0;
+		int length = (int) ((percent/100)*maxLength);
+		
+		widget.setColor(blueBar);
+		widget.setX(sp.getMainScreen().getHealthBar().getX()+10);
+		widget.setWidth(length);
+	
+		if(isUnderwater(s.getPlayer()) || hasArmor(s.getPlayer()))
+			widget.setY(sp.getMainScreen().getArmorBar().getY()-2);
+		else
+			widget.setY(sp.getMainScreen().getHealthBar().getY()-2);
+		
+		widget.updateSize();
+
+		if(!sp.getMainScreen().getAttachedWidgetsAsSet(true).contains(widget))
+			sp.getMainScreen().attachWidget(plugin, widget);
+	}
+	
+	private boolean hasArmor(Player p)
+	{
+		if(p == null) return false;
+		if(p.getInventory().getHelmet() == null 
+				&& p.getInventory().getChestplate() == null 
+				&& p.getInventory().getLeggings() == null
+				&& p.getInventory().getBoots() == null)
+			return false;
+		return true;
+	}
+	private boolean isUnderwater(Player p)
+	{
+		if(p == null) return false;
+		if(p.getLocation().getBlock().getRelative(BlockFace.UP).getType().equals(Material.WATER) || p.getLocation().getBlock().getRelative(BlockFace.UP).getType().equals(Material.STATIONARY_WATER))
+			return true;
+		return false;
 	}
 }
