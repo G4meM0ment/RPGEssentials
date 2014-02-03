@@ -128,10 +128,13 @@ public class PowerHandler {
 				break; */
 			case "invisibility":
 				iH.hidePlayer(p);
+				break;
 			case "scuba":
 				p.setRemainingAir(p.getMaximumAir());
+				break;
 			case "nightvision":
                 p.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, powers.get(s).intValue()));
+                break;
 			}
 		}
 	}
