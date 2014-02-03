@@ -1,5 +1,7 @@
 package me.G4meM0ment.RPGItem.Handler;
 
+import java.util.HashMap;
+
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.RPGItem.Converter.Converter;
@@ -23,6 +25,7 @@ public class CommandHandler {
 	private ItemConfig itemConfig;
 	private Converter converter;
 	private RPGItem subplugin;
+	private PowerHandler powerH;
 	
 	public CommandHandler(RPGEssentials plugin) 
 	{
@@ -32,6 +35,7 @@ public class CommandHandler {
 		customItemHandler = new CustomItemHandler(plugin);
 		itemConfig = new ItemConfig();
 		converter = new Converter(plugin);
+		powerH = new PowerHandler();
 	}
 	
 	public boolean exec(CommandSender sender, Command command, String label, String[] args) 
@@ -132,9 +136,14 @@ public class CommandHandler {
 				id = customItemHandler.getFreeId(name);
 			FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(name));
 			
-			customItemHandler.spawnCustomItem(p, new CustomItem(null, config.getString("displayName"), id, config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()),
+			CustomItem customItem = customItemHandler.spawnCustomItem(p, new CustomItem(null, config.getString("displayName"), id, config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()),
 					config.getInt("damage"), config.getInt("damageMax"), config.getInt("durability"), config.getString("description"), config.getInt("price"), config.getString("lore"),
-					Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), Material.valueOf(config.getString("repair").toUpperCase()), config.getInt("durability")));
+					Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), Material.valueOf(config.getString("repair").toUpperCase()), config.getInt("durability"), new HashMap<String, Double>()));
+			
+			HashMap<String, Double> powers = new HashMap<String, Double>();
+			for(String s : powerH.getItemPowers(customItem))
+				powers.put(s, itemConfig.getConfig(itemConfig.getFile(customItem.getDispName())).getDouble("powers."+s));
+			customItem.setPowers(powers);
 			
 			if(sender instanceof Player)
 				player.sendMessage("Item given: "+name);

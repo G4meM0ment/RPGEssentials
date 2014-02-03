@@ -10,10 +10,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import com.herocraftonline.heroes.api.events.SkillDamageEvent;
+import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 
 public class DuellListener implements Listener {
 	
@@ -58,8 +62,9 @@ public class DuellListener implements Listener {
 	{
 		if(!(event.getEntity() instanceof Player)) return;
 		final Player p = (Player) event.getEntity();
-		if(dh.getGracers().contains(p))
-			event.setCancelled(true);
+		
+		/*if(dh.getGracers().contains(p))
+			event.setCancelled(true);*/
 		
 		Damageable d = p;
 		
@@ -70,13 +75,13 @@ public class DuellListener implements Listener {
 		{
 			dh.getGracers().add(p);
 			event.setDamage(0.0);
-			p.setHealth(6.0);
+			p.setHealth(p.getMaxHealth()); //old 6.0
 			
 			p.sendMessage(ChatColor.DARK_RED+"Du hast das Duell verloren!");
 			if(p2 != null)
 			{
-				p2.setHealth(6.0);
-				p2.sendMessage(ChatColor.DARK_RED+"Du hast das Duell gewonnen!");
+				p2.sendMessage(ChatColor.DARK_RED+"Du hast das Duell gewonnen ("+p2.getHealth()+" Lebenpunkte übrig)!");
+				p2.setHealth(p2.getMaxHealth());
 				dh.getGracers().add(p2);
 			}
 			dh.removeDuell(p.getName());
@@ -115,4 +120,33 @@ public class DuellListener implements Listener {
 			dh.removeDuell(p.getName());
 		}
 	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+	public void onWeaponDamage(WeaponDamageEvent event)
+	{
+		if(!(event.getDamager() instanceof Player) && !(event.getEntity() instanceof Player)) return;
+		Player p1 = (Player) event.getDamager();
+		Player p2 = (Player) event.getEntity();
+		if(dh.getGracers().contains(p1) || dh.getGracers().contains(p2))
+			event.setCancelled(true);
+	}
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+	public void onSkillDamage(SkillDamageEvent event)
+	{
+		if(!(event.getDamager().getEntity() instanceof Player) && !(event.getEntity() instanceof Player)) return;
+		Player p1 = (Player) event.getDamager();
+		Player p2 = (Player) event.getEntity();	
+		if(dh.getGracers().contains(p1) || dh.getGracers().contains(p2))
+			event.setCancelled(true);
+	}
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+	public void onEntityByEntityDamage(EntityDamageByEntityEvent event)
+	{
+		if(!(event.getDamager() instanceof Player) && !(event.getEntity() instanceof Player)) return;
+		Player p1 = (Player) event.getDamager();
+		Player p2 = (Player) event.getEntity();
+		if(dh.getGracers().contains(p1) || dh.getGracers().contains(p2))
+			event.setCancelled(true);
+	}
+	
 }

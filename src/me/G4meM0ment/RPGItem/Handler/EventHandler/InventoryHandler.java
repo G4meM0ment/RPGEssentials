@@ -1,7 +1,7 @@
 package me.G4meM0ment.RPGItem.Handler.EventHandler;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
@@ -13,13 +13,12 @@ import me.G4meM0ment.RPGItem.DataStorage.ItemData;
 import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ItemHandler;
 import me.G4meM0ment.RPGItem.Handler.ListHandler;
+import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -34,6 +33,7 @@ public class InventoryHandler {
 	private ItemData itemData;
 	private ListHandler lh;
 	private CustomItemHandler customItemHandler;
+	private PowerHandler powerH;
 	
 	public InventoryHandler(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -43,6 +43,7 @@ public class InventoryHandler {
 		itemData = new ItemData();
 		lh = new ListHandler();
 		customItemHandler = new CustomItemHandler();
+		powerH = new PowerHandler();
 	}
 	public InventoryHandler() {
 		subplugin = new RPGItem();
@@ -51,6 +52,7 @@ public class InventoryHandler {
 		itemData = new ItemData();
 		lh = new ListHandler();
 		customItemHandler = new CustomItemHandler();
+		powerH = new PowerHandler();
 	}
 	
 	public void processInventory(PlayerInventory inv, Player p) 
@@ -94,15 +96,32 @@ public class InventoryHandler {
 				if(subplugin.getConfig().getBoolean("useIDs"))
 				{
 					if(!lh.containsCustomItem(list, item))
-						ListHandler.addCustomItemToList(new CustomItem(item, name, id, config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()), config.getInt("damage"), config.getInt("damageMax"),
+					{
+						CustomItem customItem = new CustomItem(item, name, id, config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()), config.getInt("damage"), config.getInt("damageMax"),
 								data.getInt(Integer.toString(id)+".durability"), config.getString("description"), config.getInt("price"), config.getString("lore"), 
-								Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), Material.valueOf(config.getString("repair").toUpperCase()), config.getInt("durability")), list);
+								Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), Material.valueOf(config.getString("repair").toUpperCase()), config.getInt("durability"), new HashMap<String, Double>());
+					
+						HashMap<String, Double> powers = new HashMap<String, Double>();
+						for(String s : powerH.getItemPowers(customItem))
+							powers.put(s, itemConfig.getConfig(itemConfig.getFile(customItem.getDispName())).getDouble("powers."+s));
+						customItem.setPowers(powers);	
+						
+						ListHandler.addCustomItemToList(customItem, list);
+					}
 				}
 				else if (list.isEmpty())
 				{
-					ListHandler.addCustomItemToList(new CustomItem(item, name, id, config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()), config.getInt("damage"), config.getInt("damageMax"),
+					CustomItem customItem = new CustomItem(item, name, id, config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()), config.getInt("damage"), config.getInt("damageMax"),
 							config.getInt("durability"), config.getString("description"), config.getInt("price"), config.getString("lore"), 
-							Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), Material.valueOf(config.getString("repair").toUpperCase()), config.getInt("durability")), list);
+							Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), Material.valueOf(config.getString("repair").toUpperCase()), config.getInt("durability"), new HashMap<String, Double>());
+			
+					HashMap<String, Double> powers = new HashMap<String, Double>();
+					for(String s : powerH.getItemPowers(customItem))
+						powers.put(s, itemConfig.getConfig(itemConfig.getFile(customItem.getDispName())).getDouble("powers."+s));
+					customItem.setPowers(powers);
+
+					ListHandler.addCustomItemToList(customItem, list);
+				
 				}
 			  customItemHandler.updateItem(item, p, false);
 			}

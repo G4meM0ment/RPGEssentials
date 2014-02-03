@@ -2,6 +2,7 @@ package me.G4meM0ment.RPGItem.Handler;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -12,7 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
-import org.getspout.spoutapi.SpoutManager;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGItem.RPGItem;
@@ -31,6 +31,7 @@ public class CustomItemHandler {
 	private EnchantmentHandler enchantHandler;
 	private MetaHandler metaHandler;
 	private ItemHandler itemHandler;
+	private PowerHandler powerH;
 	
 	private static Material[] repairable = {
 		Material.WOOD_SWORD, Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLD_SWORD, Material.DIAMOND_SWORD,
@@ -56,6 +57,7 @@ public class CustomItemHandler {
 		enchantHandler = new EnchantmentHandler();
 		metaHandler = new MetaHandler(plugin);
 		itemHandler = new ItemHandler();
+		powerH = new PowerHandler(this);
 	}
 	public CustomItemHandler() 
 	{
@@ -66,6 +68,7 @@ public class CustomItemHandler {
 		enchantHandler = new EnchantmentHandler();
 		metaHandler = new MetaHandler();
 		itemHandler = new ItemHandler();
+		powerH = new PowerHandler(this);
 	}
 	
 	public void initializeAutoRepair()
@@ -83,7 +86,7 @@ public class CustomItemHandler {
 		}, 0 , 200);
 	}
 	
-	public void spawnCustomItem(Player p, CustomItem customItem) 
+	public CustomItem spawnCustomItem(Player p, CustomItem customItem) 
 	{
 		//Variable decleration
 		ItemStack item = new ItemStack(customItem.getSkin(), 1);
@@ -119,6 +122,7 @@ public class CustomItemHandler {
         	ListHandler.addCustomItemToList(customItem, list);
 		
 		p.getInventory().addItem(item);
+		return customItem;
 	}
 	
 	public int getFreeId(String name) 
@@ -199,7 +203,12 @@ public class CustomItemHandler {
 			id = getFreeId(ChatColor.stripColor(item.getItemMeta().getDisplayName()));
 		ItemMeta meta = item.getItemMeta();
 		CustomItem customItem = new CustomItem(item, ChatColor.stripColor(meta.getDisplayName()), id, 0, item.getType(),
-				0 , 0, 0, "", 0, "", Quality.TRASH, "", "", Material.AIR, 0);
+				0 , 0, 0, "", 0, "", Quality.TRASH, "", "", Material.AIR, 0, new HashMap<String, Double>());
+		
+		HashMap<String, Double> powers = new HashMap<String, Double>();
+		for(String s : powerH.getItemPowers(customItem))
+			powers.put(s, itemConfig.getConfig(itemConfig.getFile(customItem.getDispName())).getDouble("powers."+s));
+		customItem.setPowers(powers);
 		
 		FileConfiguration data = itemData.getDataFile(itemData.getFile(customItem.getDispName()));
 		FileConfiguration config = itemConfig.getConfig(itemConfig.getFile(customItem.getDispName()));

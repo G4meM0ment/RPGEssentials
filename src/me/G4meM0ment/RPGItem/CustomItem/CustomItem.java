@@ -1,5 +1,7 @@
 package me.G4meM0ment.RPGItem.CustomItem;
 
+import java.util.HashMap;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,8 +12,10 @@ public class CustomItem{
 	private Material repair, skin;
 	private Quality quality;
 	private ItemStack item;
+	private HashMap<String, Double> powers = new HashMap<String, Double>();
 	
-	public CustomItem(ItemStack item, String dispName, int id, int data, Material skin, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand, Material repair, int maxDurability) {
+	public CustomItem(ItemStack item, String dispName, int id, int data, Material skin, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand, Material repair, int maxDurability, HashMap<String, Double> powers) 
+	{
 		this.item = item;
 		this.dispName = dispName;
 		this.id = id;
@@ -28,132 +32,176 @@ public class CustomItem{
 		this.hand = hand;
 		this.repair = repair;
 		this.maxDurability = maxDurability;
+		this.powers = powers;
+		
 	}
 
 	//Item getter/setter
-	public ItemStack getItem() {
+	public ItemStack getItem() 
+	{
 		return item;
 	}
-	public void setItem(ItemStack item) {
+	public void setItem(ItemStack item) 
+	{
 		this.item = item;
 	}
 	
 	//Id getter/setter
-	public int getId() {
+	public int getId() 
+	{
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(int id) 
+	{
 		this.id = id;
 	}
 	
 	//Data value getter/setter
-	public int getData() {
+	public int getData() 
+	{
 		return data;
 	}
-	public void setData(int data) {
+	public void setData(int data) 
+	{
 		this.data = data;
 	}
 	
 	//Skin getter/setter
-	public Material getSkin() {
+	public Material getSkin()
+	{
 		return skin;
 	}
-	public void setSkin(Material mat) {
+	public void setSkin(Material mat)
+	{
 		skin = mat;
 	}
 	
 	//Damage getter/setter
-	public int getDmgValue() {
+	public int getDmgValue()
+	{
 		return dmgValue;
 	}
-	public void setDmgValue(int i) {
+	public void setDmgValue(int i)
+	{
 		dmgValue = i;
 	}
 	
 	//Max damage getter/setter
-	public int getDmgValueMax() {
+	public int getDmgValueMax()
+	{
 		return dmgValueMax;
 	}
-	public void setDmgValueMax(int dmgValueMax) {
+	public void setDmgValueMax(int dmgValueMax)
+	{
 		this.dmgValueMax = dmgValueMax;
 	}
 	
 	//Displayname getter/setter
-	public String getDispName() {
+	public String getDispName()
+	{
 		return dispName;
 	}
-	public void setDispName(String dispName) {
+	public void setDispName(String dispName)
+	{
 		this.dispName = dispName;
 	}
 
 	//Description getter/setter
-	public String getDesc() {
+	public String getDesc()
+	{
 		return desc;
 	}
-	public void setDesc(String description) {
+	public void setDesc(String description)
+	{
 		this.desc = description;
 	}
 	
 	//Price getter/setter
-	public int getPrice() {
+	public int getPrice() 
+	{
 		return price;
 	}
-	public void setPrice(int price) {
+	public void setPrice(int price) 
+	{
 		this.price = price;
 	}
 	
 	//Lore getter/setter
-	public String getLore() {
+	public String getLore() 
+	{
 		return lore;
 	}
-	public void setLore(String lore) {
+	public void setLore(String lore) 
+	{
 		this.lore = lore;
 	}
 	
 	//Durability getter/setter
-	public int getDurability() {
+	public int getDurability() 
+	{
 		return durability;
 	}
-	public void setDurability(int durability) {
+	public void setDurability(int durability)
+	{
 		this.durability = durability;
 	}
 	//Handed getter/setter
-	public String getHand() {
+	public String getHand()
+	{
 		return hand;
 	}
-	public void setHand(String hand) {
+	public void setHand(String hand) 
+	{
 		this.hand = hand;
 	}
 
 	//Type getter/setter
-	public String getType() {
+	public String getType() 
+	{
 		return type;
 	}
-	public void setType(String type) {
+	public void setType(String type)
+	{
 		this.type = type;
 	}
 	
 	//Quality getter/setter
-	public Quality getQuality() {
+	public Quality getQuality()
+	{
 		return quality;
 	}
-	public void setQuality(Quality quality) {
+	public void setQuality(Quality quality)
+	{
 		this.quality = quality;
 	}
 	
 	//repair getter/setter
-	public Material getRepairMaterial() {
+	public Material getRepairMaterial()
+	{
 		return repair;
 	}
-	public void setRepairId(Material mat) {
+	public void setRepairId(Material mat)
+	{
 		repair = mat;
 	}
 	
 	//maxDurability getter/setter
-	public int getMaxDurability() {
+	public int getMaxDurability()
+	{
 		return maxDurability;
 	}
-	public void setMaxDurability(int maxDurability) {
+	public void setMaxDurability(int maxDurability)
+	{
 		this.maxDurability = maxDurability;
+	}
+	
+	//maxDurability getter/setter
+	public HashMap<String, Double> getPowers() 
+	{
+		return powers;
+	}
+	public void setPowers(HashMap<String, Double> powers) 
+	{
+		this.powers = powers;
 	}
 }

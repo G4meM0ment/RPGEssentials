@@ -11,7 +11,6 @@ import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 import me.G4meM0ment.RPGItem.DataStorage.ItemConfig;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -22,6 +21,7 @@ public class PowerHandler {
 	//TODO add regeneration, 
 	
 	private RPGEssentials plugin;
+	@SuppressWarnings("unused")
 	private RPGItem subplugin;
 	private ItemConfig itemConfig;
 	private ListHandler lh;
@@ -41,6 +41,15 @@ public class PowerHandler {
 		customItemHandler = new CustomItemHandler();
 		iH = new InvisibilityHandler();
 		start();
+	}
+	public PowerHandler(CustomItemHandler ciH) 
+	{
+		subplugin = new RPGItem();
+		itemConfig = new ItemConfig();
+		lh = new ListHandler();
+		itemHandler = new ItemHandler();
+		customItemHandler = ciH;
+		iH = new InvisibilityHandler();
 	}
 	public PowerHandler() 
 	{
@@ -74,7 +83,7 @@ public class PowerHandler {
 		return false;
 	}
 	
-	private boolean itemHasPower(CustomItem i)
+/*	private boolean itemHasPower(CustomItem i)
 	{
 		if(i == null) return false;
 		if(itemConfig.getConfig(itemConfig.getFile(i.getDispName())) == null) return false;
@@ -87,8 +96,8 @@ public class PowerHandler {
 				return true;
 		}
 		return false;
-	}
-	private List<String> getItemPowers(CustomItem i)
+	}*/
+	public List<String> getItemPowers(CustomItem i)
 	{
 		List<String> powers = new ArrayList<String>();
 		for(String s : lh.getPowers())
@@ -108,11 +117,11 @@ public class PowerHandler {
 			{
 			case "speed":
 				if(p.getWalkSpeed()+powers.get(s) <= 1)
-					p.setWalkSpeed((float) (p.getWalkSpeed()+powers.get(s)));
+					p.setWalkSpeed((float) (/*p.getWalkSpeed()*/0.2F+powers.get(s)));
 				else if(p.getWalkSpeed()+powers.get(s) < 0)
 					p.setWalkSpeed(0F);
 				else
-					p.setWalkSpeed(1);
+					p.setWalkSpeed(1.0F);
 				break;
 			/*case "jump":
 				SpoutManager.getPlayer(p).setJumpingMultiplier(SpoutManager.getPlayer(p).getJumpingMultiplier()+powers.get(s));
@@ -164,47 +173,56 @@ public class PowerHandler {
 		    		 * 
 		    		 */
 		    		ConcurrentHashMap<String, Double> powers = new ConcurrentHashMap<String, Double>();
-		    		if(itemHandler.isCustomItem(p.getItemInHand()) && itemHasPower(customItemHandler.getCustomItem(p.getItemInHand())))
+		    		if(itemHandler.isCustomItem(p.getItemInHand())/* && itemHasPower(customItemHandler.getCustomItem(p.getItemInHand()))*/)
 		    		{
 		    			ItemStack i = p.getItemInHand();
 		    			CustomItem cItem = customItemHandler.getCustomItem(i);
-	    				if(subplugin.getConfig().getInt("DurabilityAffectingUtility") > 0) 
+	    				
+		    			/*
+		    			 * removed due durability was disabled
+		    			 */
+		    			/*if(subplugin.getConfig().getInt("DurabilityAffectingUtility") > 0) 
 	    				{
 	    					int durability = cItem.getDurability();
 	    					int maxDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
 	    					int percent = (durability * 100) / maxDurability;
 	    					if(percent < subplugin.getConfig().getInt("DurabilityAffectingUtility"))
 	    						continue;
-	    				}
-		    			for(String power : getItemPowers(customItemHandler.getCustomItem(i)))
+	    				}*/
+		    			
+		    			for(String power : cItem.getPowers().keySet())
 		    			{
 		    				if(powers.containsKey(power))
-		    					powers.put(power, powers.get(power)+itemConfig.getConfig(itemConfig.getFile(customItemHandler.getCustomItem(i).getDispName())).getDouble("powers."+power));
+		    					powers.put(power, powers.get(power)+cItem.getPowers().get(power));
 		    				else
-		    					powers.put(power, itemConfig.getConfig(itemConfig.getFile(customItemHandler.getCustomItem(i).getDispName())).getDouble("powers."+power));
+		    					powers.put(power, cItem.getPowers().get(power));
 		    			}
 		    		}
 		    		
 		    		for(ItemStack i : p.getInventory().getArmorContents())
-		    			if(itemHandler.isCustomItem(i) && itemHasPower(customItemHandler.getCustomItem(i)))
+		    		{
+		    			if(itemHandler.isCustomItem(i)/* && itemHasPower(customItemHandler.getCustomItem(i))*/)
 		    			{
 		    				CustomItem cItem = customItemHandler.getCustomItem(i);
-	    					if(subplugin.getConfig().getInt("DurabilityAffectingUtility") > 0) 
+	    					
+		    				/*if(subplugin.getConfig().getInt("DurabilityAffectingUtility") > 0) 
 	    					{
 	    						int durability = cItem.getDurability();
 	    						int maxDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
 	    						int percent = (durability * 100) / maxDurability;
 	    						if(percent < subplugin.getConfig().getInt("DurabilityAffectingUtility"))
 	    							continue;
-	    					}
-		    				for(String power : getItemPowers(customItemHandler.getCustomItem(i)))
+	    					}*/
+		    				
+		    				for(String power : cItem.getPowers().keySet())
 		    				{
-		    					if(powers.containsKey(power))
-		    						powers.put(power, powers.get(power)+itemConfig.getConfig(itemConfig.getFile(customItemHandler.getCustomItem(i).getDispName())).getInt("powers."+power));
-		    					else
-		    						powers.put(power, itemConfig.getConfig(itemConfig.getFile(customItemHandler.getCustomItem(i).getDispName())).getDouble("powers."+power));
+			    				if(powers.containsKey(power))
+			    					powers.put(power, powers.get(power)+cItem.getPowers().get(power));
+			    				else
+			    					powers.put(power, cItem.getPowers().get(power));
 		    				}
 		    			}
+		    		}
 		    		
 		    		removeAppliedPowers(p);
 		    		getPlayerPowers().put(p, powers);
@@ -212,6 +230,6 @@ public class PowerHandler {
 		    		applyPowers(p);
 		    	}
 		    }
-		}, 0, 60);
+		}, 0, 80);
 	}
 }
