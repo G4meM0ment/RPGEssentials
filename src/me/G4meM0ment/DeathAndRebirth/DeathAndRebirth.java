@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.G4meM0ment.DeathAndRebirth.DataStorage.DropData;
+import me.G4meM0ment.DeathAndRebirth.DataStorage.Message;
 import me.G4meM0ment.DeathAndRebirth.DataStorage.PlayerData;
 import me.G4meM0ment.DeathAndRebirth.DataStorage.ShrineData;
 import me.G4meM0ment.DeathAndRebirth.Handler.ConfigHandler;
@@ -36,7 +37,6 @@ public class DeathAndRebirth {
 	private EListener eListener;
 	
 	private ShrineHandler sH;
-	private static ConfigHandler cH;
 	private GhostHandler gH;
 	private GraveHandler graveH;
 	
@@ -73,6 +73,8 @@ public class DeathAndRebirth {
 		dir = plugin.getDir()+"/DeathAndRebirth";
 		logger = plugin.getLogger();
 		configFile = new File(dir+"/config.yml");
+		new ConfigHandler();
+		new Message();
 		
 		/*
 		 * init handlers and utils
@@ -81,7 +83,6 @@ public class DeathAndRebirth {
 		playerData = new PlayerData(this);
 		shrineData = new ShrineData(this);
 		
-		cH = new ConfigHandler();
 		sH = new ShrineHandler();
 		gH = new GhostHandler(this);
 		graveH = new GraveHandler();
@@ -106,11 +107,18 @@ public class DeathAndRebirth {
 		//creating config or loading
 		reloadConfig();
 		saveConfig();
-		cH.loadSettings();
+		ConfigHandler.loadSettings();
+		
+		Message.reloadFile();
+		Message.saveFile();
+		Message.loadMessages();
+
 		dropData.reloadConfig();
 		dropData.saveConfig();
+		
 		playerData.reloadConfig();
 		playerData.saveConfig();
+		
 		shrineData.reloadConfig();
 		shrineData.saveConfig();
 		
@@ -122,8 +130,7 @@ public class DeathAndRebirth {
 			@Override
 			public void run() 
 			{
-				System.out.println("Loading all settings!");
-				cH.loadSettings();
+				ConfigHandler.loadSettings();
 				gH.initPlayerLists();
 				sH.initShrineLists();
 				playerData.loadDataFromFile();
@@ -159,7 +166,7 @@ public class DeathAndRebirth {
 	public boolean onDisable() 
 	{
 		//save all data from cache to file
-		cH.saveSettings();		
+		ConfigHandler.saveSettings();		
 		playerData.saveDataToFile();
 		shrineData.saveDataToFile();
 
@@ -173,17 +180,21 @@ public class DeathAndRebirth {
 	public void reloadConfigs() 
 	{
 		reloadConfig();
+		Message.reloadFile();
+		
 		dropData.reloadConfig();
 		playerData.reloadConfig();
 		shrineData.reloadConfig();
-		cH.loadSettings();
+		
+		ConfigHandler.loadSettings();
+		Message.loadMessages();
 	}
 	/**
 	 * save all data from cache to file
 	 */
 	public void saveConfigs() 
 	{		
-		cH.saveSettings();
+		ConfigHandler.saveSettings();
 	}
 	
 	/**
@@ -280,10 +291,5 @@ public class DeathAndRebirth {
 	public boolean isEnabled() 
 	{
 		return isEnabled;
-	}
-	
-	public ConfigHandler getConfigHandler()
-	{
-		return cH;
 	}
 }

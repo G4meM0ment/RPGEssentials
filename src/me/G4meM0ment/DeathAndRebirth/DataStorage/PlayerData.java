@@ -72,6 +72,7 @@ public class PlayerData {
 	    {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
+	        config.options().copyHeader(true);
 	        config.options().copyDefaults(true);
 	    }
 	    subplugin.getLogger().info(logTit+"Player (ghosts) data loaded.");

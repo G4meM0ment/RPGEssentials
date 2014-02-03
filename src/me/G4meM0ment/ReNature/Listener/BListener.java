@@ -22,7 +22,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 
-public class BListener implements Listener{
+public class BListener implements Listener {
 	
 	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
@@ -31,7 +31,8 @@ public class BListener implements Listener{
 	private ReFaction reFaction;
 	private ReTowny reTowny;
 	
-	public BListener(RPGEssentials plugin) {
+	public BListener(RPGEssentials plugin) 
+	{
 		this.plugin = plugin;
 		rh = new ReplaceHandler();
 		subplugin = new ReNature();

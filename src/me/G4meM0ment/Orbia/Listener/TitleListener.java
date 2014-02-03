@@ -16,16 +16,18 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.getspout.spoutapi.SpoutManager;
 
-import com.herocraftonline.heroes.api.events.SkillDamageEvent;
-import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
-
 public class TitleListener implements Listener {
 	
+	@SuppressWarnings("unused")
 	private Orbia subplugin;
+	
+	private FileConfiguration pexConfig;
 	
 	public TitleListener()
 	{
 		subplugin = new Orbia();
+		File pex = new File("plugins/PermissionsEx/permissions.yml");
+		pexConfig = YamlConfiguration.loadConfiguration(pex);
 	}
 	
 	/*
@@ -46,7 +48,7 @@ public class TitleListener implements Listener {
 				for(Player p : Bukkit.getOnlinePlayers())
 					SpoutManager.getPlayer(p).setTitle(getTitle(p));
 			}
-		}, 0, 10);
+		}, 0, 40);
 	}
 	
 	public String getTitle(Player p)
@@ -70,8 +72,6 @@ public class TitleListener implements Listener {
 		/*
 		 * Suffix from pex
 		 */
-		File pex = new File("plugins/PermissionsEx/permissions.yml");
-		FileConfiguration pexConfig = YamlConfiguration.loadConfiguration(pex);
 		String suffix = "";
 		
 		if(!pexConfig.getConfigurationSection("users."+p.getName()).contains("suffix"))
@@ -106,7 +106,7 @@ public class TitleListener implements Listener {
 		SpoutManager.getPlayer(p).setTitle(getTitle(p));
 	}
 	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+	/*@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void onWeaponDamage(WeaponDamageEvent event)
 	{
 		if(!(event.getEntity() instanceof Player)) return;
@@ -120,7 +120,7 @@ public class TitleListener implements Listener {
 		if(!(event.getEntity() instanceof Player)) return;
 		Player p = (Player) event.getEntity();
 		SpoutManager.getPlayer(p).setTitle(getTitle(p));
-	}
+	} */
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
 	public void onEntityRegainHealth(EntityRegainHealthEvent event)

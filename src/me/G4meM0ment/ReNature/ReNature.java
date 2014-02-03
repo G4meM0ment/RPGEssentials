@@ -34,6 +34,8 @@ public class ReNature {
 		this.plugin = plugin;
 		rh = new ReplaceHandler(plugin);
 		blistener = new BListener(plugin);
+		plistener = new PListener(plugin);
+		
 		plugin.getServer().getPluginManager().registerEvents(blistener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
 		

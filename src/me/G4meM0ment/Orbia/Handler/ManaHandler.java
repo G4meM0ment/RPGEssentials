@@ -2,9 +2,12 @@ package me.G4meM0ment.Orbia.Handler;
 
 import java.util.HashMap;
 
+import me.G4meM0ment.DeathAndRebirth.Handler.GhostHandler;
+import me.G4meM0ment.DeathAndRebirth.Types.DARPlayer;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -21,6 +24,7 @@ import com.herocraftonline.heroes.characters.Hero;
 public class ManaHandler {
 	
 	private RPGEssentials plugin;
+	private GhostHandler ghostH;
 	
 	private static final HashMap<Player, Gradient> widgets = new HashMap<Player, Gradient>();
 //	private static Color redBar = new Color(0.69f,0.09f,0.12f,1f);
@@ -29,6 +33,7 @@ public class ManaHandler {
 	public ManaHandler(RPGEssentials plugin)
 	{
 		this.plugin = plugin;
+		ghostH = new GhostHandler();
 	}
 	
 	public Gradient getWidget(Player p)
@@ -51,7 +56,7 @@ public class ManaHandler {
 					if(plugin.getHeroes().getCharacterManager().getHero(p).getHeroClass().getName().equalsIgnoreCase("Novize"))
 						updateManaBar(p, null);
 			}
-		}, 0, 5);
+		}, 0, 10);
 	}
 	
 	public void updateManaBar(Player p, Hero h)
@@ -60,6 +65,7 @@ public class ManaHandler {
 		Gradient widget = getWidget(p);
 		if(h == null)
 			h = plugin.getHeroes().getCharacterManager().getHero(p);
+		
 		Screen s = sp.getMainScreen();
 		
 		if(widget == null && s.getScreenType().equals(ScreenType.GAME_SCREEN))
@@ -90,6 +96,11 @@ public class ManaHandler {
 
 		if(!sp.getMainScreen().getAttachedWidgetsAsSet(true).contains(widget))
 			sp.getMainScreen().attachWidget(plugin, widget);
+		
+		if(isDead(p) || p.getGameMode().equals(GameMode.CREATIVE))
+			widget.setVisible(false);
+		else
+			widget.setVisible(true);
 	}
 	
 	private boolean hasArmor(Player p)
@@ -107,6 +118,13 @@ public class ManaHandler {
 		if(p == null) return false;
 		if(p.getLocation().getBlock().getRelative(BlockFace.UP).getType().equals(Material.WATER) || p.getLocation().getBlock().getRelative(BlockFace.UP).getType().equals(Material.STATIONARY_WATER))
 			return true;
+		return false;
+	}
+	private boolean isDead(Player p)
+	{
+		DARPlayer darP = ghostH.getDARPlayer(p, p.getWorld().getName());
+		if(darP == null) return false;
+		if(darP.isDead()) return true;
 		return false;
 	}
 }

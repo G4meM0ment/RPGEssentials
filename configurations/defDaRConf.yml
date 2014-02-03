@@ -31,6 +31,11 @@ compass: true
 destroyBlocks: true
 ghostChat: true
 crossWorldGhost: true
+walkSpeed: 0.3
+
+############### Spawn Resurrection Punishment ################
+punishSpawnResurrecter: true
+heroExpLoss: false
 
 #################### Shrine Settings ########################
 shrineRadius: 6
@@ -38,6 +43,7 @@ protectShrines: false
 
 ################## Spoutcraft Settings ######################
 useSpoutcraft: false
+hideHUD: true
 
 ################ Sound Settings #####################
 playBackgroundSounds: true

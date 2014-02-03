@@ -10,7 +10,7 @@ import org.getspout.spoutapi.gui.Color;
 
 public class ConfigHandler {
 	
-	private DeathAndRebirth subplugin;
+	private static DeathAndRebirth subplugin;
 	
 	/*
 	 * 
@@ -32,11 +32,16 @@ public class ConfigHandler {
 	public static boolean destroyBlocks = true;
 	public static boolean ghostChat = true;
 	public static boolean crossWorldGhost = true;
+	public static double walkSpeed = 0.3;
+	
+	public static boolean punishSpawnResurrecter = true;
+	public static boolean heroExpLoss = false;
 	
 	public static int shrineRadius = 6;
 	public static boolean protectShrines = false;
 	
 	public static boolean useSpoutcraft = false;
+	public static boolean hideHUD = true;
 	public static String deathSound = "";
 	public static String rebirthSound = "";
 	public static String resurrectSound = "";
@@ -69,11 +74,16 @@ public class ConfigHandler {
 	private static String destroyBlocksPath = "destroyBlocks";
 	private static String ghostChatPath = "ghostChat";
 	private static String crossWorldGhostPath = "crossWorldGhost";
+	private static String walkSpeedPath = "walkSpeed";
+	
+	private static String punishSpawnResurrecterPath = "punishSpawnResurrecter";
+	private static String heroExpLossPath = "heroExpLoss";
 	
 	private static String shrineRadiusPath = "shrineRadius";
 	private static String protectShrinesPath = "protectShrines";
 	
 	private static String useSpoutcraftPath = "useSpoutcraft";
+	private static String hideHUDPath = "hideHUD";
 	private static String deathSoundPath = "deathSound";
 	private static String rebirthSoundPath = "rebirthSound";
 	private static String resurrectSoundPath = "resurrectSound";
@@ -94,7 +104,7 @@ public class ConfigHandler {
 	/**
 	 * load all settings from the config to cache unsaved changes are gone
 	 */
-	public void loadSettings()
+	public static void loadSettings()
 	{
 		FileConfiguration config = subplugin.getConfig();
 		
@@ -113,11 +123,16 @@ public class ConfigHandler {
 		destroyBlocks = config.getBoolean(destroyBlocksPath);
 		ghostChat = config.getBoolean(ghostChatPath);
 		crossWorldGhost = config.getBoolean(crossWorldGhostPath);
+		walkSpeed = config.getDouble(walkSpeedPath);
+		
+		punishSpawnResurrecter = config.getBoolean(punishSpawnResurrecterPath);
+		heroExpLoss = config.getBoolean(heroExpLossPath);
 		
 		shrineRadius = config.getInt(shrineRadiusPath);
 		protectShrines = config.getBoolean(protectShrinesPath);
 		
 		useSpoutcraft = config.getBoolean(useSpoutcraftPath);
+		hideHUD = config.getBoolean(hideHUDPath);
 		deathSound = config.getString(deathSoundPath);
 		rebirthSound = config.getString(rebirthSoundPath);
 		resurrectSound = config.getString(resurrectSoundPath);
@@ -134,7 +149,7 @@ public class ConfigHandler {
 	/**
 	 * save all settings from cache to file, changes made in flat file are gone
 	 */
-	public void saveSettings()
+	public static void saveSettings()
 	{
 		FileConfiguration config = subplugin.getConfig();
 		
@@ -153,11 +168,16 @@ public class ConfigHandler {
 		config.set(destroyBlocksPath, destroyBlocks);
 		config.set(ghostChatPath, ghostChat);
 		config.set(crossWorldGhostPath, crossWorldGhost);
+		config.set(walkSpeedPath, walkSpeed);
+		
+		config.set(punishSpawnResurrecterPath, punishSpawnResurrecter);
+		config.set(heroExpLossPath, heroExpLoss);
 		
 		config.set(shrineRadiusPath, shrineRadius);
 		config.set(protectShrinesPath, protectShrines);
 		
 		config.set(useSpoutcraftPath, useSpoutcraft);
+		config.set(hideHUDPath, hideHUD);
 		config.set(deathSoundPath, deathSound);
 		config.set(rebirthSoundPath, rebirthSound);
 		config.set(resurrectSoundPath, resurrectSound);
@@ -169,6 +189,8 @@ public class ConfigHandler {
 		config.set(cloudColorPath, cloudColor);
 		
 		config.set(enabledWorldsPath, enabledWorlds);
+		
+		subplugin.saveConfig();
 	}
 	
 	/**

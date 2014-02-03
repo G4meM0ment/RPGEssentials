@@ -28,7 +28,8 @@ public class DropData {
 	
 	private static String dir;
 
-	public DropData(DeathAndRebirth subplugin) {
+	public DropData(DeathAndRebirth subplugin) 
+	{
 		this.subplugin = subplugin;
 		
 		dir = subplugin.getDir()+"/data";
@@ -41,7 +42,8 @@ public class DropData {
 		subplugin = ((RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials")).getDeathAndRebirth();
 	}
 	
-	public String getDir() {
+	public String getDir() 
+	{
 		return dir;
 	}
 	
@@ -64,19 +66,22 @@ public class DropData {
 	    }
 	    subplugin.getLogger().info(logTit+"Drop data loaded.");
 	}
-	public FileConfiguration getConfig() {
-	    if (config == null) {
+	public FileConfiguration getConfig()
+	{
+	    if (config == null) 
 	        reloadConfig();
-	    }
 	    return config;
 	}
-	public void saveConfig() {
-	    if (config == null || configFile == null) {
+	public void saveConfig() 
+	{
+	    if (config == null || configFile == null)
 	    	return;
-	    }
-	    try {
+	    try 
+	    {
 	        config.save(configFile);
-	    } catch (IOException ex) {
+	    } 
+	    catch (IOException ex)
+	    {
 	    	subplugin.getLogger().log(Level.SEVERE, logTit+"Could not save data to " + configFile, ex);
 	    }
 	}

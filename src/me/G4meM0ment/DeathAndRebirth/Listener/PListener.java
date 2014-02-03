@@ -12,7 +12,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -291,6 +293,24 @@ public class PListener implements Listener {
 	}
 	
 	/**
+	 * Too keep players food level
+	 * @param event
+	 */
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onFoodLevelChange(FoodLevelChangeEvent event)
+	{
+		if(!(event.getEntity() instanceof Player)) return;
+		
+		Player p = (Player) event.getEntity();
+		if(p == null) return;
+		DARPlayer darP = gH.getDARPlayer(p, p.getWorld().getName());
+		if(darP == null) return;
+		
+		if(darP.isDead())
+			return;
+	}
+	
+	/**
 	 * Denies the player to drop items while being a ghost
 	 * @param event
 	 */
@@ -363,6 +383,24 @@ public class PListener implements Listener {
 		
 		if(!ConfigHandler.ghostChat && darP.isDead())
 			event.setCancelled(true);		
+	}
+	
+	/**
+	 * Denies the player to open inventories while being a ghost (eg. backpack)
+	 * @param event
+	 */
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onPlayerOpenInventory(InventoryOpenEvent event)
+	{
+		if(!(event.getPlayer() instanceof Player)) return;
+		
+		Player p = (Player) event.getPlayer();
+		if(p == null) return;
+		DARPlayer darP = gH.getDARPlayer(p, p.getWorld().getName());
+		if(darP == null) return;
+		
+		if(darP.isDead())
+			event.setCancelled(true);
 	}
 	
 	/**

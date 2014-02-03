@@ -73,6 +73,9 @@ public class SpoutcraftHandler {
 		if(!ConfigHandler.cloudColor.isEmpty())
 			SpoutManager.getSkyManager().setCloudColor(sp, ConfigHandler.getFloatColor(ConfigHandler.cloudColor));
 		
+		if(ConfigHandler.hideHUD)
+			sp.getMainScreen().toggleSurvivalHUD(false);
+		
 		if(ConfigHandler.playBackgroundSounds)
 			tasks.put(p.getName(), Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
 			{
@@ -113,6 +116,9 @@ public class SpoutcraftHandler {
 			SpoutManager.getSkyManager().setFogColor(sp, Color.remove());
 		if(!ConfigHandler.cloudColor.isEmpty())
 			SpoutManager.getSkyManager().setCloudColor(sp, Color.remove());
+		
+		if(ConfigHandler.hideHUD)
+			sp.getMainScreen().toggleSurvivalHUD(true);
 	}
 	
 	/**

@@ -20,6 +20,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.SpoutManager;
+
+import com.herocraftonline.heroes.characters.Hero;
 
 public class GhostHandler {
 	
@@ -157,6 +160,8 @@ public class GhostHandler {
 		
 		if(subplugin.getPlugin().isSpoutcraftPluginEnabled() && ConfigHandler.useSpoutcraft)
 			scH.setDeathOptions(p);
+		
+		Messenger.sendNotification(p, Message.spoutTitle, Message.spoutMaterial, Message.died);
 	}
 	
 	/**
@@ -183,7 +188,7 @@ public class GhostHandler {
 		if(!darP.isDead()) return;
 		if(System.currentTimeMillis()-darP.getGrave().getPlacedMillis() < ConfigHandler.timeUntilCanRes)
 		{
-			p.sendMessage("You can't resurrect that early!");
+			Messenger.sendNotification(SpoutManager.getPlayer(p.getPlayer()), Message.spoutTitle, Message.spoutMaterial, Message.cantResYet, "%seconds%", ""+(ConfigHandler.timeUntilCanRes-System.currentTimeMillis()-darP.getGrave().getPlacedMillis())/1000);
 			return;
 		}
 		
@@ -204,11 +209,13 @@ public class GhostHandler {
 			}
 		}, 20);
 		
+		if(ConfigHandler.walkSpeed > 0.0)
+			p.setWalkSpeed(0.2F);
+		
 		if(subplugin.getPlugin().isSpoutcraftPluginEnabled() && ConfigHandler.useSpoutcraft)
 			scH.setRebirthOptions(p);
 		
-		p.sendMessage("You've been resurrected");
-
+		Messenger.sendNotification(p, Message.spoutTitle, Message.spoutMaterial, Message.resurrect);
 	}
 	
 	/**
@@ -224,10 +231,12 @@ public class GhostHandler {
 		//finally delete all inventory contents
 		p.getInventory().clear();
 		
+		//settings players walkspeed
+		if(ConfigHandler.walkSpeed > 0.0)
+			p.setWalkSpeed((float) ConfigHandler.walkSpeed);
+		
 		if(subplugin.getPlugin().isSpoutcraftPluginEnabled() && ConfigHandler.useSpoutcraft)
 			scH.setRespawnOptions(p);
-		
-		Messenger.sendMessage(p, Message.died.msg());
 	}
 	
 	/**
@@ -236,7 +245,13 @@ public class GhostHandler {
 	 */
 	public void punish(Player p)
 	{
+		if(!ConfigHandler.punishSpawnResurrecter) return;
 		
+		if(subplugin.getPlugin().getHeroes() != null && ConfigHandler.heroExpLoss)
+		{
+			Hero h = subplugin.getPlugin().getHeroes().getCharacterManager().getHero(p);
+			h.loseExpFromDeath(h.getHeroClass().getExpLoss(), false);
+		}
 	}
 	
 	/**
@@ -320,10 +335,10 @@ public class GhostHandler {
 		if(s == null)
 		{
 			p.setShrine(null);
-			p.getPlayer().sendMessage("Soul unbound");
+			Messenger.sendNotification(SpoutManager.getPlayer(p.getPlayer()), Message.spoutTitle, Message.spoutMaterial, Message.soulUnbound);
 			return;
 		}
 		p.setShrine(s);
-		p.getPlayer().sendMessage("Soul bound");
+		Messenger.sendNotification(SpoutManager.getPlayer(p.getPlayer()), Message.spoutTitle, Message.spoutMaterial, Message.soulBound);
 	}
 }

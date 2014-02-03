@@ -1,0 +1,19 @@
+#################################################################
+#                                                               #
+#                        MESSAGES FILE                          #
+#    To use spoutcraft notifiaction your messages including     #
+#  the replacement, needs to be smaller than 26 chars, you can  #
+#         use all normal color codes in your messages           #
+#                                                               #
+#################################################################
+
+############## Spoutcraft Notification Settings #################
+spoutTitle: "Death and Rebirth"
+spoutMaterial: BONE
+
+################### Ghost Messages Settings #####################
+died: "You've died and become a ghost"
+resurrect: "You've been resurrected"
+resurrectedBy: "You've been resurrected by %resurrecter%"
+soulBound: "Soul bound"
+soulUnbound: "Soul unbound"
