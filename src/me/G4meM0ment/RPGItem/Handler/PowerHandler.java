@@ -116,10 +116,10 @@ public class PowerHandler {
 			switch(s)
 			{
 			case "speed":
-				if(p.getWalkSpeed()+powers.get(s) <= 1)
+				if(/*p.getWalkSpeed()*/0.2F+powers.get(s) <= 1)
 					p.setWalkSpeed((float) (/*p.getWalkSpeed()*/0.2F+powers.get(s)));
 				else if(p.getWalkSpeed()+powers.get(s) < 0)
-					p.setWalkSpeed(0F);
+					p.setWalkSpeed(0.0F);
 				else
 					p.setWalkSpeed(1.0F);
 				break;
@@ -176,29 +176,32 @@ public class PowerHandler {
 		    		 * 
 		    		 */
 		    		ConcurrentHashMap<String, Double> powers = new ConcurrentHashMap<String, Double>();
-		    		if(itemHandler.isCustomItem(p.getItemInHand())/* && itemHasPower(customItemHandler.getCustomItem(p.getItemInHand()))*/)
+		    		for(ItemStack i : p.getInventory().getContents())
 		    		{
-		    			ItemStack i = p.getItemInHand();
-		    			CustomItem cItem = customItemHandler.getCustomItem(i);
+		    			if(!itemHandler.isCustomItem(i)) continue;
 	    				
-		    			/*
-		    			 * removed due durability was disabled
-		    			 */
-		    			/*if(subplugin.getConfig().getInt("DurabilityAffectingUtility") > 0) 
-	    				{
-	    					int durability = cItem.getDurability();
-	    					int maxDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
-	    					int percent = (durability * 100) / maxDurability;
-	    					if(percent < subplugin.getConfig().getInt("DurabilityAffectingUtility"))
-	    						continue;
-	    				}*/
+		    			CustomItem cItem = customItemHandler.getCustomItem(i);
+		    			if(i.equals(p.getItemInHand()) || cItem.isPassive()/* && itemHasPower(customItemHandler.getCustomItem(p.getItemInHand()))*/)
+		    			{	    				
+		    				/*
+		    				 * removed due durability was disabled
+		    				 */
+		    				/*if(subplugin.getConfig().getInt("DurabilityAffectingUtility") > 0) 
+	    					{
+	    						int durability = cItem.getDurability();
+	    						int maxDurability = itemConfig.getConfig(itemConfig.getFile(cItem.getDispName())).getInt("durability");
+	    						int percent = (durability * 100) / maxDurability;
+	    						if(percent < subplugin.getConfig().getInt("DurabilityAffectingUtility"))
+	    							continue;
+	    					}*/
 		    			
-		    			for(String power : cItem.getPowers().keySet())
-		    			{
-		    				if(powers.containsKey(power))
-		    					powers.put(power, powers.get(power)+cItem.getPowers().get(power));
-		    				else
-		    					powers.put(power, cItem.getPowers().get(power));
+		    				for(String power : cItem.getPowers().keySet())
+		    				{
+		    					if(powers.containsKey(power))
+		    						powers.put(power, powers.get(power)+cItem.getPowers().get(power));
+		    					else
+		    						powers.put(power, cItem.getPowers().get(power));
+		    				}	
 		    			}
 		    		}
 		    		

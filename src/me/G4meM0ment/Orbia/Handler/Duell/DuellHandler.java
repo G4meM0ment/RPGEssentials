@@ -1,8 +1,6 @@
 package me.G4meM0ment.Orbia.Handler.Duell;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
@@ -17,7 +15,6 @@ public class DuellHandler {
 	private static RPGEssentials plugin;
 	private static HashMap<String, HashMap<String, DuellState>> duells = new HashMap<String, HashMap<String, DuellState>>();
 //	private static HashMap<String, List<String>> parties = new HashMap<String, List<String>>();
-	private static List<Player> gracers = new ArrayList<Player>();
 	
 	public DuellHandler(RPGEssentials plugin) 
 	{
@@ -173,12 +170,7 @@ public class DuellHandler {
 		}
 		return null;
 	}
-	
-	public List<Player> getGracers()
-	{
-		return gracers;
-	}
-	
+		
 	/*public HashMap<String, List<String>> getParties()
 	{
 		return parties;

@@ -27,7 +27,6 @@ public class HeroesListener implements Listener{
 	private CustomItemHandler customItemHandler;
 	private ItemHandler itemHandler;
 	private DamageHandler dmgHandler;
-	@SuppressWarnings("unused")
 	private PowerHandler ph;
 	
 	public HeroesListener(RPGEssentials plugin) {
@@ -92,7 +91,14 @@ public class HeroesListener implements Listener{
 			LivingEntity le = (LivingEntity) event.getEntity();
 			int oldTime = 0;
 			int oldTier = 0;
-			int power = (int) ((double) ph.getPlayerPowers().get(p).get("poison"));
+
+//			String poisonPower = Double.toString(ph.getPlayerPowers().get(p).get("poison"));
+			double poison = ph.getPlayerPowers().get(p).get("poison");
+			int time = (int) poison;
+			int tier = (int)Math.round((poison - time) * 10);
+//			int time = Integer.parseInt(poisonPower.split(".")[0]);
+//			int tier = Integer.parseInt(poisonPower.split(".")[1]);
+			
 			for(PotionEffect pe : le.getActivePotionEffects())
 			{
 				if(pe.getType().equals(PotionEffectType.POISON))
@@ -100,10 +106,9 @@ public class HeroesListener implements Listener{
 					oldTime = pe.getDuration();
 					oldTier = pe.getAmplifier();
 				}
-					
 			}
-			p.removePotionEffect(PotionEffectType.POISON);
-			p.addPotionEffect(new PotionEffect(PotionEffectType.POISON, power*4+oldTime, oldTier > power ? oldTier:power, true));
+			le.removePotionEffect(PotionEffectType.POISON);
+			le.addPotionEffect(new PotionEffect(PotionEffectType.POISON, time+oldTime, oldTier > tier ? oldTier:tier, true));
 		}
 	}
 }

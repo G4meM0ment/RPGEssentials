@@ -20,7 +20,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.getspout.spoutapi.SpoutManager;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import com.herocraftonline.heroes.characters.Hero;
 
@@ -115,7 +116,13 @@ public class GhostHandler {
 	public void die(Player p, Location loc)
 	{
 		if(p == null) return;
-
+		
+		DARPlayer darP = getDARPlayer(p, loc.getWorld().getName());
+		if(darP == null)
+			darP = addDARPlayer(p, p.getWorld());
+		
+		if(darP.isDead()) return;
+		
 		/*
 		 * fires the event to allow other plugins to cancel or modify
 		 */
@@ -124,12 +131,6 @@ public class GhostHandler {
 		if(becomeGhostEvent.isCancelled()) return;
 		p = becomeGhostEvent.getPlayer();
 		loc = becomeGhostEvent.getLocation();
-		
-		DARPlayer darP = getDARPlayer(p, loc.getWorld().getName());
-		if(darP == null)
-			darP = addDARPlayer(p, p.getWorld());
-		
-		if(darP.isDead()) return;
 			
 		darP.setDead(true);
 		darP.setRobbed(false);
@@ -169,28 +170,28 @@ public class GhostHandler {
 	 * @param p
 	 * @param clicked
 	 */
-	public void resurrect(Player p, Location clicked)
+	public boolean resurrect(Player p, Location clicked)
 	{
-		if(p == null) return;
+		if(p == null) return false;
 
+		DARPlayer darP = getDARPlayer(p, clicked.getWorld().getName());
+		if(darP == null) return false;
+		if(!darP.isDead()) return false;
+		if(System.currentTimeMillis()-darP.getGrave().getPlacedMillis() < ConfigHandler.timeUntilCanRes)
+		{
+			Messenger.sendNotification(p, Message.spoutTitle, Message.spoutMaterial, Message.cantResYet, "%seconds%", ""+(ConfigHandler.timeUntilCanRes-(System.currentTimeMillis()-darP.getGrave().getPlacedMillis()))/1000);
+			return false;
+		}
+		
 		/*
 		 * fires the event to allow other plugins to cancel or modify
 		 */
 		final PlayerResurrectEvent resEvent = new PlayerResurrectEvent(p, null, clicked);
 		Bukkit.getServer().getPluginManager().callEvent(resEvent);
-		if(resEvent.isCancelled()) return;
+		if(resEvent.isCancelled()) return false;
 		p = resEvent.getResurrected();
 //		Player resurrecter = resEvent.getResurrecter();
 		clicked = resEvent.getClicked();
-		
-		DARPlayer darP = getDARPlayer(p, clicked.getWorld().getName());
-		if(darP == null) return;
-		if(!darP.isDead()) return;
-		if(System.currentTimeMillis()-darP.getGrave().getPlacedMillis() < ConfigHandler.timeUntilCanRes)
-		{
-			Messenger.sendNotification(SpoutManager.getPlayer(p.getPlayer()), Message.spoutTitle, Message.spoutMaterial, Message.cantResYet, "%seconds%", ""+(ConfigHandler.timeUntilCanRes-System.currentTimeMillis()-darP.getGrave().getPlacedMillis())/1000);
-			return;
-		}
 		
 		darP.setDead(false);
 		
@@ -210,19 +211,26 @@ public class GhostHandler {
 		}, 20);
 		
 		if(ConfigHandler.walkSpeed > 0.0)
-			p.setWalkSpeed(0.2F);
+			//p.setWalkSpeed(0.2F);
+			p.removePotionEffect(PotionEffectType.SPEED);
+		
+		/*
+		 * TODO add option
+		 */
+		p.removePotionEffect(PotionEffectType.INVISIBILITY);
 		
 		if(subplugin.getPlugin().isSpoutcraftPluginEnabled() && ConfigHandler.useSpoutcraft)
 			scH.setRebirthOptions(p);
 		
 		Messenger.sendNotification(p, Message.spoutTitle, Message.spoutMaterial, Message.resurrect);
+		return true;
 	}
 	
 	/**
 	 * Executed when a player respawns, to execute all tasks needed after respawning
 	 * @param p
 	 */
-	public void respawn(Player p)
+	public void respawn(final Player p)
 	{
 		//give ghosts it's compass and set location
 		if(ConfigHandler.compass)
@@ -231,9 +239,29 @@ public class GhostHandler {
 		//finally delete all inventory contents
 		p.getInventory().clear();
 		
-		//settings players walkspeed
-		if(ConfigHandler.walkSpeed > 0.0)
-			p.setWalkSpeed((float) ConfigHandler.walkSpeed);
+		//ztry with delay
+		Bukkit.getScheduler().scheduleSyncDelayedTask(subplugin.getPlugin(), new Runnable()
+		{
+			@Override
+			public void run() 
+			{
+				//settings players walkspeed
+				if(ConfigHandler.walkSpeed > 0.0)
+					//p.setWalkSpeed((float) ConfigHandler.walkSpeed);
+					p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, (int) ConfigHandler.walkSpeed, false));
+				
+				/*
+				 * TODO add potion effect and config
+				 */
+				p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false));
+			}
+		}, 20);
+		
+		if(subplugin.getPlugin().getHeroes() != null)
+		{
+			Hero h = subplugin.getPlugin().getHeroes().getCharacterManager().getHero(p);
+			h.setMana(h.getMaxMana());
+		}	
 		
 		if(subplugin.getPlugin().isSpoutcraftPluginEnabled() && ConfigHandler.useSpoutcraft)
 			scH.setRespawnOptions(p);
@@ -335,10 +363,10 @@ public class GhostHandler {
 		if(s == null)
 		{
 			p.setShrine(null);
-			Messenger.sendNotification(SpoutManager.getPlayer(p.getPlayer()), Message.spoutTitle, Message.spoutMaterial, Message.soulUnbound);
+			Messenger.sendNotification(p.getPlayer(), Message.spoutTitle, Message.spoutMaterial, Message.soulUnbound);
 			return;
 		}
 		p.setShrine(s);
-		Messenger.sendNotification(SpoutManager.getPlayer(p.getPlayer()), Message.spoutTitle, Message.spoutMaterial, Message.soulBound);
+		Messenger.sendNotification(p.getPlayer(), Message.spoutTitle, Message.spoutMaterial, Message.soulBound);
 	}
 }

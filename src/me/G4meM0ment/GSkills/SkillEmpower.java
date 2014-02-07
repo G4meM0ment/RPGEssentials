@@ -7,10 +7,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.SkillResult;
+import com.herocraftonline.heroes.api.events.WeaponDamageEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.effects.EffectType;
 import com.herocraftonline.heroes.characters.effects.ExpirableEffect;
@@ -20,36 +20,31 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.characters.skill.SkillSetting;
 import com.herocraftonline.heroes.characters.skill.SkillType;
 
-public class SkillEmpower extends ActiveSkill{
+public class SkillEmpower extends ActiveSkill {
    
     private String applyText;
     private String expireText;
     private int damage;
 	
-	public SkillEmpower(Heroes plugin) {
+	public SkillEmpower(Heroes plugin) 
+	{
         super(plugin, "Empower");
         setUsage("/skill empower");
         setDescription("You'll went insane and deal $1% damage more.");
-        setTypes(SkillType.BUFF, SkillType.MANA);
+        setTypes(SkillType.BUFF);
         setArgumentRange(0, 0);
         setIdentifiers("skill empower");
         Bukkit.getServer().getPluginManager().registerEvents(new SkillEntityListener(this), plugin);
     }
 
 	@Override
-	public String getDescription(Hero hero) {
+	public String getDescription(Hero hero) 
+	{
 		long duration = (long) (SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION.node(), 8000, false));
-        String description = getDescription().replace("$1", duration + "");
+        int damage = (int) (SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE.node(), 2, false) *
+        		SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_INCREASE.node(), 0.8, false));
         
-        //MANA
-        int mana = SkillConfigManager.getUseSetting(hero, this, SkillSetting.MANA.node(), 15, false);
-        description += " Mana: "+mana;
-        
-        int baseDamage = (int) (SkillConfigManager.getUseSetting(hero, this, "BaseDamage", 2, false) *
-        		SkillConfigManager.getUseSetting(hero, this, "LevelMultiplier", 0.8, false));
-        description += " Damage: "+baseDamage;
-        
-		return description;
+        return getDescription().replace("$1", duration+"").replace("§2", damage+"");
 	}
 	
     @Override
@@ -57,8 +52,8 @@ public class SkillEmpower extends ActiveSkill{
     {
     	ConfigurationSection localConfigurationNode = super.getDefaultConfig();
     	localConfigurationNode.set(SkillSetting.DURATION.node(), 8000);
-    	localConfigurationNode.set("BaseDamage", 2);
-    	localConfigurationNode.set("LevelMultiplier", 0.8);
+    	localConfigurationNode.set(SkillSetting.DAMAGE.node(), 2);
+    	localConfigurationNode.set(SkillSetting.DAMAGE_INCREASE.node(), 0.8);
     	localConfigurationNode.set(SkillSetting.APPLY_TEXT.node(), "%hero% has went insane!");
     	localConfigurationNode.set(SkillSetting.EXPIRE_TEXT.node(), "%hero% calm down!");
     	return localConfigurationNode;
@@ -70,20 +65,19 @@ public class SkillEmpower extends ActiveSkill{
     	super.init();
     	this.applyText = SkillConfigManager.getUseSetting(null, this, SkillSetting.APPLY_TEXT.node(), "%target% is absorbing damage!").replace("%target%", "$1");
     	this.expireText = SkillConfigManager.getUseSetting(null, this, SkillSetting.EXPIRE_TEXT.node(), "InvertDamage faded from %target%!").replace("%target%", "$1");
-
     }
     
     @Override
-	public SkillResult use(Hero hero, String[] arg1) {
+	public SkillResult use(Hero hero, String[] arg1) 
+    {
         long duration = (long) (SkillConfigManager.getUseSetting(hero, this, SkillSetting.DURATION.node(), 8000, false));
-        int mana = SkillConfigManager.getUseSetting(hero, this, SkillSetting.MANA.node(), 15, false);
         
-        damage = (int) (SkillConfigManager.getUseSetting(hero, this, "BaseDamage", 2, false) *
-        		SkillConfigManager.getUseSetting(hero, this, "LevelMultiplier", 0.8, false));
+        damage = (int) (SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE.node(), 2, false) *
+        		SkillConfigManager.getUseSetting(hero, this, SkillSetting.DAMAGE_INCREASE.node(), 0.8, false));
         int stamina = (SkillConfigManager.getUseSetting(hero, this, "Stamina", 16, false));
         
         broadcastExecuteText(hero);
-        hero.addEffect(new InvertDamageEffect(this, duration, damage, mana, stamina));
+        hero.addEffect(new EmpowerEffect(this, duration, damage, stamina));
         return SkillResult.NORMAL;
 	}
 
@@ -98,30 +92,27 @@ public class SkillEmpower extends ActiveSkill{
     	}
 
     	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-    	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-    		Entity d = event.getDamager();
-    		if(d instanceof Player) {
+    	public void onWeaponDamage(WeaponDamageEvent event) 
+    	{
+    		Entity d = event.getDamager().getEntity();
+    		if(d instanceof Player) 
+    		{
     			Player p = (Player) d;
     			Hero h = plugin.getCharacterManager().getHero(p);
-    			if(h.hasEffect("Empower")) {
+    			if(h.hasEffect("Empower"))
     				event.setDamage(event.getDamage()+se.damage);
-    			}
     		}
     	}
     }
     
-    public class InvertDamageEffect extends ExpirableEffect
+    public class EmpowerEffect extends ExpirableEffect
     {
-    	
-    	private int mana;
     	private int stamina;
     	
-    	public InvertDamageEffect(Skill skill, long duration, int damage, int mana, int stamina)
+    	public EmpowerEffect(Skill skill, long duration, int damage, int stamina)
     	{
     		super(skill, "Empower", duration);
-        	this.types.add(EffectType.BENEFICIAL);
-        	this.types.add(EffectType.DISPELLABLE);
-        	this.mana = mana;
+        	this.types.add(EffectType.WOUNDING);
         	this.stamina = stamina;
     	}
 
@@ -131,11 +122,6 @@ public class SkillEmpower extends ActiveSkill{
     		super.applyToHero(hero);
     		Player player = hero.getPlayer();
     		broadcast(player.getLocation(), applyText, hero.getPlayer().getDisplayName());
-    		if(hero.getMana() > 0 && hero.getMana() - mana < 0) {
-    			hero.setMana(0);    			
-    		} else if(hero.getMana() - mana > 0) {
-    			hero.setMana(hero.getMana()-mana);
-    		}
     	}
 
     	@Override
@@ -144,10 +130,11 @@ public class SkillEmpower extends ActiveSkill{
     		super.removeFromHero(hero);
     		Player player = hero.getPlayer();
     		broadcast(player.getLocation(), expireText, hero.getPlayer().getDisplayName());
+    		
     		if(hero.getPlayer().getFoodLevel() - stamina < 1)
         		hero.getPlayer().setFoodLevel(0);
-    		
-    		hero.getPlayer().setFoodLevel(hero.getPlayer().getFoodLevel() - stamina);
+    		else
+    			hero.getPlayer().setFoodLevel(hero.getPlayer().getFoodLevel() - stamina);
     	}
     }    
 }

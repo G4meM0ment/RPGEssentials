@@ -14,7 +14,8 @@ public class PortalEvent extends Event implements Cancellable {
     private Portal portal;
     private boolean isCancelled;
     
-    public PortalEvent(Portal portal, Player teleportee) {
+    public PortalEvent(Portal portal, Player teleportee) 
+    {
     	this.portal = portal;
     	this.teleportee = teleportee;
     }
@@ -22,30 +23,39 @@ public class PortalEvent extends Event implements Cancellable {
     public Player getTeleportee() {
     	return teleportee;
     }
-    public void setTeleportee(Player teleportee) {
+    public void setTeleportee(Player teleportee)
+    {
     	this.teleportee = teleportee;
     }
     
     public Portal getPortal() {
     	return portal;
     }
-    public void setPortal(Portal portal) {
+    public void setPortal(Portal portal) 
+    {
     	this.portal = portal;
     }
     
 	@Override
-	public boolean isCancelled() {
+	public boolean isCancelled() 
+	{
 		return isCancelled;
 	}
 
 	@Override
-	public void setCancelled(boolean cancelled) {
+	public void setCancelled(boolean cancelled) 
+	{
 		this.isCancelled = cancelled;		
 	}
 
 	@Override
-	public HandlerList getHandlers() {
+	public HandlerList getHandlers() 
+	{
 		return HANDLERS;
+	}
+	public static HandlerList getHandlerList() 
+	{
+	    return HANDLERS;
 	}
 
 }

@@ -62,10 +62,10 @@ public class DeathAndRebirth {
 		
 		/*
 		 * register all event listeners
-		 */
+		 */		
 		plugin.getServer().getPluginManager().registerEvents(pListener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(bListener, plugin);
-		plugin.getServer().getPluginManager().registerEvents(eListener, plugin);
+		plugin.getServer().getPluginManager().registerEvents(eListener, plugin);		
 		
 		/*
 		 * setup dir, config and logger
@@ -262,7 +262,7 @@ public class DeathAndRebirth {
 	    try 
 	    {
 	        config.save(configFile);
-	        plugin.getLogger().info(logTit+"Config saved");
+//	        plugin.getLogger().info(logTit+"Config saved");
 	    } 
 	    catch (IOException ex) 
 	    {

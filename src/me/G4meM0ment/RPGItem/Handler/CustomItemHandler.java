@@ -169,6 +169,11 @@ public class CustomItemHandler {
 		customItem.setHand(itemConfig.getConfig(config).getString("hand"));
 		customItem.setMaxDurability(itemConfig.getConfig(config).getInt("durability"));
 		
+		HashMap<String, Double> powers = new HashMap<String, Double>();
+		for(String s : powerH.getItemPowers(customItem))
+			powers.put(s, itemConfig.getConfig(itemConfig.getFile(customItem.getDispName())).getDouble("powers."+s));
+		customItem.setPowers(powers);
+		
 		if(customItem.getMaxDurability() < 0)
 		{
 			customItem.setDurability(-1);
@@ -203,7 +208,7 @@ public class CustomItemHandler {
 			id = getFreeId(ChatColor.stripColor(item.getItemMeta().getDisplayName()));
 		ItemMeta meta = item.getItemMeta();
 		CustomItem customItem = new CustomItem(item, ChatColor.stripColor(meta.getDisplayName()), id, 0, item.getType(),
-				0 , 0, 0, "", 0, "", Quality.TRASH, "", "", Material.AIR, 0, new HashMap<String, Double>());
+				0 , 0, 0, "", 0, "", Quality.TRASH, "", "", Material.AIR, 0, new HashMap<String, Double>(), false);
 		
 		HashMap<String, Double> powers = new HashMap<String, Double>();
 		for(String s : powerH.getItemPowers(customItem))

@@ -216,8 +216,13 @@ public class PListener implements Listener{
 		{
 			Block b = p.getLocation().getBlock().getRelative(0, -1, 0);
 			if(b.getType() == Material.WOOL || b.getType() == Material.HAY_BLOCK || b.getType() == Material.LEAVES)
+			{
 				event.setDamage(0.0);
+				//added to remove sound (hopefully :P)
+				event.setCancelled(true);
+			}
 		}
+			
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)

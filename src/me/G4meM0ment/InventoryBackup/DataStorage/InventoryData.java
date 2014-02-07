@@ -12,6 +12,7 @@ import java.util.Set;
 
 import me.G4meM0ment.InventoryBackup.InventoryBackup;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -75,6 +76,8 @@ public class InventoryData {
 	@SuppressWarnings("unchecked")
 	public ItemStack[] getItemsFromConfig(FileConfiguration invFile, String path)
 	{
+		if(!invFile.contains(path)) return new ItemStack[0];
+
 		Set<String> keys = invFile.getConfigurationSection(path).getKeys(false);
 		ItemStack [] itemstack = new ItemStack[keys.size()];
 		Map<String, Object> item = null;

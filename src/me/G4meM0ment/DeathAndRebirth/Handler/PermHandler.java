@@ -15,7 +15,6 @@ public class PermHandler {
 	{
 		if(p == null) return false;
 		if(p.hasPermission("dar.nodrop")) return true;
-		if(p.hasPermission("dar.*")) return true;
 		return false;
 	}
 	
@@ -28,7 +27,6 @@ public class PermHandler {
 	{
 		if(p == null) return false;
 		if(p.hasPermission("dar.admin")) return true;
-		if(p.hasPermission("dar.*")) return true;
 		return false;
 	}
 
@@ -42,7 +40,6 @@ public class PermHandler {
 		if(p == null) return false;
 		if(p.hasPermission("dar.reload")) return true;
 		if(p.hasPermission("dar.admin")) return true;
-		if(p.hasPermission("dar.*")) return true;
 		return false;
 	}
 	
@@ -56,7 +53,6 @@ public class PermHandler {
 		if(p == null) return false;
 		if(p.hasPermission("dar.shrine."+s.getName())) return true;
 		if(p.hasPermission("dar.shrine.*")) return true;
-		if(p.hasPermission("dar.*")) return true;
 		return false;
 	}
 	
@@ -69,7 +65,6 @@ public class PermHandler {
 	{
 		if(p == null) return false;
 		if(p.hasPermission("dar.ignore")) return true;
-		if(p.hasPermission("dar.*")) return true;
 		return false;
 	}
 }

@@ -138,7 +138,8 @@ public class CommandHandler {
 			
 			CustomItem customItem = customItemHandler.spawnCustomItem(p, new CustomItem(null, config.getString("displayName"), id, config.getInt("data"), Material.valueOf(config.getString("skin").toUpperCase()),
 					config.getInt("damage"), config.getInt("damageMax"), config.getInt("durability"), config.getString("description"), config.getInt("price"), config.getString("lore"),
-					Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), Material.valueOf(config.getString("repair").toUpperCase()), config.getInt("durability"), new HashMap<String, Double>()));
+					Quality.valueOf(config.getString("quality").toUpperCase()), config.getString("type"), config.getString("hand"), Material.valueOf(config.getString("repair").toUpperCase()), config.getInt("durability"),
+					new HashMap<String, Double>(), config.getBoolean("passive")));
 			
 			HashMap<String, Double> powers = new HashMap<String, Double>();
 			for(String s : powerH.getItemPowers(customItem))

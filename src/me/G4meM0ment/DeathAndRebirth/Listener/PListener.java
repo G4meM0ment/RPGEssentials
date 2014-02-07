@@ -150,13 +150,14 @@ public class PListener implements Listener {
 			if(graveH.isPlayersGrave(darP, clicked) || sH.isShrine(clicked, ConfigHandler.shrineRadius))
 			{
 				//resurrect the player
-				gH.resurrect(p, clicked);
-			
-				//punish if he resurrected where he respawned
-				if(ConfigHandler.corpseSpawn && graveH.isPlayersGrave(darP, clicked) && !sH.isShrine(clicked, ConfigHandler.shrineRadius))
-					gH.punish(p);
-				else if(!ConfigHandler.corpseSpawn && sH.isShrine(clicked, ConfigHandler.shrineRadius) && !graveH.isPlayersGrave(darP, clicked))
-					gH.punish(p);
+				if(gH.resurrect(p, clicked))
+				{
+					//punish if he resurrected where he respawned
+					if(ConfigHandler.corpseSpawn && graveH.isPlayersGrave(darP, clicked) && !sH.isShrine(clicked, ConfigHandler.shrineRadius))
+						gH.punish(p);
+					else if(!ConfigHandler.corpseSpawn && sH.isShrine(clicked, ConfigHandler.shrineRadius) && !graveH.isPlayersGrave(darP, clicked))
+						gH.punish(p);
+				}
 			}
 			
 			/*

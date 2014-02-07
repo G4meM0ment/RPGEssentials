@@ -13,8 +13,9 @@ public class CustomItem{
 	private Quality quality;
 	private ItemStack item;
 	private HashMap<String, Double> powers = new HashMap<String, Double>();
+	private boolean passive;
 	
-	public CustomItem(ItemStack item, String dispName, int id, int data, Material skin, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand, Material repair, int maxDurability, HashMap<String, Double> powers) 
+	public CustomItem(ItemStack item, String dispName, int id, int data, Material skin, int dmgValue, int dmgValueMax, int durability, String desc, int price, String lore, Quality quality, String type, String hand, Material repair, int maxDurability, HashMap<String, Double> powers, boolean passive) 
 	{
 		this.item = item;
 		this.dispName = dispName;
@@ -33,7 +34,7 @@ public class CustomItem{
 		this.repair = repair;
 		this.maxDurability = maxDurability;
 		this.powers = powers;
-		
+		this.passive = passive;
 	}
 
 	//Item getter/setter
@@ -203,5 +204,15 @@ public class CustomItem{
 	public void setPowers(HashMap<String, Double> powers) 
 	{
 		this.powers = powers;
+	}
+	
+	//passive getter/setter
+	public boolean isPassive() 
+	{
+		return passive;
+	}
+	public void setPassive(boolean passive) 
+	{
+		this.passive = passive;
 	}
 }

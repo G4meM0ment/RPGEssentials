@@ -43,6 +43,10 @@ public class PlayerBecomeGhostEvent extends Event implements Cancellable {
 	{
 		return HANDLERS;
 	}
+	public static HandlerList getHandlerList() 
+	{
+	    return HANDLERS;
+	}
 	
 	public Player getPlayer()
 	{

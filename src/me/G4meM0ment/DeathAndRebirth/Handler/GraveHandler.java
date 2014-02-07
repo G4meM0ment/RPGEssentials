@@ -103,6 +103,7 @@ public class GraveHandler {
 		{
 			for(DARPlayer p : gH.getDARPlayers(world))
 			{
+				if(p.getGrave() == null) continue;
 				if(p.getGrave().getPlacedMillis() > 0)
 					if(System.currentTimeMillis()-p.getGrave().getPlacedMillis() > ConfigHandler.autoSignRemove)
 						removeSign(p.getGrave());

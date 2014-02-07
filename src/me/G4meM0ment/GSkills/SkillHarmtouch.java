@@ -73,7 +73,7 @@ public class SkillHarmtouch extends TargettedSkill {
         hero.setMana(hero.getMana() - (SkillConfigManager.getUseSetting(hero, this, "mana", 0, false)));
         damageEntity(target, p, damage, DamageCause.MAGIC);
         p.getWorld().playEffect(target.getLocation(), Effect.ENDER_SIGNAL, 0);
-        p.getWorld().playSound(p.getLocation(), Sound.FIZZ, 10, 1);
+        p.getWorld().playSound(target.getLocation(), Sound.FIZZ, 10, 1);
 	    	    	
         return SkillResult.NORMAL;
     }
