@@ -5,6 +5,7 @@ import me.G4meM0ment.ReNature.ReNature;
 import me.G4meM0ment.ReNature.OtherPlugins.ReFaction;
 import me.G4meM0ment.ReNature.OtherPlugins.ReTowny;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,6 +31,8 @@ public class PListener implements Listener{
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if(!event.hasBlock()) return;
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getClickedBlock().getWorld().getName())))
+			return;
+		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
 			return;
 		if(reFaction.isFaction(event.getClickedBlock().getLocation()))
 			return;
