@@ -2,6 +2,7 @@ package me.G4meM0ment.Orbia.Listener;
 
 import java.io.File;
 
+import me.G4meM0ment.Karma.Karma;
 import me.G4meM0ment.Orbia.Orbia;
 
 import org.bukkit.Bukkit;
@@ -30,14 +31,6 @@ public class TitleListener implements Listener {
 		pexConfig = YamlConfiguration.loadConfiguration(pex);
 	}
 	
-	/*
-	 * TODO
-	 * TODO
-	 * TODO add methods to get player specific title
-	 * TODO
-	 * TODO
-	 */
-	
 	public void startAutoUpdater()
 	{
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable()
@@ -57,11 +50,11 @@ public class TitleListener implements Listener {
 		String title = "";
 		
 		/*
-		 * TODO add karma
+		 * add karma
 		 */
-		if(p.getName().equalsIgnoreCase("bessen96"))
+		if(Karma.getPlayerHandler().getKarma(p) < 0)
 			title += ChatColor.RED;
-		else
+		else 
 			title += ChatColor.BLUE;
 		
 		/*

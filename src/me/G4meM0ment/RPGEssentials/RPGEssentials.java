@@ -1,9 +1,11 @@
 package me.G4meM0ment.RPGEssentials;
 
 import me.G4meM0ment.Ambience.Ambience;
+import me.G4meM0ment.Chaintrain.Chaintrain;
 import me.G4meM0ment.DeathAndRebirth.DeathAndRebirth;
 import me.G4meM0ment.InventoryBackup.InventoryBackup;
 import me.G4meM0ment.Junkie.Junkie;
+import me.G4meM0ment.Karma.Karma;
 import me.G4meM0ment.Orbia.Orbia;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.ReNature.ReNature;
@@ -41,6 +43,8 @@ public class RPGEssentials extends JavaPlugin{
 	private Ambience ambience;
 	private InventoryBackup ib;
 	private DeathAndRebirth dar;
+	private Karma karma;
+	private Chaintrain chaintrain;
 	
 	private CommandHandler ch;
 	
@@ -195,6 +199,32 @@ public class RPGEssentials extends JavaPlugin{
 		} 
 		else
 			getLogger().info("DeathAndRebirth found, but disabled in config!");
+		
+//################ Initializing Karma and debugging ################
+		if(getConfig().getBoolean("KarmaEnabled")) 
+		{
+			karma = new Karma(this);
+			boolean karmaEnabled = karma.onEnable();
+							
+			if(karmaEnabled)
+				getLogger().info("Karma enabled!");
+			else
+				getLogger().info("Karma couldn't be enabled!");
+		} 
+		else
+			getLogger().info("Karma found, but disabled in config!");
+
+//################ Initializing Karma and debugging ################
+		if(getConfig().getBoolean("ChaintrainEnabled")) {
+			chaintrain = new Chaintrain(this);
+			boolean chaintrainEnabled = chaintrain.onEnable();
+							
+			if(chaintrainEnabled)
+				getLogger().info("Chaintrain enabled!");
+			else
+				getLogger().info("Chaintrain couldn't be enabled!");
+		} else
+			getLogger().info("Chaintrain found, but disabled in config!");
 		
 //################ Initializing Orbia and debugging ################
 		if(getConfig().getKeys(false).contains("OrbiaEnabled") && getConfig().getBoolean("OrbiaEnabled")) 

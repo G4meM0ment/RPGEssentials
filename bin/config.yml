@@ -6,5 +6,7 @@ RentablesEnabled: false
 AmbienceEnabled: false
 InventoryBackupEnabled: false
 DeathAndRebirthEnabled: false
+KarmaEnabled: false
+ChaintrainEnabled: false
 UsePermissions: true
 MaxWorldEditBlocksForCreation: 200

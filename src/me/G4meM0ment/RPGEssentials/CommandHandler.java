@@ -3,8 +3,10 @@ package me.G4meM0ment.RPGEssentials;
 import java.util.Arrays;
 import java.util.List;
 
+import me.G4meM0ment.Chaintrain.Chaintrain;
 import me.G4meM0ment.DeathAndRebirth.DeathAndRebirth;
 import me.G4meM0ment.InventoryBackup.InventoryBackup;
+import me.G4meM0ment.Karma.Karma;
 import me.G4meM0ment.Orbia.Orbia;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.Rentables.Rentables;
@@ -30,6 +32,8 @@ public class CommandHandler{
 	private Rentables rentables;
 	private InventoryBackup ib;
 	private DeathAndRebirth dar;
+	private Karma karma;
+	private Chaintrain chaintrain;
 	
 	private Orbia orbia;
 	
@@ -42,6 +46,8 @@ public class CommandHandler{
 	private String UPPCmd = "upp";
 	private String rentCmd = "rentables";
 	private String iBCmd = "ib";
+	private String karmaCmd = "karma";
+	private String chaintrainCmd = "chaintrain";
 	private List<String> darCmds = Arrays.asList("dar", "shrine");
 	
 	public CommandHandler(RPGEssentials plugin) 
@@ -53,6 +59,7 @@ public class CommandHandler{
 		rentables = new Rentables();
 		ib = new InventoryBackup();
 		dar = new DeathAndRebirth();
+		karma = new Karma();
 		orbia = new Orbia();
 		
 		rpgItemCmdHandler = new me.G4meM0ment.RPGItem.Handler.CommandHandler(plugin);
@@ -67,14 +74,12 @@ public class CommandHandler{
 	{
 		
 		//main commands, handled in this class
-		if(command.getName().equalsIgnoreCase(mainCmd))
-		{
+		if(command.getName().equalsIgnoreCase(mainCmd)) {
 			return exec(sender, command, label, args);
 		}
 		
 		//RPGItem commands
-		if(command.getName().equalsIgnoreCase(rpgItemCmd) || command.getName().equalsIgnoreCase(rpgItemCmdAlias))
-		{
+		if(command.getName().equalsIgnoreCase(rpgItemCmd) || command.getName().equalsIgnoreCase(rpgItemCmdAlias)) {
 			if(rpgitem.isEnabled())
 				return rpgItemCmdHandler.exec(sender, command, label, args);
 			else {}
@@ -82,20 +87,17 @@ public class CommandHandler{
 		}
 		
 		//Junkie cmds
-		if(command.getName().equalsIgnoreCase(junkieCmd)) 
-		{
+		if(command.getName().equalsIgnoreCase(junkieCmd)) {
 			return rpgItemCmdHandler.exec(sender, command, label, args);
 		}
 		
 		//ReNature cmds
-		if(command.getName().equalsIgnoreCase(reNatureCmd))
-		{
+		if(command.getName().equalsIgnoreCase(reNatureCmd)) {
 			return rpgItemCmdHandler.exec(sender, command, label, args);
 		}
 		
 		//UPP cmds
-		if(command.getName().equalsIgnoreCase(UPPCmd)) 
-		{
+		if(command.getName().equalsIgnoreCase(UPPCmd)) {
 			if(upp.isEnabled())
 				return uppCmdHandler.exec(sender, command, label, args);
 			else {}
@@ -103,8 +105,7 @@ public class CommandHandler{
 		}
 		
 		//Rentables cmds
-		if(command.getName().equalsIgnoreCase(rentCmd))
-		{
+		if(command.getName().equalsIgnoreCase(rentCmd)) {
 			if(rentables.isEnabled())
 				return rentCmdHandler.exec(sender, command, label, args);
 			else {}
@@ -112,8 +113,7 @@ public class CommandHandler{
 		}
 		
 		//IB cmds
-		if(command.getName().equalsIgnoreCase(iBCmd)) 
-		{
+		if(command.getName().equalsIgnoreCase(iBCmd)) {
 			if(ib.isEnabled())
 				return iBCmdHandler.exec(sender, command, label, args);
 			else {}
@@ -121,16 +121,28 @@ public class CommandHandler{
 		}
 		
 		//DAR cmds
-		if(darCmds.contains(command.getName())) 
-		{
+		if(darCmds.contains(command.getName())) {
 			if(dar.isEnabled())
 				return darCmdHandler.exec(sender, command, label, args);
 			else {}
 		}
 		
+		//Karma cmds
+		if(command.getName().equalsIgnoreCase(karmaCmd)) {
+			if(karma.isEnabled())
+				return karma.exec(sender, command, label, args);
+			else {}
+		}
+		
+		//Chaintrain cmds
+		if(command.getName().equalsIgnoreCase(chaintrainCmd)) {
+			if(chaintrain.isEnabled())
+				return chaintrain.exec(sender, command, label, args);
+			else {}
+		}
+		
 		//Orbia specific plugin cmds
-		if(orbiaCmds.contains(command.getName())) 
-		{
+		if(orbiaCmds.contains(command.getName())) {
 			if(orbia.isEnabled())
 				return orbiaCmdHandler.exec(sender, command, label, args);
 			else {}

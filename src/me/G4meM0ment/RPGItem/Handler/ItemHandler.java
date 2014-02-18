@@ -28,7 +28,8 @@ public class ItemHandler {
 	public boolean isCustomItem(ItemStack item) {
 		if(item == null) return false;
 		if(!item.hasItemMeta()) return false;
-		if(item.getItemMeta().getDisplayName() == null) return false;
+		if(!item.getItemMeta().hasDisplayName()) return false;
+		if(!ListHandler.getCustomItemTypes().containsKey(ChatColor.stripColor(item.getItemMeta().getDisplayName()))) return false;
 		
 		if(subplugin.getConfig().getBoolean("useIDs")) 
 		{

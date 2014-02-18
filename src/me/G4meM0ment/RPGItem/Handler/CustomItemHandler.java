@@ -275,7 +275,7 @@ public class CustomItemHandler {
 		List<String> lore = i.getItemMeta().getLore();
 		String name = ChatColor.stripColor(i.getItemMeta().getDisplayName());
 		
-		if(ListHandler.getCustomItemTypeList(name) == null) return null;
+		if(ListHandler.getCustomItemTypes().containsKey(name)) return null;
 		
 		if(subplugin.getConfig().getBoolean("useIDs"))
 		{
@@ -291,7 +291,7 @@ public class CustomItemHandler {
 			if(ListHandler.getCustomItemTypeList(name).isEmpty())
 			{
 				registerItem(i, 0);
-				System.out.println("Debug: registered "+name+" "+ListHandler.getCustomItemTypeList(name).toString());
+				//System.out.println("Debug: registered "+name+" "+ListHandler.getCustomItemTypeList(name).toString());
 			}
 			if(!ListHandler.getCustomItemTypeList(name).isEmpty())
 				return ListHandler.getCustomItemTypeList(name).get(0);

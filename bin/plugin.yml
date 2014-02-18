@@ -3,7 +3,7 @@ main: me.G4meM0ment.RPGEssentials.RPGEssentials
 version: 0.00.001
 Author: [G4meM0ment, Eatingyou]
 depend: [Vault, WorldEdit]
-softdepend: [Spout, Jail, WorldGuard, Factions, MCore, MyWorlds, Heroes, Towny, Citizens, dtlTraders]
+softdepend: [Spout, Jail, WorldGuard, MCore, MyWorlds, Heroes, Towny, Citizens, dtlTraders]
 commands:
     ge:
         aliases: [ge]
@@ -33,6 +33,14 @@ commands:
         aliases: [dar]
         description: Death and Rebirth main command
         usage: /dar reload
+    karma:
+        aliases: [karma]
+        description: Karma main command
+        usage: /karma get|set|reload|save (<name>)
+    chaintrain:
+        aliases: [chaintrain]
+        description: Chaintrain main command
+        usage: /chaintrain reload|save
     shrine:
         aliases: [shrine]
         description: Death and Rebirth shrine command

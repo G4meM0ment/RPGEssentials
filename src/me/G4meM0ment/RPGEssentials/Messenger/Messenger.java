@@ -5,6 +5,7 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.player.SpoutPlayer;
@@ -25,6 +26,21 @@ public class Messenger {
 		if(!sp.isSpoutCraftEnabled() || msg.length() > 26)
 			return false;
 		return true;
+	}
+	
+	/**
+	 * 
+	 * @param reciever
+	 * @param msg
+	 */
+	public static void sendMessage(CommandSender reciever, String msg)
+	{
+		if(reciever == null || msg == null) return;
+		
+		msg = ChatColor.translateAlternateColorCodes('&', msg);
+		
+		if(msg.isEmpty()) return;
+		reciever.sendMessage(msg);
 	}
 	
 	/**
