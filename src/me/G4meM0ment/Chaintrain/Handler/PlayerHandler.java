@@ -129,7 +129,8 @@ public class PlayerHandler {
 	 * @param chainer
 	 * @param chained
 	 */
-	public void startChaining( final Player chained, final Player chainer) {
+	public void startChaining(final Player chained, final Player chainer) {
+		chaining.add(chainer.getName());
 		final int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(subplugin.getPlugin(), new Runnable() {
 			@Override
 			public void run() {

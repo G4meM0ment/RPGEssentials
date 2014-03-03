@@ -180,6 +180,7 @@ public class GhostHandler {
 		if(System.currentTimeMillis()-darP.getGrave().getPlacedMillis() < ConfigHandler.timeUntilCanRes)
 		{
 			Messenger.sendNotification(p, Message.spoutTitle, Message.spoutMaterial, Message.cantResYet, "%seconds%", ""+(ConfigHandler.timeUntilCanRes-(System.currentTimeMillis()-darP.getGrave().getPlacedMillis()))/1000);
+			//Messenger.sendMessage(p, Message.cantResYet, "%seconds%", ""+(ConfigHandler.timeUntilCanRes-(System.currentTimeMillis()-darP.getGrave().getPlacedMillis()))/1000);
 			return false;
 		}
 		

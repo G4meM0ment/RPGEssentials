@@ -24,7 +24,7 @@ public class Chaintrain {
 
 	private static RPGEssentials plugin;
 	private PListener pListener;
-	private PlayerData pD;
+	private static PlayerData pD;
 	private static PlayerHandler pH;
 	
 	private static File configFile;

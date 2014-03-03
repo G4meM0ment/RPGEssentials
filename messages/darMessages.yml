@@ -17,3 +17,4 @@ resurrect: "You've been resurrected"
 resurrectedBy: "You've been resurrected by %resurrecter%"
 soulBound: "Soul bound"
 soulUnbound: "Soul unbound"
+cantResYet: 'You need to wait %seconds% until you can resurrect'

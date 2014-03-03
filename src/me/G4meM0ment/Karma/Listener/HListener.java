@@ -29,8 +29,15 @@ public class HListener implements Listener {
 	public void onHeroKillCharacter(HeroKillCharacterEvent event) {
 		if(!(event.getDefender().getEntity() instanceof Player)) return;
 		
+		Player p = event.getAttacker().getPlayer();
 		int karmaMod = pH.getKarma((Player) event.getDefender().getEntity()) > 0 ? Karma.karmaKilledGood : Karma.karmaKilledBad;
-		pH.setKarma(event.getAttacker().getPlayer(), pH.getKarma(event.getAttacker().getPlayer())+karmaMod);
+		
+		if(pH.getKarma(event.getAttacker().getPlayer())+karmaMod <= -100)
+			pH.setKarma(p, -100);
+		else if(pH.getKarma(event.getAttacker().getPlayer())+karmaMod >= 100)
+			pH.setKarma(p, 100);
+		else
+			pH.setKarma(event.getAttacker().getPlayer(), pH.getKarma(event.getAttacker().getPlayer())+karmaMod);
 	}
 
 }

@@ -33,18 +33,27 @@ public class PListener implements Listener {
 		pH = new PlayerHandler();
 	}
 	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(!(event.getRightClicked() instanceof Player)) return;
-		if(event.getRightClicked().hasMetadata("NPC")) return;
+		System.out.println("Debug: 1");
+		if(event.getRightClicked().hasMetadata("NPC")) {
+			event.setCancelled(true);
+			return;
+		}
+		System.out.println("Debug: 2");
 		Player clicked = (Player) event.getRightClicked();
 		
 		if(pH.isChained(event.getPlayer())) return;
+		System.out.println("Debug: 3");
 		if(!event.getPlayer().getItemInHand().equals(Material.STRING)) return;
+		System.out.println("Debug: 4");
 		
 		if(!PermHandler.hasChainPerm(clicked)) {
-			//TODO add message
+			//Messenger.sendMessage(event.getPlayer(), "Du kannst niemanden fesseln!");
+			System.out.println("Debug: perm");
 		} else {
+			System.out.println("Debug: 5");
 			pH.startChaining(clicked, event.getPlayer());
 		}
 	}

@@ -38,6 +38,7 @@ public class PListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerInteractEvent(PlayerInteractEvent event) 
 	{
+		if(event.isCancelled() && !event.getAction().equals(Action.RIGHT_CLICK_AIR)) return;
 		if(event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR)
 			return;
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)

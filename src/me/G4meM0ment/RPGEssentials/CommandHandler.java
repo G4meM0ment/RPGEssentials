@@ -60,6 +60,7 @@ public class CommandHandler{
 		ib = new InventoryBackup();
 		dar = new DeathAndRebirth();
 		karma = new Karma();
+		chaintrain = new Chaintrain();
 		orbia = new Orbia();
 		
 		rpgItemCmdHandler = new me.G4meM0ment.RPGItem.Handler.CommandHandler(plugin);
