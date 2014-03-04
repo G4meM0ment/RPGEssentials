@@ -21,6 +21,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -36,8 +37,7 @@ public class PListener implements Listener {
 	private CustomItemHandler customItemHandler;
 	private RPGItem subplugin;
 	
-	public PListener(RPGEssentials plugin) 
-	{
+	public PListener(RPGEssentials plugin) {
 		this.plugin = plugin;
 		subplugin = new RPGItem();
 		invHandler = new InventoryHandler();
@@ -48,8 +48,7 @@ public class PListener implements Listener {
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerJoin(PlayerJoinEvent event)
-	{
+	public void onPlayerJoin(PlayerJoinEvent event){
 		Player p = event.getPlayer();
 		PlayerInventory i = p.getInventory();
 		if(p == null || i == null) return;
@@ -58,8 +57,7 @@ public class PListener implements Listener {
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerQuit(PlayerQuitEvent event) 
-	{
+	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player p = event.getPlayer();
 		PlayerInventory i = p.getInventory();
 		if(p == null || i == null) return;
@@ -68,8 +66,7 @@ public class PListener implements Listener {
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerInteract(PlayerInteractEvent event) 
-	{
+	public void onPlayerInteract(PlayerInteractEvent event) {
 		Player p = event.getPlayer();
 		if(!(event.getClickedBlock() instanceof Block)) return;
 		Block b = event.getClickedBlock();
@@ -97,15 +94,45 @@ public class PListener implements Listener {
 		}
 	}
 	
+	/**
+	 * Hopefully possible in the future to get entity player is looking at to add range to weapons
+	 * @param event
+	 */
+	/*@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerInteractLeftClick(PlayerInteractEvent event) {
+		if(event.getAction().equals(Action.LEFT_CLICK_AIR)) {
+			event.getPlayer().sendMessage("Registered left click on air");
+			if(event.getPlayer().getItemInHand().getType().equals(Material.WRITTEN_BOOK)) {
+				event.getPlayer().sendMessage("Gebetsbuch + "+event.getPlayer().get.getX()+" "+event.getPlayer().getEyeLocation().getY()+" "+event.getPlayer().getEyeLocation().getZ());
+				for(Entity  e : event.getPlayer().getNearbyEntities(10.0, 10.0, 10.0)) {
+					if(!(e instanceof LivingEntity)) continue;
+					event.getPlayer().sendMessage(e.getLocation().getX()+" "+e.getLocation().getY()+" "+e.getLocation().getZ());
+					if(event.getPlayer().getEyeLocation().distance(e.getLocation()) < 0.75) {
+						event.getPlayer().sendMessage("Registered left click on entity");
+						break;
+					}
+				}
+			}
+			
+		}
+	} */
+	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onEntityShootBow(EntityShootBowEvent event) 
-	{
+	public void onEntityShootBow(EntityShootBowEvent event) {
 		if(event.getEntity() instanceof Player)
 			customItemHandler.repairItem(event.getBow());
 	}
 	
-	public boolean hasItemInInv(Player p, Material m, int amount) 
-	{
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+		Player p = event.getPlayer();
+		ItemStack i = event.getItem().getItemStack();
+		
+		if(itemHandler.isCustomItem(i))
+			customItemHandler.updateItem(i, p, true);
+	}
+	
+	public boolean hasItemInInv(Player p, Material m, int amount) {
 		int counted = 0;
 		for(ItemStack i : p.getInventory()) 
 		{

@@ -181,6 +181,8 @@ public class PowerHandler {
 		    			if(!itemHandler.isCustomItem(i)) continue;
 	    				
 		    			CustomItem cItem = customItemHandler.getCustomItem(i);
+		    			if(cItem == null) return;
+		    			
 		    			if(i.equals(p.getItemInHand()) || cItem.isPassive()/* && itemHasPower(customItemHandler.getCustomItem(p.getItemInHand()))*/)
 		    			{	    				
 		    				/*

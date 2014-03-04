@@ -50,13 +50,18 @@ public class ItemConfig {
 	public void initializeItemConfigs() 
 	{
 		List<File> files = fileHandler.getFiles(folder);
-		for(File file : files) 
-			getItemConfigs().put(file.getName().replace(".yml", ""), file);
+		for(File file : files) {
+			String name = file.getName().replace(".yml", ""); 
+			getItemConfigs().put(name, file);
+			lh.initializeList(name);
+		}
 	}
 	
 	public void addConfigFile(File file) 
 	{
-		getItemConfigs().put(file.getName().replace(".yml", ""), file);
+		String name = file.getName().replace(".yml", ""); 
+		getItemConfigs().put(name, file);
+		lh.initializeList(name);
 	}
 	
 	public String getDir() 

@@ -11,6 +11,7 @@ import me.G4meM0ment.Orbia.Handler.ManaHandler;
 import me.G4meM0ment.Orbia.Handler.SIHandler;
 import me.G4meM0ment.Orbia.Handler.Job.JobListener;
 import me.G4meM0ment.Orbia.Listener.CraftListener;
+import me.G4meM0ment.Orbia.Listener.CustomItemListener;
 import me.G4meM0ment.Orbia.Listener.DuellListener;
 import me.G4meM0ment.Orbia.Listener.GraceListener;
 import me.G4meM0ment.Orbia.Listener.HeroesListener;
@@ -40,6 +41,7 @@ public class Orbia {
 	private DuellListener dl;
 	private TitleListener tl;
 	private GraceListener gl;
+	private CustomItemListener cil;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -60,6 +62,7 @@ public class Orbia {
 		dl = new DuellListener(plugin);
 		tl = new TitleListener();
 		gl = new GraceListener(plugin);
+		cil = new CustomItemListener();
 		
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(jl, plugin);
@@ -69,6 +72,7 @@ public class Orbia {
 		plugin.getServer().getPluginManager().registerEvents(dl, plugin);
 		plugin.getServer().getPluginManager().registerEvents(tl, plugin);
 		plugin.getServer().getPluginManager().registerEvents(gl, plugin);
+		plugin.getServer().getPluginManager().registerEvents(cil, plugin);
 		
 		dir = plugin.getDir()+"/Orbia";
 		logger = plugin.getLogger();
