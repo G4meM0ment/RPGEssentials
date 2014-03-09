@@ -1,9 +1,9 @@
 package me.G4meM0ment.DeathAndRebirth.Listener;
 
+import me.G4meM0ment.DeathAndRebirth.Framework.DARPlayer;
 import me.G4meM0ment.DeathAndRebirth.Handler.ConfigHandler;
 import me.G4meM0ment.DeathAndRebirth.Handler.GhostHandler;
 import me.G4meM0ment.DeathAndRebirth.Handler.ShrineHandler;
-import me.G4meM0ment.DeathAndRebirth.Types.DARPlayer;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

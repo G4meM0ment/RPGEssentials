@@ -2,8 +2,8 @@ package me.G4meM0ment.Orbia.Handler;
 
 import java.util.HashMap;
 
+import me.G4meM0ment.DeathAndRebirth.Framework.DARPlayer;
 import me.G4meM0ment.DeathAndRebirth.Handler.GhostHandler;
-import me.G4meM0ment.DeathAndRebirth.Types.DARPlayer;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 import org.bukkit.Bukkit;

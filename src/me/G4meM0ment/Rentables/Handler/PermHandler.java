@@ -5,13 +5,13 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import org.bukkit.entity.Player;
 
 public class PermHandler {
-	private RPGEssentials plugin;
+	private static RPGEssentials plugin;
 	
 	public PermHandler(RPGEssentials plugin) {
-		this.plugin = plugin;
+		PermHandler.plugin = plugin;
 	}
 
-	public boolean hasRentablesPerm(Player p) {
+	public static boolean hasRentablesPerm(Player p) {
 		if(plugin.getConfig().getBoolean("UsePermissions")) {
 			if((p.hasPermission("rentables.*") || p.hasPermission("rentables.admin") || p.hasPermission("rentables.create") || p.hasPermission("rpge.admin") || p.hasPermission("rpge.*")))
 				return true;
@@ -22,7 +22,7 @@ public class PermHandler {
 			return true;
 	}
 	
-	public boolean hasRentablesAdminPerm(Player p) {
+	public static boolean hasRentablesAdminPerm(Player p) {
 		if(plugin.getConfig().getBoolean("UsePermissions")) {
 			if((p.hasPermission("rentables.admin") || p.hasPermission("rpge.admin") || p.hasPermission("rentables.*") || p.hasPermission("rpge.*")))
 				return true;

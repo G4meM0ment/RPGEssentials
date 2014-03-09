@@ -7,6 +7,7 @@ import me.G4meM0ment.InventoryBackup.InventoryBackup;
 import me.G4meM0ment.Junkie.Junkie;
 import me.G4meM0ment.Karma.Karma;
 import me.G4meM0ment.Orbia.Orbia;
+import me.G4meM0ment.RPGEssentials.Commands.CommandHandler;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.ReNature.ReNature;
 import me.G4meM0ment.Rentables.Rentables;
@@ -15,8 +16,6 @@ import net.dandielo.citizens.traders_v3.bukkit.DtlTraders;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -26,13 +25,11 @@ import com.dthielke.herochat.Herochat;
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.lwc.LWCPlugin;
 import com.herocraftonline.heroes.Heroes;
-import com.massivecraft.factions.Factions;
-import com.massivecraft.mcore.MCore;
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
-public class RPGEssentials extends JavaPlugin{
+public class RPGEssentials extends JavaPlugin {
 
 	private ReNature reNature;
 	private Junkie junkie;
@@ -46,13 +43,11 @@ public class RPGEssentials extends JavaPlugin{
 	private Karma karma;
 	private Chaintrain chaintrain;
 	
-	private CommandHandler ch;
+	private CommandHandler cH;
 	
 	private Economy econ;
 	private WorldGuardPlugin wg;
 	private WorldEditPlugin we;
-	private MCore mcore;
-	private Factions factions;
 	private Towny towny;
 	private Heroes heroes;
 	private Herochat herochat;
@@ -66,7 +61,6 @@ public class RPGEssentials extends JavaPlugin{
 	@Override
 	public void onEnable() {
 		PluginDescriptionFile pdf = getDescription();
-		ch = new CommandHandler(this);
 		
 		//Enabling config
 		try {
@@ -85,8 +79,6 @@ public class RPGEssentials extends JavaPlugin{
 	    }
 		we = initWorldEdit();
 		wg = initWorldGuard();
-		mcore = initMCore();
-		factions = initFactions();
 		towny = initTowny();
 		heroes = initHeroes();
 		lwc = initLWC();
@@ -240,6 +232,30 @@ public class RPGEssentials extends JavaPlugin{
 		else
 			getLogger().info("Orbia found, but disabled in config!");
 		
+		
+		/*
+		 * 
+		 * Commands
+		 * 
+		 */
+		cH = new CommandHandler(this);
+		getCommand("dar").setExecutor(cH);
+		getCommand("grave").setExecutor(cH);
+		getCommand("upp").setExecutor(cH);
+		getCommand("ri").setExecutor(cH);
+		getCommand("ib").setExecutor(cH);
+		getCommand("rentables").setExecutor(cH);
+		getCommand("chaintrain").setExecutor(cH);
+		
+		//orbia commands
+		getCommand("orbia").setExecutor(cH);
+		getCommand("l").setExecutor(cH);
+		getCommand("g").setExecutor(cH);
+		getCommand("a").setExecutor(cH);
+		getCommand("c").setExecutor(cH);
+		getCommand("duell").setExecutor(cH);
+		getCommand("help").setExecutor(cH);
+		
 		//Finished initializing plugin enabled
 		getLogger().info("Initialization done!");
 		
@@ -252,7 +268,6 @@ public class RPGEssentials extends JavaPlugin{
 	{
 		//Disable messages
 		getServer().getScheduler().cancelTasks(this);
-		getLogger().info("Config saved");
 		
 		//Disable sub-plugins
 		getLogger().info("Disabling sub-plugins:");
@@ -289,20 +304,43 @@ public class RPGEssentials extends JavaPlugin{
 			if(dar.onDisable() && !dar.isEnabled())
 				getLogger().info("DeathAndRebirth disabled!");
 		
+		if(karma != null)
+			if(karma.onDisable() && !karma.isEnabled())
+				getLogger().info("Karma disabled!");
+		
+		if(chaintrain != null)
+			if(chaintrain.onDisable() && !chaintrain.isEnabled())
+				getLogger().info("Chaintrain disabled!");
+		
 		if(orbia != null)
 			if(orbia.onDisable() && !orbia.isEnabled())
 				getLogger().info("Orbia disabled!");
 	}
 	
-	public String getDir() 
-	{
+	/*
+	 * 
+	 * Getter of variables from main plugin
+	 * 
+	 */
+	public String getDir() {
 		return dir;
 	}
 	
-    private boolean setupEconomy() 
-    {
-    	if(getServer().getPluginManager().getPlugin("Vault") == null) 
-    	{
+	
+	/*
+	 * 
+	 * 
+	 * Initialization of other plugins
+	 * 
+	 * 
+	 * 
+	 */
+	/**
+	 * Checks for the plugin enabled and sets it to null if not found
+	 * @return
+	 */
+    private boolean setupEconomy() {
+    	if(getServer().getPluginManager().getPlugin("Vault") == null) {
     		this.getLogger().info("Vault not found");
     		return false;
     	}
@@ -314,172 +352,137 @@ public class RPGEssentials extends JavaPlugin{
     	econ = rsp.getProvider();
     	return econ != null;
     }
-    public Economy getEconomy() 
-    {
+    public Economy getEconomy() {
     	return econ;
     }
 	
-	private WorldEditPlugin initWorldEdit() 
-	{
+	/**
+	 * Checks for the plugin enabled and sets it to null if not found
+	 * @return
+	 */
+	private WorldEditPlugin initWorldEdit() {
 	    Plugin plugin = getServer().getPluginManager().getPlugin("WorldEdit");
 	 
 	    // WorldEdit may not be loaded
 	    if (plugin == null || !(plugin instanceof WorldEditPlugin))
-	    {
 	        return null; // Maybe you want throw an exception instead
-	    }
 		getLogger().info("WorldEdit found enabled features");
 	    return (WorldEditPlugin) plugin;
 	}
-	public WorldEditPlugin getWorldEdit() 
-	{
+	public WorldEditPlugin getWorldEdit() {
 		return we;
 	}
 	
-	private WorldGuardPlugin initWorldGuard() 
-	{
+	/**
+	 * Checks for the plugin enabled and sets it to null if not found
+	 * @return
+	 */
+	private WorldGuardPlugin initWorldGuard() {
 	    Plugin plugin = getServer().getPluginManager().getPlugin("WorldGuard");
 	 
 	    // WorldGuard may not be loaded
 	    if (plugin == null || !(plugin instanceof WorldGuardPlugin)) 
-	    {
 	        return null; // Maybe you want throw an exception instead
-	    }
 		getLogger().info("WorldGuard found enabled features");
 	    return (WorldGuardPlugin) plugin;
 	}
-	public WorldGuardPlugin getWorldGuard() 
-	{
+	public WorldGuardPlugin getWorldGuard() {
 		return wg;
 	}
 	
-	private MCore initMCore() 
-	{
-	    Plugin plugin = getServer().getPluginManager().getPlugin("mcore");
-	 
-	    if (plugin == null || !(plugin instanceof MCore)) 
-	    {
-	        return null; // Maybe you want throw an exception instead
-	    }
-		getLogger().info("MCore found enabled features");
-	    return (MCore) plugin;
-	}
-	public MCore getMCore() 
-	{
-		return mcore;
-	}
-	
-	private Factions initFactions() 
-	{
-	    Plugin plugin = getServer().getPluginManager().getPlugin("Factions");
-	 
-	    if (plugin == null || !(plugin instanceof Factions)) 
-	    {
-	        return null; // Maybe you want throw an exception instead
-	    }
-		getLogger().info("Factions found enabled features");
-	    return (Factions) plugin;
-	}
-	public Factions getFactions() 
-	{
-		return factions;
-	}
-	
-	private Towny initTowny() 
-	{
+	/**
+	 * Checks for the plugin enabled and sets it to null if not found
+	 * @return
+	 */
+	private Towny initTowny() {
 	    Plugin plugin = getServer().getPluginManager().getPlugin("Towny");
 	 
 	    if (plugin == null || !(plugin instanceof Towny)) 
-	    {
 	        return null; // Maybe you want throw an exception instead
-	    }
 		getLogger().info("Towny found enabled features");
 	    return (Towny) plugin;
 	}
-	public Towny getTowny() 
-	{
+	public Towny getTowny() {
 		return towny;
 	}
 	
-	private Heroes initHeroes() 
-	{
+	/**
+	 * Checks for the plugin enabled and sets it to null if not found
+	 * @return
+	 */
+	private Heroes initHeroes() {
 	    Plugin plugin = getServer().getPluginManager().getPlugin("Heroes");
 	 
 	    if (plugin == null || !(plugin instanceof Heroes))
-	    {
 	        return null; // Maybe you want throw an exception instead
-	    }
 		getLogger().info("Heroes found enabled features");
 	    return (Heroes) plugin;
 	}
-	public Heroes getHeroes() 
-	{
+	public Heroes getHeroes() {
 		return heroes;
 	}
 	
-	private LWC initLWC() 
-	{
+	/**
+	 * Checks for the plugin enabled and sets it to null if not found
+	 * @return
+	 */
+	private LWC initLWC() {
 	    Plugin plugin = getServer().getPluginManager().getPlugin("LWC");
 	 
 	    if (plugin == null || !(plugin instanceof LWCPlugin))
-	    {
 	        return null; // Maybe you want throw an exception instead
-	    }
 		getLogger().info("LWC found enabled features");
 	    return ((LWCPlugin) plugin).getLWC();
 	}
-	public LWC getLWC() 
-	{
+	public LWC getLWC() {
 		return lwc;
 	}
 	
-	private DtlTraders initDtlTraders() 
-	{
+	/**
+	 * Checks for the plugin enabled and sets it to null if not found
+	 * @return
+	 */
+	private DtlTraders initDtlTraders() {
 	    Plugin plugin = getServer().getPluginManager().getPlugin("dtlTraders");
 	 
 	    if (plugin == null || !(plugin instanceof DtlTraders))
-	    {
 	        return null; // Maybe you want throw an exception instead
-	    }
 		getLogger().info("dtlTraders found enabled features");
 	    return (DtlTraders) plugin;
 	}
-	public DtlTraders getDtlTraders() 
-	{
+	public DtlTraders getDtlTraders() {
 		return dtlTraders;
 	}
 	
-	private Herochat initHerochat() 
-	{
+	/**
+	 * Checks for the plugin enabled and sets it to null if not found
+	 * @return
+	 */
+	private Herochat initHerochat() {
 	    Plugin plugin = getServer().getPluginManager().getPlugin("Herochat");
 	 
 	    if (plugin == null || !(plugin instanceof Herochat)) 
-	    {
 	        return null; // Maybe you want throw an exception instead
-	    }
 		getLogger().info("Herochat found enabled features");
 	    return (Herochat) plugin;
 	}
-	public Herochat getHerochat() 
-	{
+	public Herochat getHerochat() {
 		return herochat;
 	}
 	
-	public boolean isSpoutcraftPluginEnabled()
-	{
+	public boolean isSpoutcraftPluginEnabled() {
 		return (Bukkit.getPluginManager().getPlugin("Spout") != null);
 	}
 	
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) 
-	{
-		if(ch.onCommand(sender, command, label, args))
-			return true;
-		else
-			return false;
-	}
-	
-	public void reloadRPGEssentials() 
-	{
+	/*
+	 * 
+	 * File and cache data utils
+	 * 
+	 */
+	/**
+	 * Reloads all files data
+	 */
+	public void reloadRPGEssentials() {
 		reloadConfig();
 		if(getConfig().getBoolean("ReNatureEnabled") && reNature != null && reNature.isEnabled())
 			reNature.reloadConfig();
@@ -495,18 +498,42 @@ public class RPGEssentials extends JavaPlugin{
 			upp.reloadConfigs();
 	}
 	
-	public RPGItem getRPGItem() 
-	{
+	/*
+	 * 
+	 * Getter for subplugins
+	 * 
+	 */
+	public RPGItem getRPGItem() {
 		return rpgItem;
 	}
-
-	public UnnamedPortalPlugin getUnnamedPortalPlugin() 
-	{
+	public UnnamedPortalPlugin getUnnamedPortalPlugin() {
 		return upp;
 	}
-	
-	public DeathAndRebirth getDeathAndRebirth() 
-	{
+	public DeathAndRebirth getDeathAndRebirth() {
 		return dar;
+	}
+	public Karma getKarma() {
+		return karma;
+	}
+	public Chaintrain getChaintrain() {
+		return chaintrain;
+	}
+	public Ambience getAmbience() {
+		return ambience;
+	}
+	public InventoryBackup getInventoryBackup() {
+		return ib;
+	}
+	public Junkie getJunkie() {
+		return junkie;
+	}
+	public ReNature getReNature() {
+		return reNature;
+	}
+	public Rentables getRentables() {
+		return rent;
+	}
+	public Orbia getOrbia() {
+		return orbia;
 	}
  }

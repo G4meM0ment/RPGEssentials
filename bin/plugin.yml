@@ -32,7 +32,11 @@ commands:
     dar:
         aliases: [dar]
         description: Death and Rebirth main command
-        usage: /dar reload
+        usage: /dar reload (config|data)|save (config|data)|addShrine|removeShrine|setShrineSpawn
+    grave:
+        aliases: [grave]
+        description: Shows the location of your grave
+        usage: /grave
     karma:
         aliases: [karma]
         description: Karma main command
@@ -41,10 +45,6 @@ commands:
         aliases: [chaintrain]
         description: Chaintrain main command
         usage: /chaintrain reload|save
-    shrine:
-        aliases: [shrine]
-        description: Death and Rebirth shrine command
-        usage: /shrine add|remove|list <name>
     l:
         aliases: [l]
         description: Chat in lokal channel
@@ -73,10 +73,6 @@ commands:
         aliases: [job]
         description: Display your job
         usage: /job
-    hilfe:
-        aliases: [hilfe]
-        description: Display help
-        usage: /hilfe
     help:
         aliases: [help]
         description: Display help

@@ -31,13 +31,13 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import com.garbagemule.MobArena.MobArenaHandler;
 
 import me.G4meM0ment.DeathAndRebirth.DeathAndRebirth;
+import me.G4meM0ment.DeathAndRebirth.Framework.DARPlayer;
 import me.G4meM0ment.DeathAndRebirth.Handler.ConfigHandler;
 import me.G4meM0ment.DeathAndRebirth.Handler.GhostHandler;
 import me.G4meM0ment.DeathAndRebirth.Handler.GraveHandler;
 import me.G4meM0ment.DeathAndRebirth.Handler.PermHandler;
 import me.G4meM0ment.DeathAndRebirth.Handler.ShrineHandler;
 import me.G4meM0ment.DeathAndRebirth.Handler.SpoutcraftHandler;
-import me.G4meM0ment.DeathAndRebirth.Types.DARPlayer;
 
 public class PListener implements Listener {
 	
@@ -150,7 +150,7 @@ public class PListener implements Listener {
 			if(graveH.isPlayersGrave(darP, clicked) || sH.isShrine(clicked, ConfigHandler.shrineRadius))
 			{
 				//resurrect the player
-				if(gH.resurrect(p, clicked))
+				if(gH.resurrect(p, clicked, false))
 				{
 					//punish if he resurrected where he respawned
 					if(ConfigHandler.corpseSpawn && graveH.isPlayersGrave(darP, clicked) && !sH.isShrine(clicked, ConfigHandler.shrineRadius))

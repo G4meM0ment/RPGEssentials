@@ -5,13 +5,13 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 public class PermHandler {
 	
-	private RPGEssentials plugin;
+	private static RPGEssentials plugin;
 	
 	public PermHandler(RPGEssentials plugin) {
-		this.plugin = plugin;
+		PermHandler.plugin = plugin;
 	}
 	
-	public boolean hasRPGItemReloadPerms(Player p) {
+	public static boolean hasRPGItemReloadPerms(Player p) {
 		if(plugin.getConfig().getBoolean("UsePermissions")) {
 			if((p.hasPermission("rpgitem.reload") || p.hasPermission("rpgitem.admin") || p.hasPermission("rpge.admin") || p.hasPermission("rpge.reload")))
 				return true;
@@ -25,7 +25,7 @@ public class PermHandler {
 				return false;
 	}
 	
-	public boolean hasRPGItemGivePerms(Player p) {
+	public static boolean hasRPGItemGivePerms(Player p) {
 		if(plugin.getConfig().getBoolean("UsePermissions")) {
 			if((p.hasPermission("rpgitem.give") || p.hasPermission("rpgitem.admin") || p.hasPermission("rpge.admin")))
 				return true;
@@ -39,7 +39,7 @@ public class PermHandler {
 				return false;
 	}
 	
-	public boolean hasRPGItemConvertPerms(Player p) {
+	public static boolean hasRPGItemConvertPerms(Player p) {
 		if(plugin.getConfig().getBoolean("UsePermissions")) {
 			if((p.hasPermission("rpgitem.convert") || p.hasPermission("rpgitem.admin") || p.hasPermission("rpge.admin")))
 				return true;
@@ -53,7 +53,7 @@ public class PermHandler {
 				return false;
 	}
 	
-	public boolean hasRPGItemRepairPerms(Player p) {
+	public static boolean hasRPGItemRepairPerms(Player p) {
 		if(plugin.getConfig().getBoolean("UsePermissions")) {
 			if((p.hasPermission("rpgitem.repair") || p.hasPermission("rpgitem.admin") || p.hasPermission("rpge.admin")))
 				return true;

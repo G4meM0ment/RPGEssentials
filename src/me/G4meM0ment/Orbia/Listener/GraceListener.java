@@ -66,7 +66,7 @@ public class GraceListener implements Listener {
 		if(event.getResurrected() == null) return;
 		final Player p = event.getResurrected();
 		
-		addGracer(p, 30000, ChatColor.GRAY+"Du hast den Schutz des Talgeron für 30 Sekunden!", ChatColor.GRAY+"Der Schutz des Talgeron verfliegt");
+		addGracer(p, 15000, ChatColor.GRAY+"Du hast den Schutz des Talgeron für 15 Sekunden!", ChatColor.GRAY+"Der Schutz des Talgeron verfliegt");
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)

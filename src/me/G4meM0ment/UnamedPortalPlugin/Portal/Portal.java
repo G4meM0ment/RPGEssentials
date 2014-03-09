@@ -1,20 +1,16 @@
 package me.G4meM0ment.UnamedPortalPlugin.Portal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 
 public class Portal {
-	
-	private List<Block> blocks = new ArrayList<Block>();
-	private Location destination;
+
+	private Location max, min, destination;
 	private String id;
 	
-	public Portal(String id, List<Block> blocks, Location destination) {
+	public Portal(String id, Location max, Location min, Location destination) {
 		this.id = id;
-		this.blocks = blocks;
+		this.max = max;
+		this.min = min;
 		this.destination = destination;
 	}
 	
@@ -24,14 +20,21 @@ public class Portal {
 	public void setID(String id) {
 		this.id = id;
 	}
-		
-	public List<Block> getBlocks() {
-		return blocks;
-	}
-	public void setBlock(List<Block> blocks) {
-		this.blocks = blocks;
-	}
 	
+	public Location getMax() {
+		return max;
+	}
+	public void setMax(Location max) {
+		this.max = max;
+	}
+
+	public Location getMin() {
+		return min;
+	}
+	public void setMin(Location min) {
+		this.min = min;
+	}
+
 	public Location getDestination() {
 		return destination;
 	}

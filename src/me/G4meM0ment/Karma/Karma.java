@@ -128,62 +128,6 @@ public class Karma {
 	    }
 	}
 	
-	public boolean exec(CommandSender sender, Command command, String label, String[] args) {
-		String playerName = "";
-		if(args.length > 0) {
-			if(args.length > 1 && args[0].equalsIgnoreCase("get")) {
-				if(Bukkit.getPlayer(args[1]) == null && !pH.getKarmaList().containsKey(args[1])) {
-					sender.sendMessage(ChatColor.GRAY+"Spieler nicht gefunden");
-				} else {
-					playerName = args[1];
-				}
-			} else if(sender instanceof Player) {
-				playerName = sender.getName();
-			}
-		} else
-			playerName = sender.getName();
-		if(!playerName.isEmpty()) {
-			sender.sendMessage(ChatColor.GRAY+"Karma von "+playerName+": "+ChatColor.WHITE+pH.getKarma(playerName));
-			return true;
-		}
-		
-		if(args.length < 1) return false;
-		
-		if(sender.hasPermission("karma.admin")) {
-			if(args[0].equalsIgnoreCase("reload")) {
-				reloadConfig();
-				karmaKilledGood = getConfig().getInt("karmaKilledGood");
-				karmaKilledBad = getConfig().getInt("karmaKilledBad");
-			
-				pD.reloadConfig();			
-				pD.loadDataFromFile();
-				sender.sendMessage("Configs reloaded");
-				return true;
-		
-			} else if(args[0].equalsIgnoreCase("save")) {
-				saveConfig();
-				pD.saveDataToFile();
-				sender.sendMessage("Configs saved");
-				return true;
-		
-			} else if(args[0].equalsIgnoreCase("set") && args.length > 2) {
-				if(Bukkit.getPlayer(args[1]) == null && !pH.getKarmaList().containsKey(args[1])) {
-					sender.sendMessage("Player not found");
-					return true;
-				} else {
-					try {
-						pH.setKarma(args[1], Integer.parseInt(args[2]));
-						return true;
-					} catch(NumberFormatException e) {
-						sender.sendMessage(args[2]+" is not a number!");
-						return true;
-					}
-				}
-			}
-		}			
-		return false;
-	}
-	
 	public boolean isEnabled() {
 		return isEnabled;
 	}

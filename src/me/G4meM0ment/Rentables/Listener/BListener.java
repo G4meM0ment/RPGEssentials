@@ -41,7 +41,7 @@ public class BListener implements Listener{
 		Selection sel = plugin.getWorldEdit().getSelection(p);
 		if(p == null || sel == null) return;
 		//TODO add messenger
-		if(!ph.hasRentablesPerm(p)) return;
+		if(!PermHandler.hasRentablesPerm(p)) return;
 		//TODO add messenger
 		if(rh.getPlayersAdminModeEnabled().contains(p))
 			owner = null;

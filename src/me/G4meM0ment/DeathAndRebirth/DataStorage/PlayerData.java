@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 import me.G4meM0ment.DeathAndRebirth.DeathAndRebirth;
+import me.G4meM0ment.DeathAndRebirth.Framework.DARPlayer;
+import me.G4meM0ment.DeathAndRebirth.Framework.Grave;
+import me.G4meM0ment.DeathAndRebirth.Framework.Shrine;
 import me.G4meM0ment.DeathAndRebirth.Handler.GhostHandler;
 import me.G4meM0ment.DeathAndRebirth.Handler.ShrineHandler;
-import me.G4meM0ment.DeathAndRebirth.Types.DARPlayer;
-import me.G4meM0ment.DeathAndRebirth.Types.Grave;
-import me.G4meM0ment.DeathAndRebirth.Types.Shrine;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 
 import org.bukkit.Bukkit;

@@ -1,6 +1,6 @@
 package me.G4meM0ment.DeathAndRebirth.Handler;
 
-import me.G4meM0ment.DeathAndRebirth.Types.Shrine;
+import me.G4meM0ment.DeathAndRebirth.Framework.Shrine;
 
 import org.bukkit.entity.Player;
 

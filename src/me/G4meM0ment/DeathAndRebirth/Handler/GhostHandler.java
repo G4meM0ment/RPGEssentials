@@ -8,9 +8,9 @@ import me.G4meM0ment.DeathAndRebirth.DeathAndRebirth;
 import me.G4meM0ment.DeathAndRebirth.DataStorage.Message;
 import me.G4meM0ment.DeathAndRebirth.Events.PlayerBecomeGhostEvent;
 import me.G4meM0ment.DeathAndRebirth.Events.PlayerResurrectEvent;
-import me.G4meM0ment.DeathAndRebirth.Types.DARPlayer;
-import me.G4meM0ment.DeathAndRebirth.Types.Grave;
-import me.G4meM0ment.DeathAndRebirth.Types.Shrine;
+import me.G4meM0ment.DeathAndRebirth.Framework.DARPlayer;
+import me.G4meM0ment.DeathAndRebirth.Framework.Grave;
+import me.G4meM0ment.DeathAndRebirth.Framework.Shrine;
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.RPGEssentials.Messenger.Messenger;
 
@@ -170,14 +170,14 @@ public class GhostHandler {
 	 * @param p
 	 * @param clicked
 	 */
-	public boolean resurrect(Player p, Location clicked)
+	public boolean resurrect(Player p, Location clicked, boolean override)
 	{
 		if(p == null) return false;
 
 		DARPlayer darP = getDARPlayer(p, clicked.getWorld().getName());
 		if(darP == null) return false;
 		if(!darP.isDead()) return false;
-		if(System.currentTimeMillis()-darP.getGrave().getPlacedMillis() < ConfigHandler.timeUntilCanRes)
+		if(System.currentTimeMillis()-darP.getGrave().getPlacedMillis() < ConfigHandler.timeUntilCanRes && !override)
 		{
 			Messenger.sendNotification(p, Message.spoutTitle, Message.spoutMaterial, Message.cantResYet, "%seconds%", ""+(ConfigHandler.timeUntilCanRes-(System.currentTimeMillis()-darP.getGrave().getPlacedMillis()))/1000);
 			//Messenger.sendMessage(p, Message.cantResYet, "%seconds%", ""+(ConfigHandler.timeUntilCanRes-(System.currentTimeMillis()-darP.getGrave().getPlacedMillis()))/1000);

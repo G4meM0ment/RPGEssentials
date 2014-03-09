@@ -6,19 +6,17 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
-import me.G4meM0ment.DeathAndRebirth.Types.DARPlayer;
-import me.G4meM0ment.DeathAndRebirth.Types.Grave;
+import me.G4meM0ment.DeathAndRebirth.Framework.DARPlayer;
+import me.G4meM0ment.DeathAndRebirth.Framework.Grave;
 
 public class GraveHandler {
 	
 	private GhostHandler gH;
 	
-	public GraveHandler(GhostHandler gH)
-	{
+	public GraveHandler(GhostHandler gH) {
 		this.gH = gH;
 	}
-	public GraveHandler()
-	{
+	public GraveHandler() {
 		gH = new GhostHandler();
 	}
 	
@@ -28,8 +26,7 @@ public class GraveHandler {
 	 * @param loc
 	 * @return
 	 */
-	public boolean isPlayersGrave(DARPlayer p, Location loc)
-	{
+	public boolean isPlayersGrave(DARPlayer p, Location loc) {
 		if(p.getGrave().getLocation().distance(loc) <= ConfigHandler.maxGraveDistance)
 			return true;
 		return false;
@@ -40,10 +37,8 @@ public class GraveHandler {
 	 * @param loc
 	 * @return
 	 */
-	public boolean isGrave(Location loc)
-	{
-		for(DARPlayer p : gH.getDARPlayers(loc.getWorld().getName()))
-		{
+	public boolean isGrave(Location loc) {
+		for(DARPlayer p : gH.getDARPlayers(loc.getWorld().getName())) {
 			if(p.getGrave() == null) continue;
 			if(p.getGrave().getLocation().equals(loc))
 				return true;
@@ -51,13 +46,21 @@ public class GraveHandler {
 		return false;
 	}
 	
+	public Grave getGrave(Location loc) {
+		for(DARPlayer p : gH.getDARPlayers(loc.getWorld().getName())) {
+			if(p.getGrave() == null) continue;
+			if(p.getGrave().getLocation().equals(loc))
+				return p.getGrave();
+		}
+		return null;
+	}
+	
 	/**
 	 * Places the players grave sign
 	 * @param g
 	 * @param b
 	 */
-	public void placeSign(Grave g, Block b)
-	{
+	public void placeSign(Grave g, Block b) {
 		if(g == null || b == null) return;
 		
 		Material m = b.getType();
@@ -86,8 +89,7 @@ public class GraveHandler {
 	 * Removes a players sign
 	 * @param g
 	 */
-	public void removeSign(Grave g)
-	{
+	public void removeSign(Grave g) {
 		if(g == null) return;
 		if(g.getBlockMaterial() == null) return;
 		
@@ -98,12 +100,9 @@ public class GraveHandler {
 		g.setData(0);
 	}
 	
-	public void removeOldSigns()
-	{
-		for(String world : gH.getDARPlayerLists().keySet())
-		{
-			for(DARPlayer p : gH.getDARPlayers(world))
-			{
+	public void removeOldSigns() {
+		for(String world : gH.getDARPlayerLists().keySet()) {
+			for(DARPlayer p : gH.getDARPlayers(world)) {
 				if(p.getGrave() == null) continue;
 				if(p.getGrave().getPlacedMillis() > 0)
 					if(System.currentTimeMillis()-p.getGrave().getPlacedMillis() > ConfigHandler.autoSignRemove)

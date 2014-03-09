@@ -2,7 +2,6 @@ package me.G4meM0ment.ReNature.Listener;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.ReNature.ReNature;
-import me.G4meM0ment.ReNature.OtherPlugins.ReFaction;
 import me.G4meM0ment.ReNature.OtherPlugins.ReTowny;
 
 import org.bukkit.GameMode;
@@ -17,13 +16,11 @@ public class PListener implements Listener{
 	private ReNature subplugin;
 	@SuppressWarnings("unused")
 	private RPGEssentials plugin;
-	private ReFaction reFaction;
 	private ReTowny reTowny;
 	
 	public PListener(RPGEssentials plugin) {
 		this.plugin = plugin;
 		subplugin = new ReNature();
-		reFaction = new ReFaction(plugin);
 		reTowny = new ReTowny(plugin);
 	}
 	
@@ -33,8 +30,6 @@ public class PListener implements Listener{
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getClickedBlock().getWorld().getName())))
 			return;
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
-			return;
-		if(reFaction.isFaction(event.getClickedBlock().getLocation()))
 			return;
 		if(reTowny.isTown(event.getClickedBlock().getLocation()))
 			return;

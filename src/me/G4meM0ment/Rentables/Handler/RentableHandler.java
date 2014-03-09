@@ -5,12 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
-import me.G4meM0ment.RPGEssentials.WorldEdit.WorldEditHandler;
+import me.G4meM0ment.RPGEssentials.Messenger.Messenger;
 import me.G4meM0ment.Rentables.Rentables;
 import me.G4meM0ment.Rentables.DataStorage.RentableData;
 import me.G4meM0ment.Rentables.Rentable.Rentable;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -22,41 +23,42 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 
 public class RentableHandler {
 	
-	private WorldEditHandler weHandler;
 	private RentableData rentData;
 	
 	private static HashMap<String, Rentable> rentables = new HashMap<String, Rentable>();
 	private static List<Player> adminModeEnabled = new ArrayList<Player>();
 	
-	public RentableHandler() {
-		weHandler = new WorldEditHandler();
-	}
-	
-	public boolean isRentable(Block b) {
-		if(b == null) return false;
+	/**
+	 * 
+	 * @param b
+	 * @return
+	 */
+	public boolean isRentable(Location loc) {
+		if(loc == null) return false;
 		
-		for(Rentable r : getRentables().values()) {
-			for(Block block : r.getBlocks()) {
-				if(block.getLocation().getWorld() != b.getLocation().getWorld()) continue;
-				if(block.getLocation().distance(b.getLocation()) == 0) {
-					return true;
-				}
-			}
-		}
+		if(getRentableByLocation(loc) != null)
+			return true;
 		return false;
 	}
-	public boolean isRentableSign(Block b) {
-		if(b == null) return false;
+	/**
+	 * 
+	 * @param loc
+	 * @return
+	 */
+	public boolean isRentableSign(Location loc) {
+		if(loc == null) return false;
 		
-		for(Rentable r : getRentables().values()) {
-			if(r.getSign().getLocation().getWorld() != b.getLocation().getWorld()) continue;
-			if(r.getSign().getLocation().distance(b.getLocation()) == 0) {
-					return true;
-			}
-		}
+		for(Rentable r : getRentables().values())
+			if(r.getSign().getLocation().distance(loc) == 0)
+				return true;
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param b
+	 * @return
+	 */
 	public Rentable getRentableBySign(Block b) {
 		for(Rentable r : getRentables().values()) {
 			if(r.getSign().getLocation().getWorld() != b.getLocation().getWorld()) continue;
@@ -65,16 +67,40 @@ public class RentableHandler {
 		}
 		return null;
 	}
-	public Rentable getRentableByBlock(Block b) {
+	
+	/**
+	 * 
+	 * @param loc
+	 * @return
+	 */
+	public Rentable getRentableByLocation(Location loc) {
 		for(Rentable r : getRentables().values()) {
-			for(Block block : r.getBlocks()) {
-				if(block.getLocation().getWorld() != b.getLocation().getWorld()) continue;
-				if(block.getLocation().distance(b.getLocation()) == 0)
-					return r;
-			}
+			int locX = loc.getBlockX(),
+				locY = loc.getBlockY(),
+				locZ = loc.getBlockZ(),
+				maxX = r.getMax().getBlockX(),
+				maxY = r.getMax().getBlockY(),
+				maxZ = r.getMax().getBlockZ(),
+				minX = r.getMin().getBlockX(),
+				minY = r.getMin().getBlockY(),
+				minZ = r.getMin().getBlockZ();
+				    										
+			if(     locX <= maxX
+				&&	locX >= minX
+				&&	locY <= maxY
+				&&	locY >= minY
+				&&	locZ <= maxZ
+				&&	locZ >= minZ)
+				return r;
 		}
 		return null;
 	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public Rentable getRentableById(String id) {
 		for(Rentable r : getRentables().values()) {
 			if(r.getID().equalsIgnoreCase(id))
@@ -90,6 +116,16 @@ public class RentableHandler {
 		return adminModeEnabled;
 	}
 	
+	/**
+	 * 
+	 * @param sign
+	 * @param header
+	 * @param price
+	 * @param time
+	 * @param sel
+	 * @param owner
+	 * @return
+	 */
 	public List<String> proceedRentable(Sign sign, String header, String price, String time, Selection sel, Player owner) {
 		if(sign == null || header == null || price == null || time == null || sel == null) return null;
 		
@@ -121,28 +157,39 @@ public class RentableHandler {
 		return list;
 	}
 	
+	/**
+	 * 
+	 * @param sign
+	 * @param header
+	 * @param priceString
+	 * @param timeString
+	 * @param displayTimeString
+	 * @param sel
+	 * @param owner
+	 */
 	private void setupRentable(Block sign, String header, String priceString, String timeString, String displayTimeString, Selection sel, Player owner) {
 		if(sign == null || header == null || priceString == null || timeString == null || sel == null) return;
 		
 		rentData = new RentableData();
 		
-		List<Block> blocks = weHandler.getSelectedBlocks(sel);
+		Location max = sel.getMaximumPoint();
+		Location min = sel.getMinimumPoint();
 		double price = Double.parseDouble(priceString);
 		int time = 0;
 		int id = getFreeId();
 		String formattedHeader = "["+header+"]";
-		String ownerName = owner.getName();
-		if(getPlayersAdminModeEnabled().contains(owner)) {
+		String ownerName = "";
+		if(getPlayersAdminModeEnabled().contains(owner) || owner == null)
 			ownerName = "";
-		}
+		else
+			ownerName = owner.getName();
 		
-		if(timeString.contains("m")) {
+		if(timeString.contains("m"))
 			time = Integer.parseInt(timeString.replace("m", ""));
-		} else if(timeString.contains("h")) {
+		else if(timeString.contains("h"))
 			time = Integer.parseInt(timeString.replace("h", ""))*60;
-		} else if(timeString.contains("d")) {
+		else if(timeString.contains("d"))
 			time = Integer.parseInt(timeString.replace("d", ""))*1440;
-		}
 		
 		rentData.getConfig().set(id+".header", formattedHeader);
 		rentData.getConfig().set(id+".sign.world", sign.getWorld().getName());
@@ -156,18 +203,31 @@ public class RentableHandler {
 		rentData.getConfig().set(id+".preRenter", "");
 		rentData.getConfig().set(id+".owner", ownerName);
 		rentData.getConfig().set(id+".remaining", 0);
-		int counter = 1;
-		for(Block b : blocks) {
-			rentData.getConfig().set(id+".location."+counter+".world", b.getWorld().getName());
-			rentData.getConfig().set(id+".location."+counter+".x", b.getLocation().getBlockX());
-			rentData.getConfig().set(id+".location."+counter+".y", b.getLocation().getBlockY());
-			rentData.getConfig().set(id+".location."+counter+".z", b.getLocation().getBlockZ());
-			counter++;
-		}
+				
+		//max
+		rentData.getConfig().set(id+".location.max.world", max.getWorld().getName());
+		rentData.getConfig().set(id+".location.max.x", max.getBlockX());
+		rentData.getConfig().set(id+".location.max.y", max.getBlockY());
+		rentData.getConfig().set(id+".location.max.z", max.getBlockZ());
+		
+		//min
+		rentData.getConfig().set(id+".location.min.world", min.getWorld().getName());
+		rentData.getConfig().set(id+".location.min.x", min.getBlockX());
+		rentData.getConfig().set(id+".location.min.y", min.getBlockY());
+		rentData.getConfig().set(id+".location.min.z", min.getBlockZ());
+		
 		rentData.saveConfig();
-		getRentables().put(Integer.toString(id), new Rentable(sign, blocks, Integer.toString(id), formattedHeader, price, time, ownerName));
+		
+		Rentable rentable = new Rentable(sign, max, min, Integer.toString(id), formattedHeader, price, time, ownerName);
+		getRentables().put(Integer.toString(id), rentable);
+		publishRentable(rentable, "");
+		
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public int getFreeId() {
 		rentData = new RentableData();
 		int counter = 1;
@@ -179,8 +239,16 @@ public class RentableHandler {
 		return counter;
 	}
 	
+	/**
+	 * 
+	 * @param rent
+	 * @param p
+	 */
 	public void rentRentable(Rentable rent, Player p) {
-		if(!rent.getRenter().equalsIgnoreCase(p.getName()) && !rent.getRenter().isEmpty()) return; //TODO add messenger
+		if(!rent.getRenter().equalsIgnoreCase(p.getName()) && !rent.getRenter().isEmpty()) {
+			Messenger.sendMessage(p, "Already rented");
+			return;
+		}
 		
 		Rentables rentables = new Rentables();
 		RPGEssentials plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
@@ -188,17 +256,13 @@ public class RentableHandler {
 		
 		if(rent.getRenter().isEmpty())
 			privaticeRentable(rent, p);
-		if(plugin.getEconomy() != null) 
-		{
-			if(plugin.getEconomy().getBalance(p.getName()) >= rent.getPrice()) 
-			{
+		if(plugin.getEconomy() != null) {
+			if(plugin.getEconomy().getBalance(p.getName()) >= rent.getPrice()) {
 				plugin.getEconomy().withdrawPlayer(p.getName(), rent.getPrice());
 				if(!rent.getOwner().isEmpty())
 					plugin.getEconomy().depositPlayer(rent.getOwner(), rent.getPrice());
-			} else 
-			{
-				//TODO add messenger
-				p.sendMessage("Not enough money");
+			} else {
+				Messenger.sendMessage(p, "Not enough money");
 				return;
 			}
 		}
@@ -219,6 +283,11 @@ public class RentableHandler {
 		rentData.getConfig().set(rent.getID()+".remaining", rent.getRemaining());
 		rentData.saveConfig();
 	}
+	
+	/**
+	 * 
+	 * @param rent
+	 */
 	public void unrentRentable(Rentable rent) {
 		Rentables rentables = new Rentables();
 		rentData = new RentableData();
@@ -250,6 +319,9 @@ public class RentableHandler {
 		rentData.saveConfig();
 	}
 	
+	/**
+	 * 
+	 */
 	public void startRentableChecker() {
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() {
 			@Override
@@ -258,6 +330,9 @@ public class RentableHandler {
 			}
 		}, 0, 1200);
 	}
+	/**
+	 * 
+	 */
 	public void checkRentables() {
 		rentData = new RentableData();
 		for(Rentable r : getRentables().values()) {
@@ -282,27 +357,55 @@ public class RentableHandler {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param r
+	 * @param p
+	 */
 	private void publishRentable(Rentable r, String p) {
 		RPGEssentials plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
 		LWC lwc = plugin.getLWC();
 		
-		for(Block b : r.getBlocks()) {
-			if(lwc.isProtectable(b)) {
-				if(lwc.findProtection(b) != null)
-					lwc.findProtection(b).remove();
-				lwc.getPhysicalDatabase().registerProtection(b.getTypeId(), Type.PUBLIC, b.getWorld().getName(), "G4meM0ment" /*TODO get from config a server account*/, "" /*PW*/, b.getX(), b.getY(), b.getZ());
+		//iterate threw y
+		for(int y = r.getMin().getBlockY(); y <= r.getMax().getBlockY(); y++) {
+			//iterate threw z
+			for(int z = r.getMin().getBlockZ(); z <= r.getMax().getBlockZ(); z++) {
+				//iterate threw x
+				for(int x = r.getMin().getBlockX(); x <= r.getMax().getBlockX(); x++) {
+					//get the block and handle with lwc
+					Block b = new Location(r.getMax().getWorld(), x, y, z).getBlock();
+					if(lwc.isProtectable(b)) {
+						if(lwc.findProtection(b) != null)
+							lwc.findProtection(b).remove();
+						lwc.getPhysicalDatabase().registerProtection(b.getTypeId(), Type.PUBLIC, b.getWorld().getName(), "G4meM0ment" /*TODO get from config a server account*/, "" /*PW*/, b.getX(), b.getY(), b.getZ());
+					}
+				}
 			}
 		}
 	}
+	/**
+	 * 
+	 * @param r
+	 * @param p
+	 */
 	private void privaticeRentable(Rentable r, Player p) {
 		RPGEssentials plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
 		LWC lwc = plugin.getLWC();
 		
-		for(Block b : r.getBlocks()) {
-			if(lwc.isProtectable(b)) {
-				if(lwc.findProtection(b) != null)
-					lwc.findProtection(b).remove();
-				lwc.getPhysicalDatabase().registerProtection(b.getTypeId(), Type.PRIVATE, b.getWorld().getName(), p.getName(), "" /*PW*/, b.getX(), b.getY(), b.getZ());
+		//iterate threw y
+		for(int y = r.getMin().getBlockY(); y <= r.getMax().getBlockY(); y++) {
+			//iterate threw z
+			for(int z = r.getMin().getBlockZ(); z <= r.getMax().getBlockZ(); z++) {
+				//iterate threw x
+				for(int x = r.getMin().getBlockX(); x <= r.getMax().getBlockX(); x++) {
+					//get the block and handle with lwc
+					Block b = new Location(r.getMax().getWorld(), x, y, z).getBlock();
+					if(lwc.isProtectable(b)) {
+						if(lwc.findProtection(b) != null)
+							lwc.findProtection(b).remove();
+						lwc.getPhysicalDatabase().registerProtection(b.getTypeId(), Type.PRIVATE, b.getWorld().getName(), p.getName(), "" /*PW*/, b.getX(), b.getY(), b.getZ());
+					}
+				}
 			}
 		}
 	}

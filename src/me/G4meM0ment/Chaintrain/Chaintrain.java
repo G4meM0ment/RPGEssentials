@@ -35,8 +35,7 @@ public class Chaintrain {
 	private static Logger logger;
 	private static boolean isEnabled = false;
 
-	public Chaintrain(RPGEssentials plugin)
-	{
+	public Chaintrain(RPGEssentials plugin) {
 		Chaintrain.plugin = plugin;
 		pH = new PlayerHandler();
 		pListener = new PListener(this);
@@ -50,8 +49,7 @@ public class Chaintrain {
 		
 		pD = new PlayerData(plugin);
 	}
-	public Chaintrain()
-	{
+	public Chaintrain() {
 		
 	}
 
@@ -146,18 +144,15 @@ public class Chaintrain {
 		return isEnabled;
 	}
 	
-	public String getDir()
-	{
+	public String getDir() {
 		return dir;
 	}
 	
-	public String getLogTit()
-	{
+	public String getLogTit() {
 		return logTit;
 	}
 	
-	public Logger getLogger()
-	{
+	public Logger getLogger() {
 		return logger;
 	}
 	

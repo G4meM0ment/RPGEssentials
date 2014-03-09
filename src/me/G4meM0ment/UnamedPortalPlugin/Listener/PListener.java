@@ -19,26 +19,23 @@ public class PListener implements Listener{
 	private PortalHandler ph;
 	private PermHandler pm;
 	
-	public PListener(RPGEssentials plugin) 
-	{
+	public PListener(RPGEssentials plugin) {
 		subplugin = new UnnamedPortalPlugin();
 		ph = new PortalHandler(new UnnamedPortalPlugin());
 		pm = new PermHandler(plugin);
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerMove(PlayerMoveEvent event) 
-	{
+	public void onPlayerMove(PlayerMoveEvent event) {
 		Player p = event.getPlayer();
 		Block b = event.getPlayer().getLocation().getBlock();
 		if(p == null || b == null) return;
-		if(ph.isPortal(b) && pm.hasPortalPerm(p, ph.getPortal(b)) && !ph.hasToWait(p)) 
-			ph.accessedPortal(p, ph.getPortal(b));
+		if(ph.isPortal(event.getTo()) && pm.hasPortalPerm(p, ph.getPortal(event.getTo())) && !ph.hasToWait(p)) 
+			ph.accessedPortal(p, ph.getPortal(event.getTo()));
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerPortal(PlayerPortalEvent event) 
-	{
+	public void onPlayerPortal(PlayerPortalEvent event) {
 		if(subplugin.getConfig().getBoolean("DisableNetherPortals"))
 			event.setCancelled(true);
 	}

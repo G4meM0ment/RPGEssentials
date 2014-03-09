@@ -6,7 +6,6 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import me.G4meM0ment.ReNature.ReNature;
 import me.G4meM0ment.ReNature.CustomTypes.NBlock;
 import me.G4meM0ment.ReNature.Handler.ReplaceHandler;
-import me.G4meM0ment.ReNature.OtherPlugins.ReFaction;
 import me.G4meM0ment.ReNature.OtherPlugins.ReTowny;
 
 import org.bukkit.GameMode;
@@ -28,7 +27,6 @@ public class BListener implements Listener {
 	private RPGEssentials plugin;
 	private ReplaceHandler rh;
 	private ReNature subplugin;
-	private ReFaction reFaction;
 	private ReTowny reTowny;
 	
 	public BListener(RPGEssentials plugin) 
@@ -36,7 +34,6 @@ public class BListener implements Listener {
 		this.plugin = plugin;
 		rh = new ReplaceHandler();
 		subplugin = new ReNature();
-		reFaction = new ReFaction(plugin);
 		reTowny = new ReTowny(plugin);
 	}
 	
@@ -48,8 +45,6 @@ public class BListener implements Listener {
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
 			return;
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
-			return;
-		if(reFaction.isFaction(event.getBlock().getLocation()))
 			return;
 		if(reTowny.isTown(event.getBlock().getLocation()))
 			return;
@@ -66,8 +61,6 @@ public class BListener implements Listener {
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
 			return;
 		if(event.getPlayer().getGameMode() == GameMode.CREATIVE)
-			return;
-		if(reFaction.isFaction(event.getBlock().getLocation()))
 			return;
 		if(reTowny.isTown(event.getBlock().getLocation()))
 			return;
@@ -101,8 +94,6 @@ public class BListener implements Listener {
 	{
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getBlock().getWorld().getName())))
 			return;
-		if(reFaction.isFaction(event.getBlock().getLocation()))
-			return;
 		if(reTowny.isTown(event.getBlock().getLocation()))
 			return;
 		
@@ -125,8 +116,6 @@ public class BListener implements Listener {
 	public void onPaintingBreak(HangingBreakEvent event) 
 	{
 		if(!subplugin.getConfig().getStringList("worlds").contains((event.getEntity().getWorld().getName())))
-			return;
-		if(reFaction.isFaction(event.getEntity().getLocation()))
 			return;
 		if(reTowny.isTown(event.getEntity().getLocation()))
 			return;

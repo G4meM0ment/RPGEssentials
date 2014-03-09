@@ -20,7 +20,6 @@ import me.G4meM0ment.RPGItem.Listener.PListener;
 import net.dandielo.citizens.traders_v3.utils.items.ItemFlag;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

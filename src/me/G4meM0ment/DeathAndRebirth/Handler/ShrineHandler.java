@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import me.G4meM0ment.DeathAndRebirth.Types.Shrine;
+import me.G4meM0ment.DeathAndRebirth.Framework.Shrine;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -17,8 +17,7 @@ public class ShrineHandler {
 	 * Returns the map containing all worlds lists with shrines
 	 * @return
 	 */
-	public HashMap<String, List<Shrine>> getShrineLists()
-	{
+	public HashMap<String, List<Shrine>> getShrineLists() {
 		return shrines;
 	}
 	/**
@@ -26,17 +25,14 @@ public class ShrineHandler {
 	 * @param worldName
 	 * @return
 	 */
-	public List<Shrine> getShrines(String worldName)
-	{
+	public List<Shrine> getShrines(String worldName) {
 		return getShrineLists().get(worldName);
 	}
 	/**
 	 * for each enabled world a new list is created
 	 */
-	public void initShrineLists()
-	{
-		for(String w : ConfigHandler.enabledWorlds)
-		{
+	public void initShrineLists() {
+		for(String w : ConfigHandler.enabledWorlds) {
 			if(w == null) continue;
 			getShrineLists().put(w, new ArrayList<Shrine>());
 		}
@@ -51,8 +47,7 @@ public class ShrineHandler {
 	 * @param binding
 	 * @return
 	 */
-	public boolean addShrine(String name, Location p1, Location p2, Location spawn, boolean binding)
-	{
+	public boolean addShrine(String name, Location p1, Location p2, Location spawn, boolean binding) {
 		if(name == null || p1 == null || p2 == null) return false;
 		if(!ConfigHandler.isDAREnabled(p1.getWorld().getName())) return false;
 		if(!getShrineLists().containsKey(p1.getWorld().getName()))
@@ -84,8 +79,7 @@ public class ShrineHandler {
 	 * @param s
 	 * @param world
 	 */
-	public void removeShrine(Shrine s, World world)
-	{
+	public void removeShrine(Shrine s, World world) {
 		getShrines(world.getName()).remove(s);
 	}
 
@@ -94,15 +88,13 @@ public class ShrineHandler {
 	 * @param location
 	 * @return
 	 */
-	public Shrine getNearestShrineSpawn(Location location) 
-	{
+	public Shrine getNearestShrineSpawn(Location location) {
 		if(location == null) return null;
 		if(!ConfigHandler.isDAREnabled(location.getWorld().getName())) return null;
 		
 		//check every shrine for its distance to the given location
 		Shrine nearest = null;		
-		for(Shrine s : getShrines(location.getWorld().getName()))
-		{
+		for(Shrine s : getShrines(location.getWorld().getName())) {
 			//no shrine added yet
 			if(nearest == null)
 				nearest = s; 
@@ -120,8 +112,7 @@ public class ShrineHandler {
 	 * @param radius
 	 * @return
 	 */
-	public boolean isShrine(Shrine s, Location loc, int radius)
-	{
+	public boolean isShrine(Shrine s, Location loc, int radius) {
 		if(s == null) return false;
 		if(loc == null) return false;
 		
@@ -135,8 +126,7 @@ public class ShrineHandler {
 	 * @param radius
 	 * @return
 	 */
-	public boolean isShrine(Location loc, int radius)
-	{
+	public boolean isShrine(Location loc, int radius) {
 		if(loc == null) return false;
 		
 		for(Shrine s : getShrines(loc.getWorld().getName()))
@@ -151,8 +141,7 @@ public class ShrineHandler {
 	 * @param world
 	 * @return
 	 */
-	public Shrine getShrine(String name, World world)
-	{
+	public Shrine getShrine(String name, World world) {
 		for(Shrine s : getShrines(world.getName()))
 			if(s.getName().equals(name))
 				return s;
@@ -163,10 +152,8 @@ public class ShrineHandler {
 	 * @param loc
 	 * @return
 	 */
-	public Shrine getShrine(Location loc, int radius)
-	{		
-		for(Shrine s : getShrines(loc.getWorld().getName()))
-		{
+	public Shrine getShrine(Location loc, int radius) {		
+		for(Shrine s : getShrines(loc.getWorld().getName())) {
 			int locX = loc.getBlockX(),
 				locY = loc.getBlockY(),
 				locZ = loc.getBlockZ(),

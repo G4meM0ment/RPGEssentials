@@ -74,8 +74,7 @@ public class PListener implements Listener{
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerJoin(PlayerJoinEvent event)
-	{
+	public void onPlayerJoin(PlayerJoinEvent event) {
 		final Player p = event.getPlayer();
 		if(p == null) return;
 		if(p.hasPermission("voxelsniper.litesniper") || p.hasPermission("voxelsniper.sniper"))
@@ -113,12 +112,10 @@ public class PListener implements Listener{
 			quitting.remove(p.getName());
 		}
 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
-		{
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
-			public void run() 
-			{
-				if(!SpoutManager.getPlayer(p).isSpoutCraftEnabled())
+			public void run() {
+				if(!SpoutManager.getPlayer(p).isSpoutCraftEnabled() && !p.hasPermission("orbia.admin"))
 					p.kickPlayer("Du benötigst Spoutcraft: http://spoutcraft.org/downloads/");
 			}
 		}, 80);
@@ -133,8 +130,7 @@ public class PListener implements Listener{
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onPlayerKick(PlayerKickEvent event) 
-	{
+	public void onPlayerKick(PlayerKickEvent event) {
 		Player p = event.getPlayer();
 		if(p == null) return;
 		event.setLeaveMessage(ChatColor.DARK_GRAY+"["+ChatColor.DARK_RED+"-"+ChatColor.DARK_GRAY+"] "+p.getName());

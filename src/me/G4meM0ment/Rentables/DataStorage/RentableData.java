@@ -52,29 +52,17 @@ public class RentableData {
 		Iterator<String> rentData = getConfig().getKeys(false).iterator();
 		while(rentData.hasNext()) {
 			String path = rentData.next();
-			Iterator<String> iterCounter = null;
-			try
-			{
-				iterCounter = getConfig().getConfigurationSection(path+".location").getKeys(false).iterator();
-			} catch(NullPointerException e)
-			{
-				subplugin.getLogger().warning(logTit+"Save corrupted for rentable "+path);
-				continue;
-			}
-
-			List<Block> blocks = new ArrayList<Block>();
 				
 			Location sign = new Location(Bukkit.getWorld(getConfig().getString(path+".sign.world")),
 					getConfig().getInt(path+".sign.x"), getConfig().getInt(path+".sign.y"), getConfig().getInt(path+".sign.z"));
 			
-			while(iterCounter.hasNext()) {
-				String counted = iterCounter.next();
-				Location l = new Location(Bukkit.getWorld(getConfig().getString(path+".location."+counted+".world")),
-						getConfig().getInt(path+".location."+counted+".x"), getConfig().getInt(path+".location."+counted+".y"), getConfig().getInt(path+".location."+counted+".z"));
-				blocks.add(l.getBlock());
-			}
+			Location max = new Location(Bukkit.getWorld(getConfig().getString(path+".location.max.world")),
+					getConfig().getInt(path+".location.max.x"), getConfig().getInt(path+".location.max.y"), getConfig().getInt(path+".location.max.z"));
 			
-			Rentable r = new Rentable(sign.getBlock(), blocks, path, getConfig().getString(path+".header"), getConfig().getDouble(path+".price"), getConfig().getInt(path+".time"), getConfig().getString(path+".owner"));
+			Location min = new Location(Bukkit.getWorld(getConfig().getString(path+".location.min.world")),
+					getConfig().getInt(path+".location.min.x"), getConfig().getInt(path+".location.min.y"), getConfig().getInt(path+".location.min.z"));
+			
+			Rentable r = new Rentable(sign.getBlock(), max, min, path, getConfig().getString(path+".header"), getConfig().getDouble(path+".price"), getConfig().getInt(path+".time"), getConfig().getString(path+".owner"));
 			
 			r.setRenter(getConfig().getString(path+".renter"));
 			r.setPreRenter(getConfig().getString(path+".preRenter"));

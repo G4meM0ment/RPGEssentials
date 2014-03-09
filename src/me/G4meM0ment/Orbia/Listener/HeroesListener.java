@@ -97,7 +97,7 @@ public class HeroesListener implements Listener{
 		 */
 		if(gainedPvPExp.containsKey(p.getName())) {
 			//he already killed this player
-			if(gainedPvPExp.get(p).containsKey(d.getName())) {
+			if(gainedPvPExp.get(p.getName()).containsKey(d.getName())) {
 				gainedPvPExp.get(p.getName()).put(d.getName(), gainedPvPExp.get(p.getName()).get(d.getName())+1);
 				
 				//if he killed the player more than 5 times he won't be able to gain exp from him

@@ -3,9 +3,7 @@ package me.G4meM0ment.UnamedPortalPlugin.DataStorage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.logging.Level;
 
 import me.G4meM0ment.UnamedPortalPlugin.UnnamedPortalPlugin;
@@ -14,7 +12,6 @@ import me.G4meM0ment.UnamedPortalPlugin.Portal.Portal;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -51,23 +48,20 @@ public class PortalData {
 	public void initializePortals() {
 		Iterator<String> portalData = getConfig().getKeys(false).iterator();
 		while(portalData.hasNext()) {
-			String path = portalData.next();
-			Iterator<String> iterCounter = getConfig().getConfigurationSection(path+".location").getKeys(false).iterator();
-			List<Block> blocks = new ArrayList<Block>();
-			
+			String path = portalData.next();			
 
 			Location dest = null;
 			if(getConfig().getConfigurationSection(path+".destination") != null)
 				dest = new Location(Bukkit.getWorld(getConfig().getString(path+".destination.world")),
 					getConfig().getInt(path+".destination.x"), getConfig().getInt(path+".destination.y"), getConfig().getInt(path+".destination.z"));
 			
-			while(iterCounter.hasNext()) {
-				String counted = iterCounter.next();
-				Location l = new Location(Bukkit.getWorld(getConfig().getString(path+".location."+counted+".world")),
-						getConfig().getInt(path+".location."+counted+".x"), getConfig().getInt(path+".location."+counted+".y"), getConfig().getInt(path+".location."+counted+".z"));
-				blocks.add(l.getBlock());
-			}
-			ph.getPortals().put(path, new Portal(path, blocks, dest));
+			Location max = new Location(Bukkit.getWorld(getConfig().getString(path+".location.max.world")),
+					getConfig().getInt(path+".location.max.x"), getConfig().getInt(path+".location.max.y"), getConfig().getInt(path+".location.max.z"));
+			Location min = new Location(Bukkit.getWorld(getConfig().getString(path+".location.min.world")),
+					getConfig().getInt(path+".location.min.x"), getConfig().getInt(path+".location.min.y"), getConfig().getInt(path+".location.min.z"));
+			
+			
+			ph.getPortals().put(path, new Portal(path, max, min, dest));
 		}
 		subplugin.getLogger().info(logTit+"Portals loaded and initialized");
 	}

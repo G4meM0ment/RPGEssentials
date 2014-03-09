@@ -27,6 +27,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class DeathAndRebirth {
 	
 	private RPGEssentials plugin;
+	@SuppressWarnings("unused")
+	private DARManager manager;
 	
 	private DropData dropData;
 	private PlayerData playerData;
@@ -90,6 +92,7 @@ public class DeathAndRebirth {
 	public DeathAndRebirth() 
 	{
 		plugin = (RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials");
+		manager = new DARManager(plugin);
 		dropData = new DropData(this);
 		playerData = new PlayerData(this);
 		shrineData = new ShrineData(this);
@@ -244,8 +247,7 @@ public class DeathAndRebirth {
 	 * Returns the File config to work with
 	 * @return
 	 */
-	public FileConfiguration getConfig() 
-	{
+	public FileConfiguration getConfig() {
 	    if(config == null)
 	        reloadConfig();
 	    return config;
@@ -253,8 +255,7 @@ public class DeathAndRebirth {
 	/**
 	 * Save the config file
 	 */
-	public void saveConfig() 
-	{
+	public void saveConfig()  {
 	    if(config == null || configFile == null) 
 	    {
 	    	return;
@@ -270,26 +271,21 @@ public class DeathAndRebirth {
 	    }
 	}
 	
-	public RPGEssentials getPlugin()
-	{
+	public RPGEssentials getPlugin() {
 		return plugin;
 	}
 	
-	public String getLogTit() 
-	{
+	public String getLogTit() {
 		return logTit;
 	}
-	public String getDir() 
-	{
+	public String getDir() {
 		return dir;
 	}
-	public Logger getLogger() 
-	{
+	public Logger getLogger() {
 		return logger;
 	}
 	
-	public boolean isEnabled() 
-	{
+	public boolean isEnabled() {
 		return isEnabled;
 	}
 }
