@@ -167,9 +167,9 @@ public class PlayerHandler {
 	
 	
 	private void addChainItem(Player player) {
-		player.getInventory().addItem(new ItemStack(Material.STRING, 1));
+		player.getInventory().addItem(new ItemStack(Material.LEASH, 1));
 	}
 	private void removeChainItem(Player player) {
-		player.getInventory().removeItem(new ItemStack(Material.STRING, 1));
+		player.getInventory().removeItem(new ItemStack(Material.LEASH, 1));
 	}
 }

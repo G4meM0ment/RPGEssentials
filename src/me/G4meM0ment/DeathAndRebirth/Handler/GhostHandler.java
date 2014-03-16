@@ -207,18 +207,17 @@ public class GhostHandler {
 			@Override
 			public void run()
 			{
-				invH.loadInventory(fP);
+				invH.loadInventory(fP);	
+				if(ConfigHandler.walkSpeed > 0.0)
+					//p.setWalkSpeed(0.2F);
+					fP.removePotionEffect(PotionEffectType.SPEED);
+		
+				/*
+				 * TODO add option
+				 */
+				fP.removePotionEffect(PotionEffectType.INVISIBILITY);
 			}
-		}, 20);
-		
-		if(ConfigHandler.walkSpeed > 0.0)
-			//p.setWalkSpeed(0.2F);
-			p.removePotionEffect(PotionEffectType.SPEED);
-		
-		/*
-		 * TODO add option
-		 */
-		p.removePotionEffect(PotionEffectType.INVISIBILITY);
+		}, 21);
 		
 		if(subplugin.getPlugin().isSpoutcraftPluginEnabled() && ConfigHandler.useSpoutcraft)
 			scH.setRebirthOptions(p);

@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 
 import me.G4meM0ment.RPGEssentials.RPGEssentials;
+import me.G4meM0ment.RPGEssentials.Messenger.Messenger;
 import me.G4meM0ment.RPGItem.RPGItem;
 import me.G4meM0ment.RPGItem.CustomItem.CustomItem;
 import me.G4meM0ment.RPGItem.CustomItem.Quality;
@@ -120,8 +121,15 @@ public class CustomItemHandler {
         	ListHandler.addCustomItemToList(customItem, list);
         else if(ListHandler.getCustomItemTypeList(customItem.getDispName()).isEmpty())
         	ListHandler.addCustomItemToList(customItem, list);
-		
-		p.getInventory().addItem(item);
+        
+        if(p.getInventory().firstEmpty() == -1) {
+        	p.getWorld().dropItem(p.getLocation(), item);
+        	Messenger.sendMessage(p, ChatColor.GRAY+"Du hast "+ChatColor.WHITE+customItem.getDispName()+ChatColor.GRAY+" erhalten");
+        	Messenger.sendMessage(p, ChatColor.GRAY+"Dein Inventar ist überfüllt, der Gegestand wurde auf den Boden geworfen");
+        } else {
+        	p.getInventory().addItem(item);
+        	Messenger.sendMessage(p, ChatColor.GRAY+"Du hast "+ChatColor.WHITE+customItem.getDispName()+ChatColor.GRAY+" erhalten");
+        }
 		return customItem;
 	}
 	

@@ -40,7 +40,7 @@ public class GraveHandler {
 	public boolean isGrave(Location loc) {
 		for(DARPlayer p : gH.getDARPlayers(loc.getWorld().getName())) {
 			if(p.getGrave() == null) continue;
-			if(p.getGrave().getLocation().equals(loc))
+			if(p.getGrave().getLocation().distance(loc) == 0)
 				return true;
 		}
 		return false;
@@ -49,7 +49,7 @@ public class GraveHandler {
 	public Grave getGrave(Location loc) {
 		for(DARPlayer p : gH.getDARPlayers(loc.getWorld().getName())) {
 			if(p.getGrave() == null) continue;
-			if(p.getGrave().getLocation().equals(loc))
+			if(p.getGrave().getLocation().distance(loc) == 0)
 				return p.getGrave();
 		}
 		return null;

@@ -13,28 +13,22 @@ public class SIHandler {
 	
 	private static List<Integer> items; 
 	
-	public SIHandler(Orbia subplugin)
-	{
+	public SIHandler(Orbia subplugin) {
 		this.subplugin = subplugin;
 		final Orbia orbia = subplugin;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() 
-		{
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Bukkit.getPluginManager().getPlugin("RPGEssentials"), new Runnable() {
 			@Override
-			public void run() 
-			{
+			public void run() {
 				items = orbia.getConfig().getIntegerList("ChangeableSubId");
 			}
 		});
 	}
 	
-	public void reloadList()
-	{
+	public void reloadList() {
 		items = subplugin.getConfig().getIntegerList("ChangeableSubId");
 	}
-	public void changeSubId(Block b, int range, boolean force)
-	{
-		if(items.contains(b.getType().getId()) || force)
-		{
+	public void changeSubId(Block b, int range, boolean force) {
+		if(items.contains(b.getType().getId()) || force) {
 			b.setData((byte) (b.getData()+range));
 		}
 	}

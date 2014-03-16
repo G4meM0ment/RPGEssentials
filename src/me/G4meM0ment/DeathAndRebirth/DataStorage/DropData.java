@@ -28,8 +28,7 @@ public class DropData {
 	
 	private static String dir;
 
-	public DropData(DeathAndRebirth subplugin) 
-	{
+	public DropData(DeathAndRebirth subplugin) {
 		this.subplugin = subplugin;
 		
 		dir = subplugin.getDir()+"/data";
@@ -37,20 +36,16 @@ public class DropData {
 		configFile = new File(dir+"/drops");
 	}
 
-	public DropData() 
-	{
+	public DropData() {
 		subplugin = ((RPGEssentials) Bukkit.getPluginManager().getPlugin("RPGEssentials")).getDeathAndRebirth();
 	}
 	
-	public String getDir() 
-	{
+	public String getDir() {
 		return dir;
 	}
 	
-	public void reloadConfig() 
-	{
-	    if (configFile == null) 
-	    {
+	public void reloadConfig() {
+	    if (configFile == null) {
 	    	configFile = new File(dir, "/drops");
 	    	subplugin.getLogger().info(logTit+"Created Config.");
 	    }
@@ -58,30 +53,24 @@ public class DropData {
 	 
 	    // Look for defaults in the jar
 	    InputStream defConfigStream = subplugin.getPlugin().getResource(defConfig);
-	    if (defConfigStream != null)
-	    {
+	    if (defConfigStream != null) {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
 	    }
 	    subplugin.getLogger().info(logTit+"Drop data loaded.");
 	}
-	public FileConfiguration getConfig()
-	{
+	public FileConfiguration getConfig() {
 	    if (config == null) 
 	        reloadConfig();
 	    return config;
 	}
-	public void saveConfig() 
-	{
+	public void saveConfig() {
 	    if (config == null || configFile == null)
 	    	return;
-	    try 
-	    {
+	    try {
 	        config.save(configFile);
-	    } 
-	    catch (IOException ex)
-	    {
+	    } catch (IOException ex) {
 	    	subplugin.getLogger().log(Level.SEVERE, logTit+"Could not save data to " + configFile, ex);
 	    }
 	}
@@ -93,23 +82,22 @@ public class DropData {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public ItemStack[] getItemsFromConfig(FileConfiguration invFile, String path)
-	{
+	public ItemStack[] getItemsFromConfig(FileConfiguration invFile, String path) {
+		if(invFile == null) return null;
+		if(path == null) return null;
+		
 		Set<String> keys = invFile.getConfigurationSection(path).getKeys(false);
 		ItemStack [] itemstack = new ItemStack[keys.size()];
 		Map<String, Object> item = null;
 		int i = 0;
 		
-		for(String key : keys) 
-		{
-			if(!(invFile.get(path+"."+key) instanceof LinkedHashMap)) 
-			{
+		for(String key : keys) {
+			if(!(invFile.get(path+"."+key) instanceof LinkedHashMap)) {
 				if(!(invFile.get(path+"."+key) instanceof MemorySection)) 
 					return null;
 				Map<String, Object> map = ((MemorySection) invFile.get(path+"."+key)).getValues(false);
 				item = map;
-			}
-			else
+			} else
 				item = (LinkedHashMap<String, Object>) invFile.get(path+"."+key);
 			
 			itemstack[i] = ItemStack.deserialize(item);
@@ -123,8 +111,7 @@ public class DropData {
 	 * @param pName
 	 * @param wName
 	 */
-	public void removePlayersSection(String pName, String wName)
-	{
+	public void removePlayersSection(String pName, String wName) {
 		config.set(pName+"."+wName, null);
 	}
 }

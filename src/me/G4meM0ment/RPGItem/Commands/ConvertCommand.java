@@ -10,11 +10,11 @@ import me.G4meM0ment.RPGItem.Handler.CustomItemHandler;
 import org.bukkit.command.CommandSender;
 
 @CommandInfo(
-		name = "list",
-		pattern = "list",
-		usage = "/ri list",
-		desc = "List all loaded items",
-		permission = "rpgitem.admin.give"
+		name = "convert",
+		pattern = "convert",
+		usage = "/ri convert <old name> <new name>",
+		desc = "Converts an old rpgitem to the new one",
+		permission = "rpgitem.admin"
 	)
 public class ConvertCommand implements Command {
 	@Override
@@ -32,16 +32,13 @@ public class ConvertCommand implements Command {
 		return true;
 	}
 	
-	private String getName(String[] args)
-	{
+	private String getName(String[] args) {
 		String name = "";
 		boolean first = true;
-		for(String s : args) 
-		{
+		for(String s : args) {
 			if(s.equalsIgnoreCase("give")) continue;
 			if(s.contains("p:")) continue;
-			if(first) 
-			{
+			if(first) {
 				name = s;
 				first = false;
 			} else

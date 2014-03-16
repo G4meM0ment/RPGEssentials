@@ -13,10 +13,12 @@ import me.G4meM0ment.Orbia.Handler.Job.JobListener;
 import me.G4meM0ment.Orbia.Listener.CraftListener;
 import me.G4meM0ment.Orbia.Listener.CustomItemListener;
 import me.G4meM0ment.Orbia.Listener.DuellListener;
+import me.G4meM0ment.Orbia.Listener.EListener;
 import me.G4meM0ment.Orbia.Listener.FoodListener;
 import me.G4meM0ment.Orbia.Listener.GraceListener;
 import me.G4meM0ment.Orbia.Listener.HeroesListener;
 import me.G4meM0ment.Orbia.Listener.MAListener;
+import me.G4meM0ment.Orbia.Listener.MobOwnerListener;
 import me.G4meM0ment.Orbia.Listener.PListener;
 import me.G4meM0ment.Orbia.Listener.TitleListener;
 import me.G4meM0ment.Orbia.Tutorial.TutorialData;
@@ -25,7 +27,6 @@ import me.G4meM0ment.RPGEssentials.RPGEssentials;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Orbia {
 	private RPGEssentials plugin;
@@ -44,6 +45,8 @@ public class Orbia {
 	private GraceListener gl;
 	private CustomItemListener cil;
 	private FoodListener fl;
+	private EListener el;
+	private MobOwnerListener mol;
 	
 	private static File configFile;
 	private static FileConfiguration config = null;
@@ -53,8 +56,7 @@ public class Orbia {
 	private static Logger logger;
 	private static boolean isEnabled = false;
 
-	public Orbia(RPGEssentials plugin) 
-	{
+	public Orbia(RPGEssentials plugin) {
 		this.plugin = plugin;
 		plistener = new PListener(plugin);
 		jl = new JobListener(plugin);
@@ -66,6 +68,8 @@ public class Orbia {
 		gl = new GraceListener(plugin);
 		cil = new CustomItemListener();
 		fl = new FoodListener(plugin);
+		el = new EListener();
+		mol = new MobOwnerListener(plugin);
 		
 		plugin.getServer().getPluginManager().registerEvents(plistener, plugin);
 		plugin.getServer().getPluginManager().registerEvents(jl, plugin);
@@ -77,6 +81,8 @@ public class Orbia {
 		plugin.getServer().getPluginManager().registerEvents(gl, plugin);
 		plugin.getServer().getPluginManager().registerEvents(cil, plugin);
 		plugin.getServer().getPluginManager().registerEvents(fl, plugin);
+		plugin.getServer().getPluginManager().registerEvents(el, plugin);
+		plugin.getServer().getPluginManager().registerEvents(mol, plugin);
 		
 		dir = plugin.getDir()+"/Orbia";
 		logger = plugin.getLogger();
@@ -87,13 +93,11 @@ public class Orbia {
 		sih = new SIHandler(this);
 		manaHandler = new ManaHandler(plugin);
 	}
-	public Orbia()
-	{
+	public Orbia() {
 
 	}
 
-	public boolean onEnable() 
-	{
+	public boolean onEnable() {
 		if(!plugin.getConfig().getBoolean("OrbiaEnabled"))
 			return false;
 		
@@ -103,11 +107,9 @@ public class Orbia {
 		tutData.reloadConfig();
 		tutData.saveConfig();
 		
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() 
-		{
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			@Override
-			public void run() 
-			{
+			public void run() {
 				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "dmarker deleteset id:markers");
 				tl.startAutoUpdater();
 			}
@@ -119,75 +121,61 @@ public class Orbia {
 		return true;
 	}
 
-	public boolean onDisable()
-	{
+	public boolean onDisable() {
 		isEnabled = false;
 		return true;
 	}
 	
-	public void reloadConfigs() 
-	{
+	public void reloadConfigs() {
 		reloadConfig();
 		tutData.reloadConfig();
 		sih.reloadList();
 	}
-	public void reloadConfig() 
-	{
-	    if (configFile == null) 
-	    {
+	public void reloadConfig() {
+	    if (configFile == null) {
 	    	configFile = new File(dir, "config.yml");
-			plugin.getLogger().info(logTit+"Created Config.");
+			logger.info(logTit+"Created Config.");
 	    }
 	    config = YamlConfiguration.loadConfiguration(configFile);
 	 
 	    // Look for defaults in the jar
 	    InputStream defConfigStream = plugin.getResource("defOrbiaConf.yml");
-	    if (defConfigStream != null) 
-	    {
+	    if (defConfigStream != null) {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        config.setDefaults(defConfig);
 	        config.options().copyDefaults(true);
 	    }
-		plugin.getLogger().info(logTit+"Config Loaded.");
+		logger.info(logTit+"Config Loaded.");
 	}
-	public FileConfiguration getConfig() 
-	{
-	    if (config == null) 
-	    {
+	public FileConfiguration getConfig() {
+	    if (config == null) {
 	        reloadConfig();
 	    }
 	    return config;
 	}
-	public void saveConfig() 
-	{
-	    if (config == null || configFile == null) 
-	    {
+	public void saveConfig() {
+	    if (config == null || configFile == null) {
 	    	return;
 	    }
-	    try 
-	    {
+	    try {
 	        config.save(configFile);
-	        plugin.getLogger().info(logTit+"Config saved");
+	        logger.info(logTit+"Config saved");
 	    } catch (IOException ex) {
-	        Logger.getLogger(JavaPlugin.class.getName()).log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
+	        logger.log(Level.SEVERE, logTit+"Could not save config to " + configFile, ex);
 	    }
 	}
 	
-	public String getLogTit() 
-	{
+	public String getLogTit() {
 		return logTit;
 	}
-	public String getDir() 
-	{
+	public String getDir() {
 		return dir;
 	}
-	public Logger getLogger() 
-	{
+	public Logger getLogger() {
 		return logger;
 	}
 	
-	public boolean isEnabled() 
-	{
+	public boolean isEnabled() {
 		return isEnabled;
 	}
 }

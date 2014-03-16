@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 		pattern = "reload",
 		usage = "/ri reload (config|data)",
 		desc = "Reloads the files and brings data to cache",
-		permission = "rpgitem.admin.reload"
+		permission = "rpgitem.admin"
 	)
 public class ReloadCommand implements Command {
 	@Override

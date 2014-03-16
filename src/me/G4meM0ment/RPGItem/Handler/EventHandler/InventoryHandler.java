@@ -55,8 +55,7 @@ public class InventoryHandler {
 		powerH = new PowerHandler();
 	}
 	
-	public void processInventory(PlayerInventory inv, Player p) 
-	{
+	public void processInventory(PlayerInventory inv, Player p) {
 		if(inv == null) return;		
 		
 		ItemStack[] allItems = Arrays.copyOf(inv.getArmorContents(), inv.getArmorContents().length + inv.getContents().length);

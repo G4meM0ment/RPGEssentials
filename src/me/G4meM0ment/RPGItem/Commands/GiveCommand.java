@@ -14,6 +14,7 @@ import me.G4meM0ment.RPGItem.Handler.PermHandler;
 import me.G4meM0ment.RPGItem.Handler.PowerHandler;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,7 +25,7 @@ import org.bukkit.entity.Player;
 		pattern = "give",
 		usage = "/ri give <item name> (p:<name>)",
 		desc = "Gives the given player (or if empty yourself) the item",
-		permission = "rpgitem.admin.give"
+		permission = "rpgitem.admin"
 	)
 public class GiveCommand implements Command {
 	@Override

@@ -67,8 +67,11 @@ public class PListener implements Listener {
 		}
 		
 		if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && event.getPlayer().getItemInHand().getType().equals(Material.LEASH)) {
+			System.out.println("Debug: 1");
 			if(graveHandler.isGrave(event.getClickedBlock().getLocation())) {
+				System.out.println("Debug: 2");
 				Player p = Bukkit.getPlayer(graveHandler.getGrave(event.getClickedBlock().getLocation()).getPlayerName());
+				System.out.println("Debug: 3 "+p);
 				if(p != null) {
 					ghostHandler.resurrect(p, event.getClickedBlock().getLocation(), true);
 					pH.chain(p, event.getPlayer());

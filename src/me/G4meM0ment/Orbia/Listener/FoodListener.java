@@ -29,6 +29,7 @@ public class FoodListener implements Listener {
 	
 	private HashMap<Material, Double> food = new HashMap<Material, Double>();
 	private List<PotionEffectType> effects = new ArrayList<PotionEffectType>();
+	private List<String> regen = new ArrayList<String>();
 	
 	public FoodListener(RPGEssentials plugin) {
 		this.plugin = plugin;
@@ -68,23 +69,14 @@ public class FoodListener implements Listener {
 			public void run() {
 				for(Player p : Bukkit.getOnlinePlayers()) {
 					if(p.getGameMode().equals(GameMode.CREATIVE)) continue;
-					if(!plugin.getHeroes().getCharacterManager().getHero(p).isInCombat() && !hasAnyNegativePotionEffect(p)) {
-						double add = 0.5;
-						double health = p.getHealth();
-						double maxHealth = p.getMaxHealth();
-						
-						if(health+add > maxHealth)
-							p.setHealth(maxHealth);
-						else if(health+add < 0.0)
-							p.setHealth(0.0);
-						else
-							p.setHealth(health+add);
+					if(!plugin.getHeroes().getCharacterManager().getHero(p).isInCombat() && !hasNegativePotionEffect(p)) {
+						regen.add(p.getName());
 					}
 				}
 			}
 		}, 0, 200);
 	}
-	private boolean hasAnyNegativePotionEffect(Player p) {
+	private boolean hasNegativePotionEffect(Player p) {
 		for(PotionEffect pe : p.getActivePotionEffects()) {
 			if(effects.contains(pe.getType()))
 				return true;
@@ -116,8 +108,24 @@ public class FoodListener implements Listener {
 	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
 		if(!(event.getEntity() instanceof Player)) return;
 		
-		if(event.getRegainReason().equals(RegainReason.SATIATED) || event.getRegainReason().equals(RegainReason.REGEN))
-			event.setCancelled(true);
+		Player p = (Player)event.getEntity();
+		if(event.getRegainReason().equals(RegainReason.SATIATED) || event.getRegainReason().equals(RegainReason.REGEN)) {
+			if(regen.contains(p.getName())) {
+				double add = 0.5;
+				double health = p.getHealth();
+				double maxHealth = p.getMaxHealth();
+				
+				if(health+add > maxHealth)
+					p.setHealth(maxHealth);
+				else if(health+add < 0.0)
+					p.setHealth(0.0);
+				else
+					p.setHealth(health+add);
+				regen.remove(p.getName());
+			} else
+				event.setCancelled(true);
+		}
+
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)

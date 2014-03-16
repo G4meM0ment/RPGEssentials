@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 		pattern = "list",
 		usage = "/ri list",
 		desc = "List all loaded items",
-		permission = "rpgitem.admin.give"
+		permission = "rpgitem.admin"
 	)
 public class ListCommand implements Command {
 	@Override
